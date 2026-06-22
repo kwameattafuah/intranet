@@ -1,0 +1,53 @@
+RewriteEngine On
+#RewriteBase /gacl.intra/
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+
+# rewrite rules for login
+RewriteRule ^login/?$ views/login/index.php [NC,L]
+# rewrite rules for account
+RewriteRule ^profile/?$ views/account/index.php [NC,L]
+# rewrite rules for dashboard
+RewriteRule ^home/?$ views/dashboard/index.php [NC,L]
+# rewrite rules for directory
+RewriteRule ^directory/?$ views/directory/index.php [NC,L]
+# rewrite rules for help
+RewriteRule ^help/?$ views/help/index.php [NC,L]
+# rewrite rules for media
+RewriteRule ^media/?$ views/media/index.php [NC,L]
+# rewrite rules for info
+RewriteRule ^info/?$ views/info/index.php [NC,L]
+# rewrite rules for docs
+RewriteRule ^docs/?$ views/docs/index.php [NC,L]
+# rewrite rules for corporate
+RewriteRule ^corporate/?$ views/corporate/index.php [NC,L]
+# rewrite rules for forum
+RewriteRule ^forum/?$ views/forum/index.php [NC,L]
+# rewrite rules for calendar
+RewriteRule ^calendar/?$ views/calendar/index.php [NC,L]
+# rewrite rules for site update
+RewriteRule ^siteUpdate/?$ views/update/index.php [NC,L]
+# rewrite rules for help assistance
+RewriteRule ^helpPanel/?$ views/helpboard/index.php [NC,L]
+# rewrite rules for correspondence
+RewriteRule ^correspondence/?$ views/correspondence/index.php [NC,L]
+# rewrite rules for conference room
+RewriteRule ^confroom/?$ views/confroom/index.php [NC,L]
+# rewrite rules for learning & dev't
+RewriteRule ^ldc/?$ views/ldc/index.php [NC,L]
+# rewrite rules for learning & dev't user
+RewriteRule ^ldc/user/?$ views/ldc/user/index.php [NC,L]
+# rewrite rules for learning & dev't admin
+RewriteRule ^ldc/admin/?$ views/ldc/admin/index.php [NC,L]
+# rewrite rules for learning & dev't admin profile
+RewriteRule ^ldc/adminprofile/?$ views/ldc/admin/adminprofile.php [NC,L]
+# rewrite rules for learning & dev't registry
+RewriteRule ^ldc/attendance/?$ views/ldc/admin/registry.php [NC,L]
+# rewrite rules for learning & dev't rooms
+RewriteRule ^ldcroom/?$ views/ldc/rooms/index.php [NC,L]
+# rewrite rules for learning & dev't user evaluations
+RewriteRule ^ldc/evaluations/?$ views/ldc/user/evaluation.php [NC,L]
+# rewrite rules for learning & dev't admin view appraisal
+RewriteRule ^ldc/appraisal/?$ views/ldc/admin/appraisal.php [NC,L]
+
+

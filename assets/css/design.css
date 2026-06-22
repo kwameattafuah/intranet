@@ -1,0 +1,160 @@
+/*For Print Preview*/
+@media print{
+  header, .aejay{
+    visibility: hidden !important;
+  }
+  
+  html, body{
+    height: 100%;
+    width: 100%;
+  }
+
+  #aejay{
+    position: absolute;
+    z-index: 20;
+  }
+
+  .aejay{
+    position: absolute;
+    z-index: 70;
+  }  
+
+}
+  
+/*mobile phones*/
+@media (max-width: 200px) {
+  #slide-out:hover {
+    overflow-y: auto !important;
+  }  
+}
+
+/*tablet and above*/
+@media (min-width: 600px) {
+  /*table*/
+  .table-responsive {
+    border: none; }
+
+  #slide-out:hover {
+    overflow-y: auto !important;
+  }     
+}
+/*notebooks*/
+@media (min-width: 992px) {
+  #slide-out:hover {
+    overflow-y: auto !important;
+  }  
+  /*main*/
+  main, footer, .top-nav {
+    padding-left: 270px; } 
+   
+}
+/*desktops*/
+
+/*------------------------------ User Generated Css --------------------------------*/
+
+body {
+    background-image: url("http://10.112.2.50:70/assets/img/bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.cursor{
+  cursor: pointer;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+iframe{
+  width: 100% !important;
+  height: auto !important;
+}
+
+.inline{
+  display:flex;  
+  list-style:none;
+}
+
+.wrap{
+  word-wrap: break-word;
+}
+
+.no-pad{
+  padding: 0px !important;
+}
+
+.no-pad-top{
+  padding-top: 0px !important;
+}
+
+.no-pad-down{
+  padding-bottom: 0px !important;
+}
+
+.no-pad-left{
+  padding-left: 0px !important;
+}
+
+.no-pad-right{
+  padding-right: 0px !important;
+}
+
+.space-left{
+  padding-left: 3px !important;
+}
+
+.space-right{
+  padding-right: 3px !important;
+}
+
+.disc{
+  list-style-type:disc !important;
+}
+
+.message-container{
+  padding: 0px !important;
+}
+.message-summary{
+  overflow-y: auto;
+  overflow-x: hidden; 
+}
+.summary-link{
+  display: block;
+  padding: 16px 8px;
+  border-left: solid 5px transparent;
+}
+/*if selected message*/
+.summary-link .active{
+  border-left: solid 5px #F44336;
+  background: #E3F2FD !important;
+}
+
+.summary-link .active .bold{
+  font-weight: normal;
+}
+
+.transparent{
+  opacity: 0.5;
+}
+
+.fullwidth{
+  width: 100% !important;
+}
+
+.scrollable{
+  overflow-y: auto;
+}
+
+.non-scrollable{
+  overflow: hidden;
+}
+
+.image-fit{
+  object-fit: contain;
+}
+
+/*---------------------------------------------------------------------------------*/
+
+
+

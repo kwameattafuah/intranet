@@ -1,0 +1,99 @@
+/*side nav image*/
+#slide-out div.card {
+  margin: 0px;
+  padding: 20px 0px; }
+#slide-out div.card .logo {
+  height: 100px; }
+#slide-out div.card img {
+  width: 100px;
+  height: 100px;
+  margin: 0px 32px; }
+#slide-out div.card .user-email {
+  color: #fff; }
+#slide-out div.card .user-email i {
+  color: #fff; }
+#slide-out li.active {
+  background: #e6e6e6; }
+
+/*table*/
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  border: 1px solid #ddd; }
+
+/*main*/
+main {
+  padding-top: 24px; }
+
+.message-container{
+    height: 300px;
+    overflow-y: auto;
+    margin-top: 0px;
+  }
+.message{
+  overflow-x: hidden;
+}
+.message .card{
+    margin: 0px -.75rem !important;
+    padding: 8px 0px;
+}
+.message-container{
+  padding: 0px !important;
+}
+.message-summary{
+  height: 120px;
+  overflow-y: auto;
+}
+.summary-link{
+  display: block;
+  padding: 16px 8px;
+  border-left: solid 5px transparent;
+}
+/*if selected message*/
+.summary-link.active{
+  border-left: solid 5px #F44336;
+  background: #E3F2FD !important;
+}
+
+.summary-link.active .bold{
+  font-weight: normal;
+}
+
+.bold{
+  font-weight: bold;
+}
+.dashboard-message-time{
+  margin-top: 16px !important;
+}
+.rowl{
+  margin: 0px -.75rem !important;
+}
+.cursor{
+  cursor: pointer;
+}
+
+/*tablet and above*/
+@media (min-width: 600px) {
+  /*table*/
+  .table-responsive {
+    border: none; } 
+  .message-container{
+    height: 650px;
+    overflow-y: auto;
+  }
+  .message-summary{
+    height: 250px;
+    overflow-y: auto;
+  }
+}
+/*notebooks*/
+@media (min-width: 992px) {
+  /*main*/
+  main, footer, .top-nav {
+    padding-left: 300px; } }
+/*desktops*/
+
+/*# sourceMappingURL=styles.min.css.map */

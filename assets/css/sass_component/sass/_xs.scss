@@ -1,0 +1,48 @@
+/*side nav image*/
+#slide-out{
+	div.card{
+		margin: 0px;
+		padding: 20px 0px;
+
+		.logo{
+			height: 100px;
+		}
+		img{
+			width: 100px;
+			height: 100px;
+			margin: 0px 32px;
+		}
+
+		.user-email{
+			color: #fff;
+
+			i{
+				color: #fff;
+			}
+		}
+	}
+
+	li.active{
+		background: darken(#fff, 10%);
+	}
+}
+
+
+/*table*/
+table{
+	white-space: nowrap;
+}
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: 1px solid #ddd;
+}
+
+
+/*main*/
+main{
+	padding-top: 24px;
+}
