@@ -40,6 +40,20 @@
     <li><a class="waves-effect spec-ajax" href="#" data-query="apps" data-dest="<?= __url__.'/actions/home.actions.php' ?>" data-output=".modal-content" data-toggle="modal">
       <i class="material-icons left">apps</i><span class="topview">Applications</span></a></li>
 
+    <!-- Human Capital & Office Services -->
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Human Capital</span>
+    <li><a class="waves-effect" href="<?= __url__.'/services/' ?>">
+      <i class="material-icons left">business_center</i><span class="topview">HCOS Portal</span></a></li>
+    <li><a class="waves-effect" href="<?= __url__.'/services/travel/' ?>">
+      <i class="material-icons left">flight_takeoff</i><span class="topview">Travel Request</span></a></li>
+    <li><a class="waves-effect" href="<?= __url__.'/services/letters/' ?>">
+      <i class="material-icons left">description</i><span class="topview">HR Letter Request</span></a></li>
+    <li><a class="waves-effect" href="<?= __url__.'/services/loan/' ?>">
+      <i class="material-icons left">account_balance</i><span class="topview">Loan Request</span></a></li>
+    <li><a class="waves-effect" href="<?= __url__.'/services/myrequests/' ?>">
+      <i class="material-icons left">assignment</i><span class="topview">My Requests</span></a></li>
+
     <!-- Learning & Development -->
     <hr class="sidebar-divider">
     <span class="nav-section-label">Learning &amp; Development</span>

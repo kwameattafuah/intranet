@@ -45,6 +45,12 @@ RewriteRule ^ldc/adminprofile/?$ views/ldc/admin/adminprofile.php [NC,L]
 RewriteRule ^ldc/attendance/?$ views/ldc/admin/registry.php [NC,L]
 # rewrite rules for learning & dev't rooms
 RewriteRule ^ldcroom/?$ views/ldc/rooms/index.php [NC,L]
+# rewrite rules for HCOS portal
+RewriteRule ^services/?$ views/services/index.php [NC,L]
+RewriteRule ^services/travel/?$ views/services/travel/index.php [NC,L]
+RewriteRule ^services/letters/?$ views/services/letters/index.php [NC,L]
+RewriteRule ^services/loan/?$ views/services/loan/index.php [NC,L]
+RewriteRule ^services/myrequests/?$ views/services/myrequests/index.php [NC,L]
 # rewrite rules for learning & dev't user evaluations
 RewriteRule ^ldc/evaluations/?$ views/ldc/user/evaluation.php [NC,L]
 # rewrite rules for learning & dev't admin view appraisal
