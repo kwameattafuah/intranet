@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GACL Intranet — UI Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="assets/css/materialize.min.css" rel="stylesheet">
+  <link href="assets/css/material-icons/material-icons.css" rel="stylesheet">
+  <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+  <link href="assets/css/design.css" rel="stylesheet">
+  <style>
+    /* Preview-only tab switcher */
+    .preview-tabs { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+    .preview-tab  { background:var(--accent); color:var(--primary); border:none; border-radius:20px; padding:8px 18px; font-size:13px; font-weight:700; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,0.2); font-family:'Roboto',sans-serif; }
+    .preview-tab.active { background:var(--primary); color:#fff; }
+    .page { display:none; } .page.active { display:block; }
+
+    /* Demo nav active */
+    .side-nav li.demo-active > a { background:rgba(240,165,0,0.15)!important; color:#f0a500!important; font-weight:600; border-left:3px solid #f0a500; padding-left:17px!important; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR (shared across all pages)
+══════════════════════════════════════════════════════════════ -->
+<header>
+  <ul id="slide-out" class="side-nav side fixed">
+
+    <div class="sidebar-logo">
+      <img src="assets/img/gacl-logo.jpg" alt="GACL" class="responsive-img">
+      <div class="sidebar-org-name">Ghana Airports Company Ltd</div>
+    </div>
+
+    <span class="nav-section-label">Main</span>
+    <li id="tab-home-nav" class="demo-active"><a href="#" onclick="showPage('dashboard');return false;">
+      <i class="material-icons left">dashboard</i><span>Home</span></a></li>
+    <li><a href="#" onclick="showPage('directory');return false;">
+      <i class="material-icons left">recent_actors</i><span>Staff Directory</span></a></li>
+
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Communication</span>
+    <li><a href="#"><i class="material-icons left">cast</i><span>News &amp; Information</span></a></li>
+    <li><a href="#"><i class="material-icons left">forum</i><span>General Discussions</span></a></li>
+    <li><a href="#"><i class="material-icons left">perm_media</i><span>Media Room</span></a></li>
+
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Resources</span>
+    <li><a href="#"><i class="material-icons left">attach_file</i><span>Shared Documents</span></a></li>
+    <li><a href="#"><i class="material-icons left">verified_user</i><span>Corporate Profile</span></a></li>
+    <li><a href="#"><i class="material-icons left">apps</i><span>Applications</span></a></li>
+
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Learning &amp; Development</span>
+    <li><a href="#" onclick="showPage('ldc');return false;">
+      <i class="material-icons left">school</i><span>L&amp;D Centre</span></a></li>
+    <li id="tab-rooms-nav"><a href="#" onclick="showPage('rooms');return false;">
+      <i class="material-icons left">meeting_room</i><span>Room Booking</span></a></li>
+    <li><a href="#"><i class="material-icons left">settings</i><span>L&amp;D Admin</span></a></li>
+
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Support</span>
+    <li><a href="#"><i class="material-icons left">record_voice_over</i><span>ICT Help Desk</span></a></li>
+    <li><a href="#"><i class="material-icons left">help_outline</i><span>Support Centre (FMCC)</span></a></li>
+
+    <div class="sidebar-footer">&copy; 2026 GACL ICT</div>
+  </ul>
+
+  <nav class="top-nav">
+    <div class="nav-wrapper">
+      <a href="#!" class="brand-logo hide-on-med-and-down" id="page-title" style="padding-left:280px">GACL Intranet</a>
+      <ul class="right" style="display:flex;align-items:center;">
+        <li><a href="#"><i class="material-icons left">language</i><span class="hide-on-small-only">Web</span></a></li>
+        <li><a href="#"><i class="material-icons left">mail</i><span class="hide-on-small-only">Mail</span></a></li>
+        <li><a href="#"><i class="material-icons left">phonelink</i><span class="hide-on-small-only">ERP</span></a></li>
+        <li>
+          <a href="#!" class="waves-effect user-email">
+            <i class="material-icons left" style="font-size:18px">account_circle</i>
+            K. Attafuah
+            <i class="material-icons right" style="margin-left:0">arrow_drop_down</i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 1 — DASHBOARD
+══════════════════════════════════════════════════════════════ -->
+<main>
+<div id="page-dashboard" class="page active">
+
+  <!-- Stats Row -->
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="stat-card card-border-primary">
+        <div class="stat-icon"><i class="material-icons">people</i></div>
+        <div class="stat-value">312</div>
+        <div class="stat-label">Total Staff</div>
+      </div>
+    </div>
+    <div class="col s12 m3">
+      <div class="stat-card card-border-success">
+        <div class="stat-icon"><i class="material-icons" style="color:var(--success)">school</i></div>
+        <div class="stat-value">8</div>
+        <div class="stat-label">Active Courses</div>
+      </div>
+    </div>
+    <div class="col s12 m3">
+      <div class="stat-card card-border-accent">
+        <div class="stat-icon"><i class="material-icons">meeting_room</i></div>
+        <div class="stat-value">3</div>
+        <div class="stat-label">Rooms Available</div>
+      </div>
+    </div>
+    <div class="col s12 m3">
+      <div class="stat-card card-border-danger">
+        <div class="stat-icon"><i class="material-icons" style="color:var(--danger)">notifications</i></div>
+        <div class="stat-value">5</div>
+        <div class="stat-label">Alerts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Top Story -->
+    <div class="col s12 m8">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">GACL Achieves Record Passenger Numbers in Q1 2026</span>
+          <div class="divider"></div>
+          <p class="wrap" style="padding-top:8px;color:#555;line-height:1.7">
+            Ghana Airports Company Limited has recorded unprecedented passenger numbers in the first quarter of 2026,
+            with Kotoka International Airport handling over 1.2 million passengers — a 18% increase over the same period last year.
+            Management has commended all staff for their dedication and professionalism in achieving this milestone.
+          </p>
+          <div style="margin-top:12px">
+            <span class="badge-pill badge-success">Official News</span>
+            <span class="badge-pill badge-info" style="margin-left:6px">22 June 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- News Cards -->
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="card">
+            <div style="background:var(--primary);height:6px"></div>
+            <div class="card-content">
+              <span class="card-title">Safety Week 2026</span>
+              <p style="font-size:13px;color:#666;margin-top:6px">Annual safety awareness week kicks off next Monday with workshops across all departments...</p>
+              <div style="margin-top:10px"><span class="badge-pill badge-warning">Safety</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6">
+          <div class="card">
+            <div style="background:var(--success);height:6px"></div>
+            <div class="card-content">
+              <span class="card-title">New ERP Module Live</span>
+              <p style="font-size:13px;color:#666;margin-top:6px">The HR self-service module is now available on the ERP system. Staff can update personal details online...</p>
+              <div style="margin-top:10px"><span class="badge-pill badge-primary">ICT</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="col s12 m4">
+      <!-- Alerts -->
+      <div class="card" style="border-top:4px solid var(--danger)">
+        <div class="card-content">
+          <span class="card-title" style="color:var(--danger)!important"><i class="material-icons left" style="font-size:18px">notifications_active</i>Alerts</span>
+          <div class="divider"></div>
+          <div class="card-panel grey lighten-4 cursor" style="padding:10px;margin-top:8px;border-radius:6px">
+            <span class="bold" style="font-size:13px">Fire Drill — Block A</span>
+            <p style="font-size:12px;color:#666;margin:2px 0">From: Health &amp; Safety Unit</p>
+          </div>
+          <div class="card-panel grey lighten-4 cursor" style="padding:10px;margin-top:6px;border-radius:6px">
+            <span class="bold" style="font-size:13px">Staff ID Renewal Deadline</span>
+            <p style="font-size:12px;color:#666;margin:2px 0">From: Human Resources</p>
+          </div>
+          <div class="card-panel grey lighten-4 cursor" style="padding:10px;margin-top:6px;border-radius:6px">
+            <span class="bold" style="font-size:13px">Network Maintenance — Saturday</span>
+            <p style="font-size:12px;color:#666;margin:2px 0">From: ICT Department</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="card" style="border-top:4px solid var(--accent)">
+        <div class="card-content">
+          <span class="card-title"><i class="material-icons left" style="font-size:18px">rss_feed</i>Useful Links</span>
+          <div class="divider"></div>
+          <ul style="margin-top:8px">
+            <li style="padding:5px 0;border-bottom:1px solid #f0f0f0"><a href="#" style="font-size:13px"><i class="material-icons tiny left" style="color:var(--primary)">link</i>GACL Website</a></li>
+            <li style="padding:5px 0;border-bottom:1px solid #f0f0f0"><a href="#" style="font-size:13px"><i class="material-icons tiny left" style="color:var(--primary)">link</i>Staff Email</a></li>
+            <li style="padding:5px 0;border-bottom:1px solid #f0f0f0"><a href="#" style="font-size:13px"><i class="material-icons tiny left" style="color:var(--primary)">link</i>ERP System</a></li>
+            <li style="padding:5px 0"><a href="#" style="font-size:13px"><i class="material-icons tiny left" style="color:var(--primary)">link</i>Flight Schedules</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 2 — ROOM BOOKING
+══════════════════════════════════════════════════════════════ -->
+<div id="page-rooms" class="page">
+
+  <div class="row" style="margin-bottom:0">
+    <div class="col s12">
+      <div class="page-header">
+        <h5><i class="material-icons left" style="line-height:inherit">meeting_room</i> Room Booking</h5>
+        <span style="font-size:13px;opacity:0.8">Sunday, 22 June 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Booking Form -->
+    <div class="col s12 l5">
+      <div class="booking-panel">
+        <p class="panel-title">
+          <i class="material-icons left" style="font-size:18px;vertical-align:middle">event_available</i>
+          New Room Requisition
+        </p>
+
+        <div class="input-field">
+          <i class="material-icons prefix">description</i>
+          <input type="text" id="purpose" placeholder=" ">
+          <label for="purpose">Purpose / Event Title</label>
+        </div>
+
+        <div class="input-field">
+          <i class="material-icons prefix">business</i>
+          <input type="text" id="booked_by" placeholder=" ">
+          <label for="booked_by">Booking For (Section / Unit)</label>
+        </div>
+
+        <div class="input-field" style="margin-top:20px">
+          <select class="browser-default">
+            <option value="" disabled selected>— Select Department —</option>
+            <option>Finance &amp; Administration</option>
+            <option>Human Resources</option>
+            <option>ICT Department</option>
+            <option>Operations</option>
+            <option>Learning &amp; Development</option>
+          </select>
+        </div>
+
+        <div class="row" style="margin-bottom:0">
+          <div class="input-field col s12 m8" style="margin-top:20px">
+            <select class="browser-default">
+              <option value="" disabled selected>— Choose a Room —</option>
+              <option>Main Conference Room</option>
+              <option>Training Room A</option>
+              <option>Training Room B</option>
+              <option>Boardroom</option>
+            </select>
+          </div>
+          <div class="input-field col s12 m4">
+            <i class="material-icons prefix">people</i>
+            <input type="number" id="occ" placeholder=" ">
+            <label for="occ">Occupancy</label>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom:0">
+          <div class="input-field col s12 m6">
+            <span class="text-muted" style="font-size:12px;display:block;margin-bottom:4px">Start Date &amp; Time</span>
+            <input type="datetime-local">
+          </div>
+          <div class="input-field col s12 m6">
+            <span class="text-muted" style="font-size:12px;display:block;margin-bottom:4px">End Date &amp; Time</span>
+            <input type="datetime-local">
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div class="col s6">
+            <button class="btn fullwidth" style="background:var(--primary)!important">
+              <i class="material-icons left">check_circle</i> Submit
+            </button>
+          </div>
+          <div class="col s6">
+            <button class="btn fullwidth" style="background:var(--danger)!important">
+              <i class="material-icons left">clear</i> Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Room Cards -->
+    <div class="col s12 l7">
+
+      <!-- Track -->
+      <div class="booking-panel" style="margin-bottom:16px;padding:18px 24px">
+        <p class="panel-title" style="margin-bottom:14px">
+          <i class="material-icons left" style="font-size:18px;vertical-align:middle">search</i>
+          Track Requisition
+        </p>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div class="input-field" style="flex:1;min-width:200px;margin:0">
+            <i class="material-icons prefix">confirmation_number</i>
+            <input type="text" id="rcode" placeholder=" ">
+            <label for="rcode">Requisition Code</label>
+          </div>
+          <button class="btn" style="background:var(--primary)!important;margin-top:6px">
+            <i class="material-icons left">search</i> Search
+          </button>
+        </div>
+        <!-- Sample result -->
+        <div style="margin-top:14px;padding:12px;background:#f8fafc;border-radius:6px;border-left:4px solid var(--success)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="bold" style="font-size:13px">REQ-2026-0041</span>
+            <span class="badge-pill badge-success">Approved</span>
+          </div>
+          <p style="font-size:12px;color:#666;margin:4px 0">Training Room A &nbsp;|&nbsp; 23 Jun 2026, 09:00–12:00</p>
+          <p style="font-size:12px;color:#666;margin:0">Booked by: HR Department</p>
+        </div>
+      </div>
+
+      <!-- Rooms -->
+      <div class="booking-panel">
+        <p class="panel-title">
+          <i class="material-icons left" style="font-size:18px;vertical-align:middle">view_list</i>
+          Available Rooms
+        </p>
+        <div class="row">
+
+          <div class="col s12 m6">
+            <div class="room-card">
+              <div class="room-card-header">
+                <h6>Main Conference Room</h6>
+                <span>Conference Room</span>
+              </div>
+              <div class="room-card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span class="room-tag conference">Conference</span>
+                  <span><span class="room-status-dot available"></span><span style="font-size:12px;color:#555">Available</span></span>
+                </div>
+                <p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">people</i> Capacity: <strong>40</strong></p>
+                <p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">place</i> Block A, Ground Floor</p>
+                <button class="btn waves-effect fullwidth" style="margin-top:10px;background:var(--primary)!important;font-size:12px;height:32px;line-height:32px">
+                  <i class="material-icons left tiny">add</i> Book this Room
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col s12 m6">
+            <div class="room-card">
+              <div class="room-card-header">
+                <h6>Training Room A</h6>
+                <span>Learning Room</span>
+              </div>
+              <div class="room-card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span class="room-tag learning">Learning</span>
+                  <span><span class="room-status-dot booked"></span><span style="font-size:12px;color:#555">Booked</span></span>
+                </div>
+                <p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">people</i> Capacity: <strong>25</strong></p>
+                <p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">place</i> L&amp;D Centre, 1st Floor</p>
+                <button class="btn waves-effect fullwidth" style="margin-top:10px;background:#999!important;font-size:12px;height:32px;line-height:32px" disabled>
+                  Currently Booked
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col s12 m6">
+            <div class="room-card">
+              <div class="room-card-header">
+                <h6>Training Room B</h6>
+                <span>Learning Room</span>
+              </div>
+              <div class="room-card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span class="room-tag learning">Learning</span>
+                  <span><span class="room-status-dot available"></span><span style="font-size:12px;color:#555">Available</span></span>
+                </div>
+                <p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">people</i> Capacity: <strong>20</strong></p>
+                <p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">place</i> L&amp;D Centre, 1st Floor</p>
+                <button class="btn waves-effect fullwidth" style="margin-top:10px;background:var(--primary)!important;font-size:12px;height:32px;line-height:32px">
+                  <i class="material-icons left tiny">add</i> Book this Room
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col s12 m6">
+            <div class="room-card">
+              <div class="room-card-header">
+                <h6>Executive Boardroom</h6>
+                <span>Boardroom</span>
+              </div>
+              <div class="room-card-body">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span class="room-tag boardroom">Boardroom</span>
+                  <span><span class="room-status-dot pending"></span><span style="font-size:12px;color:#555">Pending</span></span>
+                </div>
+                <p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">people</i> Capacity: <strong>15</strong></p>
+                <p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">place</i> Admin Block, 2nd Floor</p>
+                <button class="btn waves-effect fullwidth" style="margin-top:10px;background:var(--primary)!important;font-size:12px;height:32px;line-height:32px">
+                  <i class="material-icons left tiny">add</i> Book this Room
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 3 — L&D CENTRE
+══════════════════════════════════════════════════════════════ -->
+<div id="page-ldc" class="page">
+
+  <div class="row" style="margin-bottom:0">
+    <div class="col s12">
+      <div class="page-header">
+        <h5><i class="material-icons left" style="line-height:inherit">school</i> Learning &amp; Development Centre</h5>
+        <button class="btn" style="background:var(--accent)!important;color:var(--primary)!important;font-size:12px">
+          <i class="material-icons left">add</i> Register for Course
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- L&D Stats -->
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="stat-card"><div class="stat-icon"><i class="material-icons">menu_book</i></div><div class="stat-value">8</div><div class="stat-label">Active Courses</div></div>
+    </div>
+    <div class="col s12 m3">
+      <div class="stat-card" style="border-top-color:var(--success)"><div class="stat-icon"><i class="material-icons" style="color:var(--success)">how_to_reg</i></div><div class="stat-value">124</div><div class="stat-label">Enrolled Staff</div></div>
+    </div>
+    <div class="col s12 m3">
+      <div class="stat-card" style="border-top-color:var(--primary)"><div class="stat-icon"><i class="material-icons" style="color:var(--primary)">meeting_room</i></div><div class="stat-value">4</div><div class="stat-label">Rooms</div></div>
+    </div>
+    <div class="col s12 m3">
+      <div class="stat-card" style="border-top-color:var(--danger)"><div class="stat-icon"><i class="material-icons" style="color:var(--danger)">assignment_late</i></div><div class="stat-value">3</div><div class="stat-label">Pending Bookings</div></div>
+    </div>
+  </div>
+
+  <!-- Courses Table -->
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content">
+          <span class="section-heading">Available Courses</span>
+          <table class="striped responsive-table" style="margin-top:12px">
+            <thead>
+              <tr>
+                <th>Course Title</th>
+                <th>Venue</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Slots</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Customer Service Excellence</strong></td>
+                <td>Training Room A</td>
+                <td>25 Jun 2026</td>
+                <td>27 Jun 2026</td>
+                <td><span class="badge-pill badge-success">12 left</span></td>
+                <td><button class="btn btn-sm" style="background:var(--primary)!important;height:28px;line-height:28px;font-size:11px">Register</button></td>
+              </tr>
+              <tr>
+                <td><strong>Aviation Safety &amp; Compliance</strong></td>
+                <td>Main Conference Room</td>
+                <td>30 Jun 2026</td>
+                <td>02 Jul 2026</td>
+                <td><span class="badge-pill badge-warning">4 left</span></td>
+                <td><button class="btn btn-sm" style="background:var(--primary)!important;height:28px;line-height:28px;font-size:11px">Register</button></td>
+              </tr>
+              <tr>
+                <td><strong>Leadership &amp; Management</strong></td>
+                <td>Executive Boardroom</td>
+                <td>07 Jul 2026</td>
+                <td>09 Jul 2026</td>
+                <td><span class="badge-pill badge-danger">Full</span></td>
+                <td><button class="btn btn-sm" style="background:#aaa!important;height:28px;line-height:28px;font-size:11px" disabled>Full</button></td>
+              </tr>
+              <tr>
+                <td><strong>Microsoft Office 365</strong></td>
+                <td>Training Room B</td>
+                <td>14 Jul 2026</td>
+                <td>16 Jul 2026</td>
+                <td><span class="badge-pill badge-success">18 left</span></td>
+                <td><button class="btn btn-sm" style="background:var(--primary)!important;height:28px;line-height:28px;font-size:11px">Register</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 4 — STAFF DIRECTORY
+══════════════════════════════════════════════════════════════ -->
+<div id="page-directory" class="page">
+
+  <div class="row" style="margin-bottom:0">
+    <div class="col s12">
+      <div class="page-header">
+        <h5><i class="material-icons left" style="line-height:inherit">recent_actors</i> Staff Directory</h5>
+        <div class="input-field" style="margin:0;background:rgba(255,255,255,0.15);border-radius:20px;padding:0 12px;display:flex;align-items:center">
+          <i class="material-icons" style="color:rgba(255,255,255,0.7);font-size:18px">search</i>
+          <input type="text" placeholder="Search staff..." style="border:none!important;box-shadow:none!important;color:#fff;margin:0 8px;height:36px">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content" style="padding:0">
+          <table class="striped responsive-table" style="margin:0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Role / Title</th>
+                <th>Extension</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Kwame Attafuah</strong></td>
+                <td>ICT</td>
+                <td>Systems Administrator</td>
+                <td>1042</td>
+                <td style="font-size:12px">k.attafuah@gacl.com.gh</td>
+              </tr>
+              <tr>
+                <td><strong>Abena Mensah</strong></td>
+                <td>Human Resources</td>
+                <td>HR Officer</td>
+                <td>1018</td>
+                <td style="font-size:12px">a.mensah@gacl.com.gh</td>
+              </tr>
+              <tr>
+                <td><strong>Kofi Asante</strong></td>
+                <td>Finance</td>
+                <td>Senior Accountant</td>
+                <td>1031</td>
+                <td style="font-size:12px">k.asante@gacl.com.gh</td>
+              </tr>
+              <tr>
+                <td><strong>Ama Boateng</strong></td>
+                <td>L&amp;D Centre</td>
+                <td>Training Coordinator</td>
+                <td>1055</td>
+                <td style="font-size:12px">a.boateng@gacl.com.gh</td>
+              </tr>
+              <tr>
+                <td><strong>Emmanuel Owusu</strong></td>
+                <td>Operations</td>
+                <td>Airport Operations Officer</td>
+                <td>1067</td>
+                <td style="font-size:12px">e.owusu@gacl.com.gh</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+
+<!-- Page switcher tabs -->
+<div class="preview-tabs">
+  <button class="preview-tab active" onclick="showPage('dashboard')">Dashboard</button>
+  <button class="preview-tab" onclick="showPage('rooms')">Room Booking</button>
+  <button class="preview-tab" onclick="showPage('ldc')">L&amp;D Centre</button>
+  <button class="preview-tab" onclick="showPage('directory')">Directory</button>
+</div>
+
+
+<script src="assets/js/jquery-3.2.1.min.js"></script>
+<script src="assets/js/materialize.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $('.side-nav').sidenav ? $('.side-nav').sidenav() : ($('.button-collapse').length && $('.button-collapse').sideNav());
+    try { $(".button-collapse").sideNav(); } catch(e) {}
+    try { $('.dropdown-button').dropdown(); } catch(e) {}
+  });
+
+  function showPage(name) {
+    // hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#slide-out li').forEach(l => l.classList.remove('demo-active'));
+
+    // show selected
+    document.getElementById('page-' + name).classList.add('active');
+
+    // activate correct tab button
+    const tabs = document.querySelectorAll('.preview-tab');
+    const map = ['dashboard','rooms','ldc','directory'];
+    tabs[map.indexOf(name)].classList.add('active');
+
+    // activate sidebar item
+    const navMap = { dashboard:'tab-home-nav', rooms:'tab-rooms-nav' };
+    if (navMap[name]) document.getElementById(navMap[name]).classList.add('demo-active');
+
+    // update topbar title
+    const titles = { dashboard:'GACL Intranet', rooms:'Room Booking', ldc:'L&D Centre', directory:'Staff Directory' };
+    document.getElementById('page-title').textContent = titles[name];
+  }
+</script>
+</body>
+</html>
