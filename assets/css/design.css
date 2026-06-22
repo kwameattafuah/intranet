@@ -82,11 +82,11 @@ a:hover { color: var(--primary-light); }
   font-weight: 400;
   padding: 0 20px !important;
   height: 44px;
-  line-height: 44px;
+  line-height: normal;
   border-radius: 0 24px 24px 0;
   margin-right: 12px;
   transition: background var(--transition), color var(--transition);
-  display: flex;
+  display: flex !important;
   align-items: center;
 }
 

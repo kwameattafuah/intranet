@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GACL Intranet — UI Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <style>
+:root {
+  --primary: #1a3a5c;
+  --primary-light: #1e4976;
+  --accent: #f0a500;
+  --danger: #c0392b;
+  --success: #27ae60;
+  --sidebar-width: 260px;
+  --topbar-height: 60px;
+  --card-radius: 8px;
+  --shadow-sm: 0 2px 6px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 14px rgba(0,0,0,0.12);
+  --transition: 0.2s ease;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{background:#eef2f7;font-family:'Roboto','Segoe UI',sans-serif;color:#333;margin:0}
+a{color:var(--primary);text-decoration:none}
+
+/* Sidebar */
+#slide-out.side-nav{background:var(--primary)!important;width:var(--sidebar-width)!important;box-shadow:3px 0 12px rgba(0,0,0,0.2)!important;overflow-y:auto;padding-bottom:20px}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.1);text-align:center}
+.sidebar-logo img{max-width:110px;height:auto;border-radius:6px}
+.sidebar-org-name{color:#fff;font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-top:8px;opacity:.7}
+.nav-section-label{color:rgba(255,255,255,0.4);font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:16px 20px 4px;display:block}
+#slide-out.side-nav li>a{color:#cdd8e3!important;font-size:13.5px;padding:0 20px!important;height:44px;line-height:normal;border-radius:0 24px 24px 0;margin-right:12px;transition:background var(--transition),color var(--transition);display:flex!important;align-items:center}
+#slide-out.side-nav li>a:hover{background:rgba(255,255,255,0.08)!important;color:#fff!important}
+#slide-out.side-nav li.nav-active>a{background:rgba(240,165,0,0.15)!important;color:var(--accent)!important;font-weight:600;border-left:3px solid var(--accent);padding-left:17px!important}
+#slide-out.side-nav li>a i.material-icons{font-size:18px!important;width:28px;margin-right:10px!important;opacity:.8;flex-shrink:0}
+#slide-out.side-nav li.nav-active>a i.material-icons,#slide-out.side-nav li>a:hover i.material-icons{opacity:1}
+.sidebar-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:8px 0}
+.sidebar-footer{padding:12px 20px;color:rgba(255,255,255,0.3);font-size:11px;text-align:center}
+
+/* Top bar */
+nav.top-nav{position:fixed!important;top:0;left:0;right:0;z-index:999}
+nav.top-nav .nav-wrapper{background:var(--primary)!important;height:var(--topbar-height);box-shadow:0 2px 8px rgba(0,0,0,0.2)!important}
+nav.top-nav .brand-logo{color:#fff!important;font-size:16px;font-weight:600;padding-left:280px!important}
+nav.top-nav ul.right li a{color:rgba(255,255,255,0.85)!important;font-size:13px}
+nav.top-nav ul.right li a:hover{color:var(--accent)!important}
+.user-email{background:rgba(255,255,255,0.1);border-radius:20px;padding:4px 14px!important;font-size:13px!important}
+ul.dropdown-content{border-radius:8px!important;box-shadow:0 6px 20px rgba(0,0,0,0.15)!important;overflow:hidden;min-width:160px!important}
+ul.dropdown-content li a{color:var(--primary)!important;font-size:13px}
+
+/* Main */
+main{padding-top:calc(var(--topbar-height) + 20px);padding-bottom:30px;padding-right:20px;padding-left:20px}
+@media(min-width:992px){main,footer,.top-nav{padding-left:calc(var(--sidebar-width) + 20px)}}
+
+/* Cards */
+.card{border-radius:var(--card-radius)!important;box-shadow:var(--shadow-sm)!important;border:1px solid rgba(0,0,0,0.06);transition:box-shadow var(--transition)}
+.card:hover{box-shadow:var(--shadow-md)!important}
+.card .card-title{font-size:15px!important;font-weight:600!important;color:var(--primary)!important}
+.stat-card{background:#fff;border-radius:var(--card-radius);padding:20px;text-align:center;box-shadow:var(--shadow-sm);border-top:4px solid var(--accent);transition:box-shadow var(--transition)}
+.stat-card:hover{box-shadow:var(--shadow-md)}
+.stat-card .stat-value{font-size:28px;font-weight:700;color:var(--primary);line-height:1}
+.stat-card .stat-label{font-size:12px;color:#666;text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+.stat-card .stat-icon{font-size:36px;color:var(--accent);margin-bottom:8px}
+.card-border-primary{border-left:4px solid var(--primary)!important}
+.card-border-accent{border-left:4px solid var(--accent)!important}
+.card-border-success{border-left:4px solid var(--success)!important}
+.card-border-danger{border-left:4px solid var(--danger)!important}
+.section-heading{font-size:15px;font-weight:700;color:var(--primary);padding-bottom:8px;border-bottom:2px solid var(--accent);margin-bottom:16px;display:inline-block}
+
+/* Buttons */
+.btn,.btn-large{border-radius:6px!important;letter-spacing:.5px;font-weight:500;text-transform:none!important;box-shadow:none!important}
+.btn:hover,.btn-large:hover{filter:brightness(1.1)}
+.btn.green.darken-2{background-color:#388e3c!important}
+.btn.red.darken-2{background-color:#c62828!important}
+
+/* Forms */
+.input-field label{color:#666!important;font-size:13px}
+.input-field input:focus+label,.input-field input.active+label{color:var(--primary)!important}
+.input-field input:focus{border-bottom-color:var(--primary)!important;box-shadow:0 1px 0 0 var(--primary)!important}
+select.browser-default{border:1px solid #ccc!important;border-radius:6px!important;padding:8px 12px!important;font-size:13px!important;color:#333!important;background:#fff!important;height:42px;width:100%}
+
+/* Tables */
+table.striped tbody tr:nth-child(odd){background:#f8fafc}
+table thead{background:var(--primary)}
+table thead th{color:#fff!important;font-weight:600;font-size:13px}
+table tbody td{font-size:13px;color:#444}
+
+/* Badges */
+.badge-pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-success{background:#d4edda;color:#155724}
+.badge-danger{background:#f8d7da;color:#721c24}
+.badge-warning{background:#fff3cd;color:#856404}
+.badge-info{background:#d1ecf1;color:#0c5460}
+.badge-primary{background:#cce5ff;color:var(--primary)}
+
+/* Room cards */
+.room-card{border-radius:var(--card-radius);background:#fff;box-shadow:var(--shadow-sm);overflow:hidden;transition:box-shadow var(--transition);margin-bottom:16px}
+.room-card:hover{box-shadow:var(--shadow-md)}
+.room-card-header{background:var(--primary);color:#fff;padding:14px 18px}
+.room-card-header h6{margin:0;font-size:14px;font-weight:600}
+.room-card-header span{font-size:11px;opacity:.75}
+.room-card-body{padding:14px 18px}
+.room-status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+.room-status-dot.available{background:var(--success)}
+.room-status-dot.booked{background:var(--danger)}
+.room-status-dot.pending{background:var(--accent)}
+.room-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.room-tag.conference{background:#e3f2fd;color:#1565c0}
+.room-tag.learning{background:#e8f5e9;color:#2e7d32}
+.room-tag.boardroom{background:#fce4ec;color:#880e4f}
+
+/* Booking panel */
+.booking-panel{background:#fff;border-radius:var(--card-radius);box-shadow:var(--shadow-sm);padding:24px}
+.booking-panel .panel-title{font-size:16px;font-weight:700;color:var(--primary);margin:0 0 20px;padding-bottom:10px;border-bottom:2px solid var(--accent)}
+
+/* Page header */
+.page-header{background:var(--primary);color:#fff;padding:14px 22px;border-radius:var(--card-radius);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.page-header h5{margin:0;font-size:17px;font-weight:600}
+
+/* Alerts */
+.alert{padding:12px 16px;border-radius:6px;font-size:13px;margin-bottom:12px}
+.alert-info{background:#e8f4fd;border-left:4px solid #2196f3;color:#0d47a1}
+.alert-success{background:#e8f5e9;border-left:4px solid var(--success);color:#1b5e20}
+
+/* Utilities */
+.cursor{cursor:pointer}.bold{font-weight:600}.wrap{word-wrap:break-word}
+.fullwidth{width:100%!important}.text-muted{color:#888!important}
+.no-pad{padding:0!important}.no-pad-left{padding-left:0!important}.no-pad-right{padding-right:0!important}
+.divider{border-top:1px solid #e8ecf0;margin:8px 0}
+
+/* Preview switcher */
+.preview-tabs{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.preview-tab{background:var(--accent);color:var(--primary);border:none;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.2);font-family:'Roboto',sans-serif}
+.preview-tab.active{background:var(--primary);color:#fff}
+.page{display:none}.page.active{display:block}
+  </style>
+</head>
+<body>
+
+<header>
+  <ul id="slide-out" class="side-nav side fixed">
+    <div class="sidebar-logo">
+      <div style="width:80px;height:80px;background:rgba(255,255,255,0.15);border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center">
+        <span style="color:#fff;font-size:22px;font-weight:700">GACL</span>
+      </div>
+      <div class="sidebar-org-name">Ghana Airports Company Ltd</div>
+    </div>
+
+    <span class="nav-section-label">Main</span>
+    <li id="nav-dashboard" class="nav-active"><a href="#" onclick="showPage('dashboard');return false"><i class="material-icons left">dashboard</i><span>Home</span></a></li>
+    <li id="nav-directory"><a href="#" onclick="showPage('directory');return false"><i class="material-icons left">recent_actors</i><span>Staff Directory</span></a></li>
+
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Communication</span>
+    <li><a href="#"><i class="material-icons left">cast</i><span>News &amp; Information</span></a></li>
+    <li><a href="#"><i class="material-icons left">forum</i><span>General Discussions</span></a></li>
+    <li><a href="#"><i class="material-icons left">perm_media</i><span>Media Room</span></a></li>
+
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Resources</span>
+    <li><a href="#"><i class="material-icons left">attach_file</i><span>Shared Documents</span></a></li>
+    <li><a href="#"><i class="material-icons left">verified_user</i><span>Corporate Profile</span></a></li>
+    <li><a href="#"><i class="material-icons left">apps</i><span>Applications</span></a></li>
+
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Learning &amp; Development</span>
+    <li id="nav-ldc"><a href="#" onclick="showPage('ldc');return false"><i class="material-icons left">school</i><span>L&amp;D Centre</span></a></li>
+    <li id="nav-rooms"><a href="#" onclick="showPage('rooms');return false"><i class="material-icons left">meeting_room</i><span>Room Booking</span></a></li>
+    <li><a href="#"><i class="material-icons left">settings</i><span>L&amp;D Admin</span></a></li>
+
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Support</span>
+    <li><a href="#"><i class="material-icons left">record_voice_over</i><span>ICT Help Desk</span></a></li>
+    <li><a href="#"><i class="material-icons left">help_outline</i><span>Support Centre</span></a></li>
+
+    <div class="sidebar-footer">&copy; 2026 GACL ICT</div>
+  </ul>
+
+  <nav class="top-nav">
+    <div class="nav-wrapper">
+      <a href="#!" class="brand-logo" id="page-title">GACL Intranet</a>
+      <ul class="right" style="display:flex;align-items:center">
+        <li><a href="#"><i class="material-icons left">language</i><span class="hide-on-small-only">Web</span></a></li>
+        <li><a href="#"><i class="material-icons left">mail</i><span class="hide-on-small-only">Mail</span></a></li>
+        <li><a href="#"><i class="material-icons left">phonelink</i><span class="hide-on-small-only">ERP</span></a></li>
+        <li><a href="#" class="user-email"><i class="material-icons left" style="font-size:18px">account_circle</i>K. Attafuah<i class="material-icons right" style="margin-left:0">arrow_drop_down</i></a></li>
+      </ul>
+      <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="row">
+    <div class="col s12 m3"><div class="stat-card card-border-primary"><div class="stat-icon"><i class="material-icons">people</i></div><div class="stat-value">312</div><div class="stat-label">Total Staff</div></div></div>
+    <div class="col s12 m3"><div class="stat-card card-border-success"><div class="stat-icon"><i class="material-icons" style="color:var(--success)">school</i></div><div class="stat-value">8</div><div class="stat-label">Active Courses</div></div></div>
+    <div class="col s12 m3"><div class="stat-card card-border-accent"><div class="stat-icon"><i class="material-icons">meeting_room</i></div><div class="stat-value">3</div><div class="stat-label">Rooms Available</div></div></div>
+    <div class="col s12 m3"><div class="stat-card card-border-danger"><div class="stat-icon"><i class="material-icons" style="color:var(--danger)">notifications</i></div><div class="stat-value">5</div><div class="stat-label">Alerts</div></div></div>
+  </div>
+  <div class="row">
+    <div class="col s12 m8">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">GACL Achieves Record Passenger Numbers in Q1 2026</span>
+          <div class="divider"></div>
+          <p class="wrap" style="padding-top:8px;color:#555;line-height:1.7">Ghana Airports Company Limited has recorded unprecedented passenger numbers in the first quarter of 2026, with Kotoka International Airport handling over 1.2 million passengers — an 18% increase over the same period last year.</p>
+          <div style="margin-top:12px"><span class="badge-pill badge-success">Official News</span> <span class="badge-pill badge-info">22 June 2026</span></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="card"><div style="background:var(--primary);height:5px"></div><div class="card-content"><span class="card-title">Safety Week 2026</span><p style="font-size:13px;color:#666;margin-top:6px">Annual safety awareness week kicks off next Monday with workshops across all departments.</p><div style="margin-top:10px"><span class="badge-pill badge-warning">Safety</span></div></div></div>
+        </div>
+        <div class="col s12 m6">
+          <div class="card"><div style="background:var(--success);height:5px"></div><div class="card-content"><span class="card-title">New ERP Module Live</span><p style="font-size:13px;color:#666;margin-top:6px">The HR self-service module is now available. Staff can update personal details online.</p><div style="margin-top:10px"><span class="badge-pill badge-primary">ICT</span></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m4">
+      <div class="card" style="border-top:4px solid var(--danger)">
+        <div class="card-content">
+          <span class="card-title" style="color:var(--danger)!important"><i class="material-icons left" style="font-size:18px">notifications_active</i>Alerts</span>
+          <div class="divider"></div>
+          <div class="card-panel grey lighten-4" style="padding:10px;margin-top:8px;border-radius:6px"><span class="bold" style="font-size:13px">Fire Drill — Block A</span><p style="font-size:12px;color:#666;margin:2px 0">From: Health &amp; Safety Unit</p></div>
+          <div class="card-panel grey lighten-4" style="padding:10px;margin-top:6px;border-radius:6px"><span class="bold" style="font-size:13px">Staff ID Renewal Deadline</span><p style="font-size:12px;color:#666;margin:2px 0">From: Human Resources</p></div>
+          <div class="card-panel grey lighten-4" style="padding:10px;margin-top:6px;border-radius:6px"><span class="bold" style="font-size:13px">Network Maintenance — Saturday</span><p style="font-size:12px;color:#666;margin:2px 0">From: ICT Department</p></div>
+        </div>
+      </div>
+      <div class="card" style="border-top:4px solid var(--accent)">
+        <div class="card-content">
+          <span class="card-title"><i class="material-icons left" style="font-size:18px">rss_feed</i>Useful Links</span>
+          <div class="divider"></div>
+          <ul style="margin-top:8px">
+            <li style="padding:5px 0;border-bottom:1px solid #f0f0f0"><a href="#" style="font-size:13px"><i class="material-icons tiny left" style="color:var(--primary)">link</i>GACL Website</a></li>
+            <li style="padding:5px 0;border-bottom:1px solid #f0f0f0"><a href="#" style="font-size:13px"><i class="material-icons tiny left" style="color:var(--primary)">link</i>Staff Email</a></li>
+            <li style="padding:5px 0"><a href="#" style="font-size:13px"><i class="material-icons tiny left" style="color:var(--primary)">link</i>ERP System</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROOM BOOKING -->
+<div id="page-rooms" class="page">
+  <div class="row" style="margin-bottom:0"><div class="col s12"><div class="page-header"><h5><i class="material-icons left" style="line-height:inherit">meeting_room</i>Room Booking</h5><span style="font-size:13px;opacity:.8">Sunday, 22 June 2026</span></div></div></div>
+  <div class="row">
+    <div class="col s12 l5">
+      <div class="booking-panel">
+        <p class="panel-title"><i class="material-icons left" style="font-size:18px;vertical-align:middle">event_available</i>New Room Requisition</p>
+        <div class="input-field"><i class="material-icons prefix">description</i><input type="text" id="p1"><label for="p1">Purpose / Event Title</label></div>
+        <div class="input-field"><i class="material-icons prefix">business</i><input type="text" id="p2"><label for="p2">Booking For (Section / Unit)</label></div>
+        <div class="input-field" style="margin-top:20px"><select class="browser-default"><option disabled selected>— Select Department —</option><option>Finance &amp; Administration</option><option>Human Resources</option><option>ICT Department</option><option>L&amp;D Centre</option></select></div>
+        <div class="row" style="margin-bottom:0">
+          <div class="input-field col s12 m8" style="margin-top:20px"><select class="browser-default"><option disabled selected>— Choose a Room —</option><option>Main Conference Room</option><option>Training Room A</option><option>Training Room B</option><option>Executive Boardroom</option></select></div>
+          <div class="input-field col s12 m4"><i class="material-icons prefix">people</i><input type="number" id="p3"><label for="p3">Occupancy</label></div>
+        </div>
+        <div class="row" style="margin-bottom:0">
+          <div class="input-field col s12 m6"><span class="text-muted" style="font-size:12px;display:block;margin-bottom:4px">Start Date &amp; Time</span><input type="datetime-local"></div>
+          <div class="input-field col s12 m6"><span class="text-muted" style="font-size:12px;display:block;margin-bottom:4px">End Date &amp; Time</span><input type="datetime-local"></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="col s6"><button class="btn fullwidth" style="background:var(--primary)!important"><i class="material-icons left">check_circle</i>Submit</button></div>
+          <div class="col s6"><button class="btn fullwidth" style="background:var(--danger)!important"><i class="material-icons left">clear</i>Reset</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 l7">
+      <div class="booking-panel" style="margin-bottom:16px;padding:18px 24px">
+        <p class="panel-title" style="margin-bottom:14px"><i class="material-icons left" style="font-size:18px;vertical-align:middle">search</i>Track Requisition</p>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div class="input-field" style="flex:1;min-width:200px;margin:0"><i class="material-icons prefix">confirmation_number</i><input type="text" id="p4"><label for="p4">Requisition Code</label></div>
+          <button class="btn" style="background:var(--primary)!important;margin-top:6px"><i class="material-icons left">search</i>Search</button>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:#f8fafc;border-radius:6px;border-left:4px solid var(--success)">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span class="bold" style="font-size:13px">REQ-2026-0041</span><span class="badge-pill badge-success">Approved</span></div>
+          <p style="font-size:12px;color:#666;margin:4px 0">Training Room A &nbsp;|&nbsp; 23 Jun 2026, 09:00–12:00</p>
+          <p style="font-size:12px;color:#666;margin:0">Booked by: HR Department</p>
+        </div>
+      </div>
+      <div class="booking-panel">
+        <p class="panel-title"><i class="material-icons left" style="font-size:18px;vertical-align:middle">view_list</i>Available Rooms</p>
+        <div class="row">
+          <div class="col s12 m6"><div class="room-card"><div class="room-card-header"><h6>Main Conference Room</h6><span>Conference Room</span></div><div class="room-card-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span class="room-tag conference">Conference</span><span><span class="room-status-dot available"></span><span style="font-size:12px;color:#555">Available</span></span></div><p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">people</i> Capacity: <strong>40</strong></p><p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">place</i> Block A, Ground Floor</p><button class="btn waves-effect fullwidth" style="margin-top:10px;background:var(--primary)!important;font-size:12px;height:32px;line-height:32px"><i class="material-icons left tiny">add</i>Book this Room</button></div></div></div>
+          <div class="col s12 m6"><div class="room-card"><div class="room-card-header"><h6>Training Room A</h6><span>Learning Room</span></div><div class="room-card-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span class="room-tag learning">Learning</span><span><span class="room-status-dot booked"></span><span style="font-size:12px;color:#555">Booked</span></span></div><p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">people</i> Capacity: <strong>25</strong></p><p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">place</i> L&amp;D Centre, 1st Floor</p><button class="btn waves-effect fullwidth" style="margin-top:10px;background:#999!important;font-size:12px;height:32px;line-height:32px" disabled>Currently Booked</button></div></div></div>
+          <div class="col s12 m6"><div class="room-card"><div class="room-card-header"><h6>Training Room B</h6><span>Learning Room</span></div><div class="room-card-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span class="room-tag learning">Learning</span><span><span class="room-status-dot available"></span><span style="font-size:12px;color:#555">Available</span></span></div><p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">people</i> Capacity: <strong>20</strong></p><p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">place</i> L&amp;D Centre, 1st Floor</p><button class="btn waves-effect fullwidth" style="margin-top:10px;background:var(--primary)!important;font-size:12px;height:32px;line-height:32px"><i class="material-icons left tiny">add</i>Book this Room</button></div></div></div>
+          <div class="col s12 m6"><div class="room-card"><div class="room-card-header"><h6>Executive Boardroom</h6><span>Boardroom</span></div><div class="room-card-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span class="room-tag boardroom">Boardroom</span><span><span class="room-status-dot pending"></span><span style="font-size:12px;color:#555">Pending</span></span></div><p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">people</i> Capacity: <strong>15</strong></p><p style="font-size:12px;color:#666;margin:4px 0"><i class="material-icons tiny" style="vertical-align:middle">place</i> Admin Block, 2nd Floor</p><button class="btn waves-effect fullwidth" style="margin-top:10px;background:var(--primary)!important;font-size:12px;height:32px;line-height:32px"><i class="material-icons left tiny">add</i>Book this Room</button></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- L&D CENTRE -->
+<div id="page-ldc" class="page">
+  <div class="row" style="margin-bottom:0"><div class="col s12"><div class="page-header"><h5><i class="material-icons left" style="line-height:inherit">school</i>Learning &amp; Development Centre</h5><button class="btn" style="background:var(--accent)!important;color:var(--primary)!important;font-size:12px"><i class="material-icons left">add</i>Register for Course</button></div></div></div>
+  <div class="row">
+    <div class="col s12 m3"><div class="stat-card"><div class="stat-icon"><i class="material-icons">menu_book</i></div><div class="stat-value">8</div><div class="stat-label">Active Courses</div></div></div>
+    <div class="col s12 m3"><div class="stat-card" style="border-top-color:var(--success)"><div class="stat-icon"><i class="material-icons" style="color:var(--success)">how_to_reg</i></div><div class="stat-value">124</div><div class="stat-label">Enrolled Staff</div></div></div>
+    <div class="col s12 m3"><div class="stat-card" style="border-top-color:var(--primary)"><div class="stat-icon"><i class="material-icons" style="color:var(--primary)">meeting_room</i></div><div class="stat-value">4</div><div class="stat-label">Rooms</div></div></div>
+    <div class="col s12 m3"><div class="stat-card" style="border-top-color:var(--danger)"><div class="stat-icon"><i class="material-icons" style="color:var(--danger)">assignment_late</i></div><div class="stat-value">3</div><div class="stat-label">Pending Bookings</div></div></div>
+  </div>
+  <div class="row"><div class="col s12"><div class="card"><div class="card-content"><span class="section-heading">Available Courses</span>
+    <table class="striped responsive-table" style="margin-top:12px">
+      <thead><tr><th>Course Title</th><th>Venue</th><th>Start Date</th><th>End Date</th><th>Slots</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Customer Service Excellence</strong></td><td>Training Room A</td><td>25 Jun 2026</td><td>27 Jun 2026</td><td><span class="badge-pill badge-success">12 left</span></td><td><button class="btn" style="background:var(--primary)!important;height:28px;line-height:28px;font-size:11px">Register</button></td></tr>
+        <tr><td><strong>Aviation Safety &amp; Compliance</strong></td><td>Main Conference Room</td><td>30 Jun 2026</td><td>02 Jul 2026</td><td><span class="badge-pill badge-warning">4 left</span></td><td><button class="btn" style="background:var(--primary)!important;height:28px;line-height:28px;font-size:11px">Register</button></td></tr>
+        <tr><td><strong>Leadership &amp; Management</strong></td><td>Executive Boardroom</td><td>07 Jul 2026</td><td>09 Jul 2026</td><td><span class="badge-pill badge-danger">Full</span></td><td><button class="btn" style="background:#aaa!important;height:28px;line-height:28px;font-size:11px" disabled>Full</button></td></tr>
+        <tr><td><strong>Microsoft Office 365</strong></td><td>Training Room B</td><td>14 Jul 2026</td><td>16 Jul 2026</td><td><span class="badge-pill badge-success">18 left</span></td><td><button class="btn" style="background:var(--primary)!important;height:28px;line-height:28px;font-size:11px">Register</button></td></tr>
+      </tbody>
+    </table>
+  </div></div></div></div>
+</div>
+
+<!-- DIRECTORY -->
+<div id="page-directory" class="page">
+  <div class="row" style="margin-bottom:0"><div class="col s12"><div class="page-header"><h5><i class="material-icons left" style="line-height:inherit">recent_actors</i>Staff Directory</h5></div></div></div>
+  <div class="row"><div class="col s12"><div class="card"><div class="card-content" style="padding:0">
+    <table class="striped responsive-table" style="margin:0">
+      <thead><tr><th>Name</th><th>Department</th><th>Role / Title</th><th>Extension</th><th>Email</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Kwame Attafuah</strong></td><td>ICT</td><td>Systems Administrator</td><td>1042</td><td style="font-size:12px">k.attafuah@gacl.com.gh</td></tr>
+        <tr><td><strong>Abena Mensah</strong></td><td>Human Resources</td><td>HR Officer</td><td>1018</td><td style="font-size:12px">a.mensah@gacl.com.gh</td></tr>
+        <tr><td><strong>Kofi Asante</strong></td><td>Finance</td><td>Senior Accountant</td><td>1031</td><td style="font-size:12px">k.asante@gacl.com.gh</td></tr>
+        <tr><td><strong>Ama Boateng</strong></td><td>L&amp;D Centre</td><td>Training Coordinator</td><td>1055</td><td style="font-size:12px">a.boateng@gacl.com.gh</td></tr>
+        <tr><td><strong>Emmanuel Owusu</strong></td><td>Operations</td><td>Airport Operations Officer</td><td>1067</td><td style="font-size:12px">e.owusu@gacl.com.gh</td></tr>
+      </tbody>
+    </table>
+  </div></div></div></div>
+</div>
+
+</main>
+
+<div class="preview-tabs">
+  <button class="preview-tab active" onclick="showPage('dashboard')">Dashboard</button>
+  <button class="preview-tab" onclick="showPage('rooms')">Room Booking</button>
+  <button class="preview-tab" onclick="showPage('ldc')">L&amp;D Centre</button>
+  <button class="preview-tab" onclick="showPage('directory')">Directory</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<script>
+$(document).ready(function(){
+  try{ $('.button-collapse').sideNav(); }catch(e){}
+  try{ $('.dropdown-button').dropdown({belowOrigin:true,alignment:'right'}); }catch(e){}
+});
+
+const pageMap = ['dashboard','rooms','ldc','directory'];
+const navIds  = {dashboard:'nav-dashboard',rooms:'nav-rooms',ldc:'nav-ldc',directory:'nav-directory'};
+const titles  = {dashboard:'GACL Intranet',rooms:'Room Booking',ldc:'L&D Centre',directory:'Staff Directory'};
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.preview-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#slide-out li').forEach(l=>l.classList.remove('nav-active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.preview-tab')[pageMap.indexOf(name)].classList.add('active');
+  if(navIds[name]) document.getElementById(navIds[name]).classList.add('nav-active');
+  document.getElementById('page-title').textContent = titles[name];
+}
+</script>
+</body>
+</html>
