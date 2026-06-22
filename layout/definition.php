@@ -1,29 +1,23 @@
 <?php
-	session_start();
-	session_name('Aejay');
-	
-	date_default_timezone_set("Africa/Accra");
-	$copyright = date("Y"); 
+    session_name('Aejay');
+    session_start();
 
-	// define root directory
-	define("__ROOT__", str_replace("layout", "", __dir__), TRUE);
+    date_default_timezone_set("Africa/Accra");
+    $copyright = date("Y");
 
-	// connect to database
-	require_once(__ROOT__.'core/functions.php');
+    // define root directory
+    define("__ROOT__", str_replace("layout", "", __dir__), TRUE);
 
-	// get metadata from table
-	define("__ASSETS__", "http://10.112.2.50:70/assets", TRUE);
+    // load environment config
+    require_once(__ROOT__ . 'config.php');
 
-	// define url
-	define("__URL__", "http://10.112.2.50:70", TRUE);
+    // connect to database and load helpers
+    require_once(__ROOT__ . 'core/functions.php');
 
-	// define media
-	define("__MEDIA__", "http://10.112.2.50:70/media", TRUE);	
+    define("__URL__",    APP_URL,          TRUE);
+    define("__ASSETS__", APP_URL.'/assets', TRUE);
+    define("__MEDIA__",  APP_URL.'/media',  TRUE);
+    define("__DOCS__",   APP_URL.'/docs/',  TRUE);
 
-	// define documents
-	define("__DOCS__", "http://10.112.2.50:70/docs/", TRUE);		
-
-	/*--- echo errors in development --*/
-	ini_set('display_errors', 0);
-	//error_reporting(E_ALL);
+    ini_set('display_errors', 0);
 ?>
