@@ -30,11 +30,23 @@
     <li><a class="waves-effect" href="<?= __url__.'/media/' ?>">
       <i class="material-icons left">perm_media</i><span class="topview">Media Room</span></a></li>
 
+    <!-- Departments -->
+    <hr class="sidebar-divider">
+    <span class="nav-section-label">Organisation</span>
+    <li><a class="waves-effect" href="<?= __url__.'/departments/' ?>">
+      <i class="material-icons left">business</i><span class="topview">Departments</span></a></li>
+    <li><a class="waves-effect" href="<?= __url__.'/airports/' ?>">
+      <i class="material-icons left">flight</i><span class="topview">Airports</span></a></li>
+
     <!-- Resources -->
     <hr class="sidebar-divider">
     <span class="nav-section-label">Resources</span>
     <li><a class="waves-effect" href="<?= __url__.'/docs/' ?>">
       <i class="material-icons left">attach_file</i><span class="topview">Shared Documents</span></a></li>
+    <li><a class="waves-effect" href="<?= __url__.'/forms/' ?>">
+      <i class="material-icons left">assignment</i><span class="topview">Company Forms</span></a></li>
+    <li><a class="waves-effect" href="<?= __url__.'/policies/' ?>">
+      <i class="material-icons left">gavel</i><span class="topview">Policies &amp; Procedures</span></a></li>
     <li><a class="waves-effect" href="<?= __url__.'/corporate/' ?>">
       <i class="material-icons left">verified_user</i><span class="topview">Corporate Profile</span></a></li>
     <li><a class="waves-effect spec-ajax" href="#" data-query="apps" data-dest="<?= __url__.'/actions/home.actions.php' ?>" data-output=".modal-content" data-toggle="modal">

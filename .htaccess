@@ -55,5 +55,15 @@ RewriteRule ^services/myrequests/?$ views/services/myrequests/index.php [NC,L]
 RewriteRule ^ldc/evaluations/?$ views/ldc/user/evaluation.php [NC,L]
 # rewrite rules for learning & dev't admin view appraisal
 RewriteRule ^ldc/appraisal/?$ views/ldc/admin/appraisal.php [NC,L]
+# rewrite rules for departments
+RewriteRule ^departments/?$ views/departments/index.php [NC,L]
+RewriteRule ^departments/([a-z0-9\-]+)/?$ views/departments/dept.php [NC,L]
+# rewrite rules for company forms hub
+RewriteRule ^forms/?$ views/forms/index.php [NC,L]
+# rewrite rules for policies library
+RewriteRule ^policies/?$ views/policies/index.php [NC,L]
+# rewrite rules for airports
+RewriteRule ^airports/?$ views/airports/index.php [NC,L]
+RewriteRule ^airports/([a-z]{3})/?$ views/airports/airport.php [NC,L]
 
 
