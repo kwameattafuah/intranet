@@ -4243,78 +4243,157 @@
       <div class="ops-form-panel" id="ops-panel-excursion">
         <div class="card">
           <div class="card-body">
-            <h2 class="card-title" style="margin-bottom:4px">Excursion Request Form</h2>
-            <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:20px">For passengers requesting city tours or excursions during layovers. Submit to Customer Service desk.</p>
+            <h2 class="card-title" style="margin-bottom:4px">Airport Excursion / Visit Booking</h2>
+            <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:20px">For schools, students, pupils, colleges, universities, and community groups wishing to visit the airport for an educational or experiential tour.</p>
 
             <form id="excursion-form" onsubmit="submitOpsForm(event,'excursion')">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
 
-                <div class="form-group">
-                  <label class="form-label">Passenger Name(s) <span style="color:var(--color-danger)">*</span></label>
-                  <input class="form-control" type="text" name="pax_name" placeholder="Full name(s)" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">No. of Passengers <span style="color:var(--color-danger)">*</span></label>
-                  <input class="form-control" type="number" name="pax_count" min="1" max="50" placeholder="1" required>
+                <!-- GROUP / ORGANISATION -->
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted)">Group / Organisation</label>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Inbound Flight <span style="color:var(--color-danger)">*</span></label>
-                  <input class="form-control" type="text" name="inbound_flight" placeholder="e.g. ET 304" required>
+                  <label class="form-label">Organisation / School Name <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="org_name" placeholder="e.g. Achimota School, Legon University…" required>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Arrival Date &amp; Time <span style="color:var(--color-danger)">*</span></label>
-                  <input class="form-control" type="datetime-local" name="arrival_dt" required>
+                  <label class="form-label">Group Type <span style="color:var(--color-danger)">*</span></label>
+                  <select class="form-control" name="group_type" required>
+                    <option value="">— Select —</option>
+                    <option>Primary School</option>
+                    <option>Junior High School (JHS)</option>
+                    <option>Senior High School (SHS)</option>
+                    <option>Polytechnic / Technical Institute</option>
+                    <option>University / College</option>
+                    <option>Corporate / Company</option>
+                    <option>Community Group / NGO</option>
+                    <option>Government Institution</option>
+                    <option>Other</option>
+                  </select>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Outbound Flight <span style="color:var(--color-danger)">*</span></label>
-                  <input class="form-control" type="text" name="outbound_flight" placeholder="e.g. ET 305" required>
+                  <label class="form-label">Contact Person (Lead) <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="contact_name" placeholder="Teacher / Coordinator name" required>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Departure Date &amp; Time <span style="color:var(--color-danger)">*</span></label>
-                  <input class="form-control" type="datetime-local" name="depart_dt" required>
+                  <label class="form-label">Contact Role / Title</label>
+                  <input class="form-control" type="text" name="contact_role" placeholder="e.g. Head Teacher, Trip Coordinator">
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Excursion Type <span style="color:var(--color-danger)">*</span></label>
-                  <select class="form-control" name="excursion_type" required>
-                    <option value="">— Select type —</option>
-                    <option>City Tour (Accra)</option>
-                    <option>Cultural / Heritage Visit</option>
-                    <option>Beach Excursion</option>
-                    <option>Shopping (Accra Mall / Oxford St)</option>
-                    <option>Restaurant / Dining</option>
-                    <option>Custom / Other</option>
+                  <label class="form-label">Phone Number <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="tel" name="contact_phone" placeholder="+233 …" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email Address</label>
+                  <input class="form-control" type="email" name="contact_email" placeholder="school@example.edu.gh">
+                </div>
+
+                <!-- VISIT DETAILS -->
+                <div class="form-group" style="grid-column:1/-1;margin-top:4px">
+                  <label class="form-label" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted)">Visit Details</label>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Preferred Visit Date <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="date" name="visit_date" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Preferred Arrival Time <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="time" name="visit_time" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Estimated Duration</label>
+                  <select class="form-control" name="duration">
+                    <option>1 hour</option>
+                    <option>2 hours</option>
+                    <option>3 hours</option>
+                    <option>Half day (4 hours)</option>
+                    <option>Full day</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Nationality / Passport</label>
-                  <input class="form-control" type="text" name="nationality" placeholder="e.g. French / Ghanaian">
-                </div>
-
-                <div class="form-group" style="grid-column:1/-1">
-                  <label class="form-label">Contact Number (passenger)</label>
-                  <input class="form-control" type="tel" name="contact_phone" placeholder="+233 …">
-                </div>
-
-                <div class="form-group" style="grid-column:1/-1">
-                  <label class="form-label">Special Requirements / Notes</label>
-                  <textarea class="form-control" name="notes" rows="3" placeholder="Dietary needs, mobility, language, other requests…"></textarea>
+                  <label class="form-label">Alternate Date (if first unavailable)</label>
+                  <input class="form-control" type="date" name="alt_date">
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Handled By (Staff) <span style="color:var(--color-danger)">*</span></label>
+                  <label class="form-label">Total Number of Visitors <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="number" name="visitor_count" min="1" max="500" placeholder="e.g. 45" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Age Group / Level</label>
+                  <select class="form-control" name="age_group">
+                    <option value="">— Select —</option>
+                    <option>Children (under 12)</option>
+                    <option>Teenagers (12–17)</option>
+                    <option>Young Adults (18–25)</option>
+                    <option>Adults (25+)</option>
+                    <option>Mixed ages</option>
+                  </select>
+                </div>
+
+                <!-- AREAS OF INTEREST -->
+                <div class="form-group" style="grid-column:1/-1;margin-top:4px">
+                  <label class="form-label">Areas / Activities of Interest</label>
+                  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="int_terminal"> <span>Terminal Operations</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="int_airside"> <span>Airside / Apron View</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="int_rffs"> <span>Fire &amp; Rescue (RFFS)</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="int_security"> <span>Aviation Security</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="int_checkin"> <span>Check-in / Baggage</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="int_atc"> <span>Air Traffic Control (ATC)</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="int_career"> <span>Career Talk / Q&amp;A</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="int_general"> <span>General Tour</span></label>
+                  </div>
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Purpose / Objectives of Visit</label>
+                  <textarea class="form-control" name="purpose" rows="3" placeholder="What do the students / group hope to learn or experience? Any curriculum links?"></textarea>
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Special Requirements</label>
+                  <textarea class="form-control" name="special_reqs" rows="2" placeholder="Wheelchair access, dietary needs, language support, supervision ratios, permission letters…"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">How did you hear about us?</label>
+                  <select class="form-control" name="referral">
+                    <option value="">— Select —</option>
+                    <option>GACL Website</option>
+                    <option>Social Media</option>
+                    <option>Previous Visit</option>
+                    <option>Word of Mouth</option>
+                    <option>School / GES Recommendation</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <!-- STAFF -->
+                <div class="form-group">
+                  <label class="form-label">Processed By (Staff) <span style="color:var(--color-danger)">*</span></label>
                   <input class="form-control" type="text" name="staff_name" placeholder="Your name" required>
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Staff Extension</label>
-                  <input class="form-control" type="text" name="staff_ext" placeholder="Ext.">
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Status</label>
+                  <select class="form-control" name="status">
+                    <option>Pending Confirmation</option>
+                    <option>Confirmed</option>
+                    <option>Awaiting Approval</option>
+                    <option>Declined</option>
+                    <option>Rescheduled</option>
+                  </select>
                 </div>
 
               </div>
               <div style="margin-top:20px;display:flex;gap:10px">
-                <button type="submit" class="btn btn-primary">Submit &amp; Save Record</button>
+                <button type="submit" class="btn btn-primary">Submit &amp; Save Booking</button>
                 <button type="button" class="btn btn-ghost" onclick="window.print()">Print Form</button>
                 <button type="reset" class="btn btn-ghost" style="margin-left:auto;color:var(--color-text-secondary)">Clear</button>
               </div>
