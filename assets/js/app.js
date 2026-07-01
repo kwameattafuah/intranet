@@ -500,3 +500,53 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// ── Airport Management Forms ──────────────────────────────────────────
+function opsShowTab(tab, btn) {
+  document.querySelectorAll('.ops-form-panel').forEach(p => p.style.display = 'none');
+  document.getElementById('ops-panel-' + tab).style.display = 'block';
+  document.querySelectorAll('#ops-form-tabs .btn').forEach(b => {
+    b.classList.remove('btn-primary');
+    b.style.background = '';
+    b.style.color = '';
+    b.classList.add('btn-ghost');
+  });
+  btn.classList.remove('btn-ghost');
+  btn.classList.add('btn-primary');
+  btn.style.background = 'var(--color-primary)';
+  btn.style.color = '#fff';
+}
+
+function submitOpsForm(e, type) {
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form));
+  const ref = type.toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+  const record = { ref, type, ...data, submitted: new Date().toLocaleString() };
+  const key = 'gacl_ops_forms';
+  const all = JSON.parse(localStorage.getItem(key) || '[]');
+  all.unshift(record);
+  localStorage.setItem(key, JSON.stringify(all.slice(0, 100)));
+  renderOpsFormLog();
+  form.reset();
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:var(--color-success);color:#fff;padding:10px 16px;border-radius:8px;margin-bottom:12px;font-size:13px;font-weight:600';
+  banner.textContent = '✓ Submitted — Reference: ' + ref;
+  form.parentElement.insertBefore(banner, form);
+  setTimeout(() => banner.remove(), 5000);
+}
+
+function renderOpsFormLog() {
+  const el = document.getElementById('ops-form-log');
+  if (!el) return;
+  const all = JSON.parse(localStorage.getItem('gacl_ops_forms') || '[]');
+  if (!all.length) { el.textContent = 'No submissions yet.'; return; }
+  el.innerHTML = all.slice(0, 10).map(r => `
+    <div style="padding:8px 0;border-bottom:1px solid var(--color-border);line-height:1.5">
+      <div style="font-weight:600;color:var(--color-text)">${r.ref}</div>
+      <div style="color:var(--color-text-secondary)">${r.pax_name || r.item_desc || r.guest_name || '—'}</div>
+      <div style="font-size:11px;color:var(--color-text-muted)">${r.submitted}</div>
+    </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded', renderOpsFormLog);

@@ -131,6 +131,10 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20M4 20V10l8-6 8 6v10"/><rect x="9" y="14" width="6" height="6"/></svg>
           Airport Planning &amp; Projects
         </a></li>
+        <li class="nav-item" id="nav-ops-forms"><a href="#" class="nav-link" onclick="showPage('ops-forms');return false">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Ops Forms
+        </a></li>
         <li class="nav-item" id="nav-dept-ops"><a href="#" class="nav-link" onclick="showPage('dept-ops');return false">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
           Airports Management
@@ -4208,6 +4212,430 @@
   </div>
 </div>
 
+<!-- AIRPORT MANAGEMENT FORMS ────────────────────────────────────── -->
+<div id="page-ops-forms" class="page" role="main">
+  <div class="page-header">
+    <div>
+      <h1 style="display:flex;align-items:center;gap:10px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Airport Management Forms
+      </h1>
+      <p style="color:var(--color-text-secondary);font-size:13px;margin-top:4px">Customer Service &amp; Operations — Airports Management Directorate</p>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="showPage('dept-ops')">← Airports Management</button>
+  </div>
+
+  <!-- Form category tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="ops-form-tabs">
+    <button class="btn btn-sm" style="background:var(--color-primary);color:#fff" onclick="opsShowTab('excursion',this)">Excursion Request</button>
+    <button class="btn btn-ghost btn-sm" onclick="opsShowTab('lostandfound',this)">Lost &amp; Found</button>
+    <button class="btn btn-ghost btn-sm" onclick="opsShowTab('specialassist',this)">Special Assistance</button>
+    <button class="btn btn-ghost btn-sm" onclick="opsShowTab('complaint',this)">Passenger Complaint</button>
+    <button class="btn btn-ghost btn-sm" onclick="opsShowTab('vip',this)">VIP / CIP Lounge</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start">
+
+    <!-- ── FORM PANELS ── -->
+    <div>
+
+      <!-- EXCURSION REQUEST -->
+      <div class="ops-form-panel" id="ops-panel-excursion">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title" style="margin-bottom:4px">Excursion Request Form</h2>
+            <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:20px">For passengers requesting city tours or excursions during layovers. Submit to Customer Service desk.</p>
+
+            <form id="excursion-form" onsubmit="submitOpsForm(event,'excursion')">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+                <div class="form-group">
+                  <label class="form-label">Passenger Name(s) <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="pax_name" placeholder="Full name(s)" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">No. of Passengers <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="number" name="pax_count" min="1" max="50" placeholder="1" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Inbound Flight <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="inbound_flight" placeholder="e.g. ET 304" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Arrival Date &amp; Time <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="datetime-local" name="arrival_dt" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Outbound Flight <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="outbound_flight" placeholder="e.g. ET 305" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Departure Date &amp; Time <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="datetime-local" name="depart_dt" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Excursion Type <span style="color:var(--color-danger)">*</span></label>
+                  <select class="form-control" name="excursion_type" required>
+                    <option value="">— Select type —</option>
+                    <option>City Tour (Accra)</option>
+                    <option>Cultural / Heritage Visit</option>
+                    <option>Beach Excursion</option>
+                    <option>Shopping (Accra Mall / Oxford St)</option>
+                    <option>Restaurant / Dining</option>
+                    <option>Custom / Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nationality / Passport</label>
+                  <input class="form-control" type="text" name="nationality" placeholder="e.g. French / Ghanaian">
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Contact Number (passenger)</label>
+                  <input class="form-control" type="tel" name="contact_phone" placeholder="+233 …">
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Special Requirements / Notes</label>
+                  <textarea class="form-control" name="notes" rows="3" placeholder="Dietary needs, mobility, language, other requests…"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Handled By (Staff) <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="staff_name" placeholder="Your name" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Staff Extension</label>
+                  <input class="form-control" type="text" name="staff_ext" placeholder="Ext.">
+                </div>
+
+              </div>
+              <div style="margin-top:20px;display:flex;gap:10px">
+                <button type="submit" class="btn btn-primary">Submit &amp; Save Record</button>
+                <button type="button" class="btn btn-ghost" onclick="window.print()">Print Form</button>
+                <button type="reset" class="btn btn-ghost" style="margin-left:auto;color:var(--color-text-secondary)">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOST & FOUND -->
+      <div class="ops-form-panel" id="ops-panel-lostandfound" style="display:none">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title" style="margin-bottom:4px">Lost &amp; Found Report</h2>
+            <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:20px">Record items found at the terminal or reported missing by passengers.</p>
+            <form id="lostandfound-form" onsubmit="submitOpsForm(event,'lostandfound')">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="form-group">
+                  <label class="form-label">Report Type <span style="color:var(--color-danger)">*</span></label>
+                  <select class="form-control" name="report_type" required>
+                    <option value="">— Select —</option>
+                    <option>Item Found</option>
+                    <option>Item Lost (Reported)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date &amp; Time Found / Reported <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="datetime-local" name="report_dt" required>
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Item Description <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="item_desc" placeholder="Colour, brand, contents, distinguishing marks…" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Location Found / Last Seen</label>
+                  <input class="form-control" type="text" name="location" placeholder="e.g. Gate 3, Arrivals Hall, Carousel 2">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Passenger / Owner Name</label>
+                  <input class="form-control" type="text" name="owner_name" placeholder="If known">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Contact Number</label>
+                  <input class="form-control" type="tel" name="owner_phone" placeholder="+233 …">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Flight Number</label>
+                  <input class="form-control" type="text" name="flight_no" placeholder="e.g. KL 592">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Staff Name <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="staff_name" required placeholder="Your name">
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Additional Notes</label>
+                  <textarea class="form-control" name="notes" rows="2"></textarea>
+                </div>
+              </div>
+              <div style="margin-top:20px;display:flex;gap:10px">
+                <button type="submit" class="btn btn-primary">Submit &amp; Save Record</button>
+                <button type="button" class="btn btn-ghost" onclick="window.print()">Print</button>
+                <button type="reset" class="btn btn-ghost" style="margin-left:auto;color:var(--color-text-secondary)">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPECIAL ASSISTANCE -->
+      <div class="ops-form-panel" id="ops-panel-specialassist" style="display:none">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title" style="margin-bottom:4px">Special Assistance Request</h2>
+            <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:20px">Wheelchair, WCHR, WCHS, WCHC, unaccompanied minors, or other passenger assistance.</p>
+            <form id="specialassist-form" onsubmit="submitOpsForm(event,'specialassist')">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="form-group">
+                  <label class="form-label">Passenger Name <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="pax_name" required placeholder="Full name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Assistance Code <span style="color:var(--color-danger)">*</span></label>
+                  <select class="form-control" name="assist_code" required>
+                    <option value="">— Select —</option>
+                    <option>WCHR — Wheelchair to/from aircraft</option>
+                    <option>WCHS — Wheelchair up/down steps</option>
+                    <option>WCHC — Completely immobile</option>
+                    <option>BLND — Visually impaired</option>
+                    <option>DEAF — Hearing impaired</option>
+                    <option>UM — Unaccompanied Minor</option>
+                    <option>MAAS — Meet &amp; Assist</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Flight Number <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="flight_no" required placeholder="e.g. QR 1376">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Flight Date &amp; Time <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="datetime-local" name="flight_dt" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Direction</label>
+                  <select class="form-control" name="direction">
+                    <option>Arrival</option>
+                    <option>Departure</option>
+                    <option>Transit</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Escort Required?</label>
+                  <select class="form-control" name="escort">
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Medical / Special Notes</label>
+                  <textarea class="form-control" name="notes" rows="2" placeholder="Medical equipment, allergy, language, guardian contact…"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Staff Name <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="staff_name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Airline Notified?</label>
+                  <select class="form-control" name="airline_notified">
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top:20px;display:flex;gap:10px">
+                <button type="submit" class="btn btn-primary">Submit &amp; Save Record</button>
+                <button type="button" class="btn btn-ghost" onclick="window.print()">Print</button>
+                <button type="reset" class="btn btn-ghost" style="margin-left:auto;color:var(--color-text-secondary)">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASSENGER COMPLAINT -->
+      <div class="ops-form-panel" id="ops-panel-complaint" style="display:none">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title" style="margin-bottom:4px">Passenger Complaint / Feedback Form</h2>
+            <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:20px">Record passenger complaints or compliments for customer service tracking and resolution.</p>
+            <form id="complaint-form" onsubmit="submitOpsForm(event,'complaint')">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="form-group">
+                  <label class="form-label">Type <span style="color:var(--color-danger)">*</span></label>
+                  <select class="form-control" name="feedback_type" required>
+                    <option value="">— Select —</option>
+                    <option>Complaint</option>
+                    <option>Compliment</option>
+                    <option>Suggestion</option>
+                    <option>Enquiry</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date &amp; Time <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="datetime-local" name="incident_dt" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Passenger Name</label>
+                  <input class="form-control" type="text" name="pax_name" placeholder="If willing to provide">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Contact (Email / Phone)</label>
+                  <input class="form-control" type="text" name="pax_contact" placeholder="For follow-up">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Flight / Airline Involved</label>
+                  <input class="form-control" type="text" name="flight_no" placeholder="e.g. BA 76">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Area / Location</label>
+                  <select class="form-control" name="area">
+                    <option value="">— Select —</option>
+                    <option>Check-in / Ticketing</option>
+                    <option>Security Screening</option>
+                    <option>Departure Lounge</option>
+                    <option>Arrivals Hall</option>
+                    <option>Baggage Reclaim</option>
+                    <option>Immigration / Customs</option>
+                    <option>Parking / Ground Transport</option>
+                    <option>Retail / Food &amp; Beverage</option>
+                    <option>Toilets / Facilities</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Details <span style="color:var(--color-danger)">*</span></label>
+                  <textarea class="form-control" name="details" rows="4" required placeholder="Describe the incident or feedback in detail…"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Action Taken</label>
+                  <input class="form-control" type="text" name="action_taken" placeholder="Immediate resolution steps">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Staff Name <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="staff_name" required placeholder="Your name">
+                </div>
+              </div>
+              <div style="margin-top:20px;display:flex;gap:10px">
+                <button type="submit" class="btn btn-primary">Submit &amp; Save Record</button>
+                <button type="button" class="btn btn-ghost" onclick="window.print()">Print</button>
+                <button type="reset" class="btn btn-ghost" style="margin-left:auto;color:var(--color-text-secondary)">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIP / CIP LOUNGE -->
+      <div class="ops-form-panel" id="ops-panel-vip" style="display:none">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title" style="margin-bottom:4px">VIP / CIP Lounge Request</h2>
+            <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:20px">Request lounge access for VIP, CIP, or diplomatic passengers.</p>
+            <form id="vip-form" onsubmit="submitOpsForm(event,'vip')">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="form-group">
+                  <label class="form-label">Passenger / Guest Name <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="pax_name" required placeholder="Full name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Category <span style="color:var(--color-danger)">*</span></label>
+                  <select class="form-control" name="vip_category" required>
+                    <option value="">— Select —</option>
+                    <option>VIP — Government Official</option>
+                    <option>VIP — Corporate Executive</option>
+                    <option>CIP — Commercially Important Person</option>
+                    <option>Diplomatic / Consular</option>
+                    <option>Airline Staff (Duty)</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Flight Number <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="flight_no" required placeholder="e.g. EK 0025">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date &amp; Time <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="datetime-local" name="flight_dt" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Direction</label>
+                  <select class="form-control" name="direction">
+                    <option>Departure</option>
+                    <option>Arrival</option>
+                    <option>Transit</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">No. of Guests</label>
+                  <input class="form-control" type="number" name="guest_count" min="1" max="20" placeholder="1">
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Services Required</label>
+                  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="svc_escort"> <span>Escort to/from aircraft</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="svc_buggy"> <span>Buggy / Vehicle</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="svc_catering"> <span>Catering</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="svc_protocol"> <span>Protocol</span></label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" name="svc_immigration"> <span>Immigration facilitation</span></label>
+                  </div>
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Additional Notes</label>
+                  <textarea class="form-control" name="notes" rows="2" placeholder="Security detail, dietary, protocol instructions…"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Requested By (Staff) <span style="color:var(--color-danger)">*</span></label>
+                  <input class="form-control" type="text" name="staff_name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Authorised By</label>
+                  <input class="form-control" type="text" name="authorised_by" placeholder="Supervisor / Manager">
+                </div>
+              </div>
+              <div style="margin-top:20px;display:flex;gap:10px">
+                <button type="submit" class="btn btn-primary">Submit &amp; Save Record</button>
+                <button type="button" class="btn btn-ghost" onclick="window.print()">Print</button>
+                <button type="reset" class="btn btn-ghost" style="margin-left:auto;color:var(--color-text-secondary)">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /form panels -->
+
+    <!-- ── SIDEBAR: records ── -->
+    <div>
+      <div class="card" style="position:sticky;top:80px">
+        <div class="card-body">
+          <h3 class="card-title" style="margin-bottom:12px">Recent Submissions</h3>
+          <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">Saved this session (localStorage)</p>
+          <div id="ops-form-log" style="font-size:12px;color:var(--color-text-secondary)">No submissions yet.</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-body">
+          <h3 class="card-title" style="margin-bottom:10px">Quick Info</h3>
+          <div style="font-size:12px;line-height:1.8;color:var(--color-text-secondary)">
+            <div><strong style="color:var(--color-text)">Customer Service</strong></div>
+            <div>Manager · Ext. 3383</div>
+            <div style="margin-top:8px"><strong style="color:var(--color-text)">Terminal Operations</strong></div>
+            <div>Supervisors · Ext. 2577</div>
+            <div style="margin-top:8px"><strong style="color:var(--color-text)">Head KIA</strong></div>
+            <div>Ext. 6142</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</div>
+
 <!-- AIRPORTS MANAGEMENT ──────────────────────────────────────────── -->
 <div id="page-dept-ops" class="page" role="main">
   <div class="dept-hero"><div class="dept-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div><div class="dept-hero-text"><p class="dept-hero-label">Department</p><h1 class="dept-hero-title">Airports Management</h1><p class="dept-hero-desc">Manages all airport operational activities including terminal operations, airside operations, RFFS, customer service, and regional airports.</p></div><div class="dept-hero-contact"><div class="dept-hero-ext">2476</div><div class="dept-hero-ext-label">Group Executive</div></div></div>
@@ -4220,11 +4648,21 @@
       <div class="dept-section-card"><div class="dept-section-name">Safety &amp; Environment</div><div class="dept-section-ext">Safety Manager · Ext. 6161</div></div>
       <div class="dept-section-card"><div class="dept-section-name">Regional Airports</div><div class="dept-section-ext">Kumasi 6200 · Sunyani 6300 · Ho 6400</div></div>
     </div></div></div>
-    <div class="card"><div class="card-body"><h3 class="card-title" style="margin-bottom:12px">Key Contacts</h3><div class="divider"></div>
-      <div class="contact-item" style="padding:10px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#fef9ec;color:#92400e">GE</div><div class="contact-info"><div class="contact-name">Group Executive (AM)</div><a href="tel:2476" class="contact-detail">Ext. 2476</a></div></div>
-      <div class="contact-item" style="padding:10px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#fef9ec;color:#92400e">EA</div><div class="contact-info"><div class="contact-name">Executive Assistant</div><a href="tel:6180" class="contact-detail">Ext. 6180</a></div></div>
-      <div class="contact-item" style="padding:10px 0"><div class="contact-avatar" style="background:#fef9ec;color:#92400e">KA</div><div class="contact-info"><div class="contact-name">Head KIA</div><a href="tel:6142" class="contact-detail">Ext. 6142</a></div></div>
-    </div></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card"><div class="card-body"><h3 class="card-title" style="margin-bottom:12px">Key Contacts</h3><div class="divider"></div>
+        <div class="contact-item" style="padding:10px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#fef9ec;color:#92400e">GE</div><div class="contact-info"><div class="contact-name">Group Executive (AM)</div><a href="tel:2476" class="contact-detail">Ext. 2476</a></div></div>
+        <div class="contact-item" style="padding:10px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#fef9ec;color:#92400e">EA</div><div class="contact-info"><div class="contact-name">Executive Assistant</div><a href="tel:6180" class="contact-detail">Ext. 6180</a></div></div>
+        <div class="contact-item" style="padding:10px 0"><div class="contact-avatar" style="background:#fef9ec;color:#92400e">KA</div><div class="contact-info"><div class="contact-name">Head KIA</div><a href="tel:6142" class="contact-detail">Ext. 6142</a></div></div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <h3 class="card-title" style="margin-bottom:10px">Customer Service Forms</h3>
+        <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px">Excursion requests, lost &amp; found, special assistance, complaints, VIP lounge.</p>
+        <button class="btn btn-primary btn-sm" style="width:100%" onclick="showPage('ops-forms')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Open Forms
+        </button>
+      </div></div>
+    </div>
   </div>
 </div>
 
