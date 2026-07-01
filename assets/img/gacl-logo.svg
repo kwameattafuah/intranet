@@ -1,0 +1,17 @@
+<svg viewBox="0 0 380 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ghana Airports Company Limited">
+  <title>Ghana Airports Company Limited</title>
+  <g transform="translate(142,8)" fill="#1a3a6e">
+    <ellipse cx="0" cy="26" rx="6" ry="8"/>
+    <path d="M-5,22 C-14,14 -28,8 -44,5 C-34,12 -22,18 -12,24Z"/>
+    <path d="M-6,26 C-18,20 -34,16 -52,16 C-40,20 -26,24 -14,28Z"/>
+    <path d="M-5,30 C-16,28 -32,28 -48,30 C-36,32 -22,33 -12,32Z"/>
+    <path d="M5,22 C14,14 28,8 44,5 C34,12 22,18 12,24Z"/>
+    <path d="M6,26 C18,20 34,16 52,16 C40,20 26,24 14,28Z"/>
+    <path d="M5,30 C16,28 32,28 48,30 C36,32 22,33 12,32Z"/>
+    <path d="M-5,18 C-10,10 -20,4 -32,0 C-24,8 -16,14 -8,20Z"/>
+    <path d="M5,18 C10,10 20,4 32,0 C24,8 16,14 8,20Z"/>
+  </g>
+  <text x="30" y="82" font-size="44" font-weight="700" fill="#1a3a6e" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-1">ghana</text>
+  <text x="183" y="82" font-size="44" font-weight="700" fill="#8dc440" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-1">airports</text>
+  <text x="105" y="99" font-size="11" fill="#1a3a6e" font-family="Arial,sans-serif" letter-spacing="3.5">COMPANY LIMITED</text>
+</svg>

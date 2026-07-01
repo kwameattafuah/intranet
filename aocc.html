@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AOCC — Airport Operations Call Centre · GACL</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b1220;
+  --bg2:      #111827;
+  --bg3:      #1f2937;
+  --surface:  #1e2a3a;
+  --surface2: #243447;
+  --border:   rgba(255,255,255,0.08);
+  --border2:  rgba(255,255,255,0.14);
+  --text:     #f1f5f9;
+  --text2:    #94a3b8;
+  --text3:    #475569;
+  --gold:     #f0a500;
+  --navy:     #1a3a5c;
+  --em:  #ef4444; --em-bg: rgba(239,68,68,0.15);
+  --hi:  #f59e0b; --hi-bg: rgba(245,158,11,0.15);
+  --me:  #3b82f6; --me-bg: rgba(59,130,246,0.15);
+  --lo:  #22c55e; --lo-bg: rgba(34,197,94,0.15);
+  --r:   8px;  --r-lg: 12px;
+  --font:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* ── LOGIN ── */
+#login-screen{display:none;min-height:100vh;align-items:center;justify-content:center;background:radial-gradient(ellipse at 30% 30%,rgba(26,58,92,0.4),transparent 60%),var(--bg);flex-direction:column;gap:24px}
+#login-screen.on{display:flex}
+.login-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);padding:40px 36px;width:360px;box-shadow:0 24px 60px rgba(0,0,0,0.5)}
+.login-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.login-badge{width:40px;height:40px;background:var(--gold);border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:13px;color:#0b1220;letter-spacing:.5px}
+.login-title{font-size:18px;font-weight:700}
+.login-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.lf{margin-bottom:14px}
+.lf label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.lf input{width:100%;padding:10px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border .15s}
+.lf input:focus{border-color:var(--gold)}
+.login-err{background:var(--em-bg);color:var(--em);border-radius:6px;padding:8px 12px;font-size:12px;margin-bottom:12px;display:none}
+.login-err.on{display:block}
+.aocc-badge{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:11px}
+.aocc-badge span{width:8px;height:8px;border-radius:50%;background:var(--lo);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:50}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;cursor:pointer}
+.tb-badge{width:28px;height:28px;background:var(--gold);border-radius:7px;display:grid;place-items:center;font-size:11px;font-weight:800;color:#0b1220}
+.tb-sep{width:1px;height:20px;background:var(--border)}
+.tb-live{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--lo);font-weight:600}
+.tb-live-dot{width:7px;height:7px;border-radius:50%;background:var(--lo);animation:pulse 2s infinite}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-clock{font-family:var(--mono);font-size:13px;color:var(--text2)}
+.tb-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .15s}
+.tb-btn:hover{background:rgba(255,255,255,0.12);color:var(--text)}
+.tb-user{display:flex;align-items:center;gap:8px}
+.tb-av{width:28px;height:28px;border-radius:50%;background:var(--navy);border:1.5px solid var(--border2);display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--gold)}
+
+/* ── LAYOUT ── */
+.app{display:flex;height:calc(100vh - 52px)}
+
+/* ── SIDEBAR ── */
+.sidebar{width:200px;background:var(--surface);border-right:1px solid var(--border);padding:16px 10px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s;border:none;background:transparent;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:var(--text)}
+.nav-item.active{background:rgba(240,165,0,0.15);color:var(--gold)}
+.nav-item svg{width:16px;height:16px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--em);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+.nav-section{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);padding:12px 12px 4px;margin-top:4px}
+.agent-status{margin-top:auto;padding:10px 12px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2)}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.available{background:var(--lo)}
+.status-dot.busy{background:var(--em)}
+.status-dot.break{background:var(--hi)}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;padding:20px}
+
+/* ── PAGE ── */
+.page{display:none}
+.page.on{display:block}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.stat-em::before{background:var(--em)}
+.stat-hi::before{background:var(--hi)}
+.stat-me::before{background:var(--me)}
+.stat-lo::before{background:var(--lo)}
+.stat-val{font-size:32px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:4px}
+.stat-em .stat-val{color:var(--em)}
+.stat-hi .stat-val{color:var(--hi)}
+.stat-me .stat-val{color:var(--me)}
+.stat-lo .stat-val{color:var(--lo)}
+.stat-label{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-title{font-size:13px;font-weight:700;color:var(--text)}
+.card-body{padding:16px 18px}
+
+/* ── TICKET ROW ── */
+.tkt-table{width:100%;border-collapse:collapse}
+.tkt-table th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);padding:8px 14px;border-bottom:1px solid var(--border)}
+.tkt-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;font-size:13px}
+.tkt-table tr:last-child td{border-bottom:none}
+.tkt-table tr:hover td{background:rgba(255,255,255,0.03);cursor:pointer}
+.tkt-id{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--gold)}
+.tkt-title{font-weight:500}
+.tkt-sub{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* ── PRIORITY BADGE ── */
+.pri{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.pri-em{background:var(--em-bg);color:var(--em)}
+.pri-hi{background:var(--hi-bg);color:var(--hi)}
+.pri-me{background:var(--me-bg);color:var(--me)}
+.pri-lo{background:var(--lo-bg);color:var(--lo)}
+.pri-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* ── STATUS BADGE ── */
+.sta{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.sta-open{background:rgba(239,68,68,0.15);color:#ef4444}
+.sta-prog{background:rgba(245,158,11,0.15);color:#f59e0b}
+.sta-esc{background:rgba(168,85,247,0.15);color:#a855f7}
+.sta-res{background:rgba(34,197,94,0.15);color:#22c55e}
+.sta-cls{background:rgba(100,116,139,0.15);color:#94a3b8}
+
+/* ── FORMS ── */
+.form-row{display:grid;gap:14px;margin-bottom:16px}
+.form-row-2{grid-template-columns:1fr 1fr}
+.form-row-3{grid-template-columns:1fr 1fr 1fr}
+.fl label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.fl input,.fl select,.fl textarea{width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:border .15s}
+.fl input:focus,.fl select:focus,.fl textarea:focus{border-color:var(--gold)}
+.fl select option{background:var(--bg2)}
+.fl textarea{resize:vertical;min-height:80px}
+.fl input[readonly]{opacity:.6;cursor:default}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--r);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:rgba(255,255,255,0.06);color:var(--text);transition:all .15s}
+.btn:hover{background:rgba(255,255,255,0.12)}
+.btn-gold{background:var(--gold);color:#0b1220;border-color:var(--gold)}.btn-gold:hover{background:#e09400}
+.btn-red{background:var(--em-bg);color:var(--em);border-color:rgba(239,68,68,0.3)}.btn-red:hover{background:rgba(239,68,68,0.25)}
+.btn-purple{background:rgba(168,85,247,0.15);color:#a855f7;border-color:rgba(168,85,247,0.3)}
+.btn-green{background:var(--lo-bg);color:var(--lo);border-color:rgba(34,197,94,0.3)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-full{width:100%;justify-content:center}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ── TICKET DETAIL ── */
+.tkt-detail{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:flex-start;justify-content:flex-end}
+.tkt-detail.on{display:flex}
+.tkt-panel{width:520px;height:100vh;background:var(--bg2);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.tkt-panel-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2)}
+.tkt-panel-body{padding:20px;flex:1}
+.log-entry{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:12px}
+.log-entry:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;border-radius:50%;background:var(--me);flex-shrink:0;margin-top:5px}
+.log-time{font-size:11px;font-family:var(--mono);color:var(--text3);white-space:nowrap}
+.log-text{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* ── AGENTS ── */
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.agent-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.agent-av{width:36px;height:36px;border-radius:50%;background:var(--navy);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--gold);flex-shrink:0;border:2px solid}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-bar select,.filter-bar input{padding:7px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:12px;outline:none}
+.filter-bar select option{background:var(--bg2)}
+
+/* ── NEW TICKET MODAL ── */
+.modal-bg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-lg);padding:28px;width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+
+/* ── REPORTS ── */
+.rpt-bar{display:flex;align-items:flex-end;gap:3px;height:60px}
+.rpt-col{flex:1;background:var(--me-bg);border-radius:3px 3px 0 0;transition:height .3s;cursor:pointer;position:relative}
+.rpt-col:hover{background:rgba(59,130,246,0.3)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:10px 18px;border-radius:var(--r);font-size:13px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,.4);transform:translateY(60px);opacity:0;transition:all .25s;z-index:9999;pointer-events:none;display:flex;align-items:center;gap:8px}
+.toast.on{transform:translateY(0);opacity:1}
+
+/* ── DIVIDER ── */
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.sidebar{display:none}.stats-row{grid-template-columns:1fr 1fr}}
+@media print{.topbar,.sidebar,.tkt-detail,.modal-bg,.toast{display:none!important}.main{padding:0}}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen" class="on">
+  <div class="login-card">
+    <div class="login-brand" style="flex-direction:column;align-items:flex-start;gap:14px">
+      <svg viewBox="0 0 170 40" height="32" xmlns="http://www.w3.org/2000/svg" aria-label="Ghana Airports Company Limited">
+        <g transform="translate(20,2)" fill="#1a3a6e">
+          <ellipse cx="0" cy="14" rx="3" ry="4"/>
+          <path d="M-3,11 C-8,7 -14,4 -22,3 C-17,6 -11,9 -6,12Z"/>
+          <path d="M-3,14 C-10,11 -18,9 -26,9 C-20,11 -13,13 -7,14Z"/>
+          <path d="M-3,17 C-9,16 -16,16 -24,17 C-18,18 -11,18 -6,17Z"/>
+          <path d="M3,11 C8,7 14,4 22,3 C17,6 11,9 6,12Z"/>
+          <path d="M3,14 C10,11 18,9 26,9 C20,11 13,13 7,14Z"/>
+          <path d="M3,17 C9,16 16,16 24,17 C18,18 11,18 6,17Z"/>
+          <path d="M-3,8 C-6,4 -11,1 -17,0 C-13,4 -8,7 -4,10Z"/>
+          <path d="M3,8 C6,4 11,1 17,0 C13,4 8,7 4,10Z"/>
+        </g>
+        <text x="48" y="24" font-size="18" font-weight="700" fill="#1a3a6e" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">ghana</text>
+        <text x="107" y="24" font-size="18" font-weight="700" fill="#8dc440" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">airports</text>
+        <text x="48" y="34" font-size="5.5" fill="#1a3a6e" font-family="Arial,sans-serif" letter-spacing="1.8">COMPANY LIMITED</text>
+      </svg>
+      <div>
+        <div class="login-title">Airport Operations Call Centre</div>
+        <div class="login-sub" style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#f0a500;display:inline-block"></span> AOCC · 24-Hour Operations</div>
+      </div>
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <div class="lf"><label>Username</label><input id="l-user" type="text" placeholder="Enter username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="lf"><label>Password</label><input id="l-pass" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-gold btn-full" style="margin-bottom:16px" onclick="doLogin()">Sign in →</button>
+    <div class="aocc-badge"><span></span> 24-Hour Operations · Accra International Airport</div>
+  </div>
+</div>
+
+<!-- ── TOPBAR ── -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="tb-left">
+    <div class="tb-brand" onclick="goPage('dashboard')" style="gap:12px">
+      <svg viewBox="0 0 170 40" height="30" xmlns="http://www.w3.org/2000/svg" aria-label="Ghana Airports Company Limited" style="flex-shrink:0">
+        <g transform="translate(20,2)" fill="#1a3a6e">
+          <ellipse cx="0" cy="14" rx="3" ry="4"/>
+          <path d="M-3,11 C-8,7 -14,4 -22,3 C-17,6 -11,9 -6,12Z"/>
+          <path d="M-3,14 C-10,11 -18,9 -26,9 C-20,11 -13,13 -7,14Z"/>
+          <path d="M-3,17 C-9,16 -16,16 -24,17 C-18,18 -11,18 -6,17Z"/>
+          <path d="M3,11 C8,7 14,4 22,3 C17,6 11,9 6,12Z"/>
+          <path d="M3,14 C10,11 18,9 26,9 C20,11 13,13 7,14Z"/>
+          <path d="M3,17 C9,16 16,16 24,17 C18,18 11,18 6,17Z"/>
+          <path d="M-3,8 C-6,4 -11,1 -17,0 C-13,4 -8,7 -4,10Z"/>
+          <path d="M3,8 C6,4 11,1 17,0 C13,4 8,7 4,10Z"/>
+        </g>
+        <text x="48" y="24" font-size="18" font-weight="700" fill="#1a3a6e" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">ghana</text>
+        <text x="107" y="24" font-size="18" font-weight="700" fill="#8dc440" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">airports</text>
+        <text x="48" y="34" font-size="5.5" fill="#1a3a6e" font-family="Arial,sans-serif" letter-spacing="1.8">COMPANY LIMITED</text>
+      </svg>
+      <div class="tb-sep" style="background:rgba(0,0,0,.15)"></div>
+      <span style="font-size:12px;font-weight:700;color:#1a3a6e">AOCC</span>
+    </div>
+    <div class="tb-sep"></div>
+    <div class="tb-live"><div class="tb-live-dot"></div> LIVE</div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-clock" id="tb-clock">--:--:--</div>
+    <button class="tb-btn btn-gold" style="background:var(--gold);color:#0b1220;border-color:var(--gold);font-weight:700" onclick="openNewTicket()">+ New Ticket</button>
+    <div class="tb-user">
+      <div class="tb-av" id="tb-av">?</div>
+      <span style="font-size:12px;color:var(--text2)" id="tb-name"></span>
+      <button class="tb-btn" onclick="doLogout()">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div class="app" id="app" style="display:none">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" aria-label="AOCC Navigation">
+    <button class="nav-item active" onclick="goPage('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+      <span class="nav-badge" id="badge-emergency" style="display:none">0</span>
+    </button>
+    <button class="nav-item" onclick="goPage('tickets',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Ticket Queue
+      <span class="nav-badge" id="badge-open" style="background:var(--me)">0</span>
+    </button>
+    <button class="nav-item" onclick="openNewTicket()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Ticket
+    </button>
+    <span class="nav-section">Coordination</span>
+    <button class="nav-item" onclick="goPage('agents',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Agents
+    </button>
+    <button class="nav-item" onclick="goPage('contacts',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.54 3.17 2 2 0 0 1 3.52 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 5.99 5.99l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Quick Contacts
+    </button>
+    <span class="nav-section">Management</span>
+    <button class="nav-item" id="nav-reports" onclick="goPage('reports',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Reports
+    </button>
+    <button class="nav-item" id="nav-admin" onclick="goPage('admin',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M12 2v2M4.93 4.93l1.41 1.41M2 12h2M4.93 19.07l1.41-1.41M12 22v-2M19.07 19.07l-1.41-1.41M22 12h-2"/></svg>
+      Admin
+    </button>
+
+    <!-- Agent status -->
+    <div class="agent-status">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:600;color:var(--text2)">My Status</span>
+        <select id="my-status" onchange="updateMyStatus(this.value)" style="background:transparent;border:none;color:var(--text);font-size:11px;font-weight:600;outline:none;cursor:pointer">
+          <option value="available">🟢 Available</option>
+          <option value="busy">🔴 On Call</option>
+          <option value="break">🟡 Break</option>
+        </select>
+      </div>
+      <div style="font-size:11px;color:var(--text3)" id="agent-shift-info">Shift: Day · 08:00–16:00</div>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="main">
+
+    <!-- ═══════════ DASHBOARD ═══════════ -->
+    <div id="page-dashboard" class="page on">
+      <!-- Stats -->
+      <div class="stats-row" id="dash-stats"></div>
+
+      <!-- Two-column layout -->
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:16px">
+        <!-- Live ticket feed -->
+        <div>
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">🔴 Active Incidents &amp; Open Tickets</span>
+              <button class="btn btn-sm" onclick="goPage('tickets',document.querySelector('.nav-item:nth-child(2)'))">View all →</button>
+            </div>
+            <table class="tkt-table" id="dash-feed">
+              <thead><tr><th>ID</th><th>Issue</th><th>Priority</th><th>Division</th><th>Status</th><th>Age</th></tr></thead>
+              <tbody id="dash-feed-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right column: agents + stats -->
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div class="card-head"><span class="card-title">👥 Agents on Duty</span></div>
+            <div class="card-body" id="dash-agents"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">📊 Today's Summary</span></div>
+            <div class="card-body" id="dash-summary"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ TICKETS ═══════════ -->
+    <div id="page-tickets" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h2 style="font-size:18px;font-weight:700">Ticket Queue</h2>
+        <button class="btn btn-gold" onclick="openNewTicket()">+ New Ticket</button>
+      </div>
+      <div class="filter-bar">
+        <select id="f-priority" onchange="renderTickets()"><option value="">All Priorities</option><option>Emergency</option><option>High</option><option>Medium</option><option>Low</option></select>
+        <select id="f-status" onchange="renderTickets()"><option value="">All Statuses</option><option>Open</option><option>In Progress</option><option>Escalated</option><option>Resolved</option><option>Closed</option></select>
+        <select id="f-division" onchange="renderTickets()"><option value="">All Divisions</option><option>AVSEC</option><option>Terminal Operations</option><option>Customer Service</option><option>RFFS</option><option>ICT</option><option>Facilities (FMD)</option><option>Corporate Comms</option><option>Airside Operations</option><option>General</option></select>
+        <input type="search" id="f-search" placeholder="Search…" oninput="renderTickets()" style="flex:1;min-width:180px">
+        <button class="btn btn-sm" onclick="renderTickets()">↻ Refresh</button>
+        <button class="btn btn-sm" onclick="exportCSV()">⬇ Export</button>
+      </div>
+      <div class="card">
+        <table class="tkt-table">
+          <thead><tr><th>ID</th><th>Issue / Caller</th><th>Category</th><th>Priority</th><th>Division</th><th>Status</th><th>Assigned</th><th>Created</th><th></th></tr></thead>
+          <tbody id="tickets-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════ AGENTS ═══════════ -->
+    <div id="page-agents" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h2 style="font-size:18px;font-weight:700">Agent Management</h2>
+        <button class="btn btn-gold" onclick="openAddAgent()">+ Add Agent</button>
+      </div>
+      <div class="agent-grid" id="agents-grid"></div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-head"><span class="card-title">Shift Handover Notes</span></div>
+        <div class="card-body">
+          <textarea class="fl" style="width:100%;padding:10px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:13px;height:100px;resize:vertical;outline:none" id="handover-notes" placeholder="Enter shift handover notes for the incoming team…"></textarea>
+          <button class="btn btn-gold btn-sm" style="margin-top:8px" onclick="saveHandover()">Save Handover Notes</button>
+          <div id="handover-saved" style="display:none;margin-top:8px;font-size:12px;color:var(--lo)">✓ Saved</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ CONTACTS ═══════════ -->
+    <div id="page-contacts" class="page">
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Quick Contacts — AOCC Directory</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px" id="contacts-grid"></div>
+    </div>
+
+    <!-- ═══════════ REPORTS ═══════════ -->
+    <div id="page-reports" class="page">
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Reports &amp; Analytics</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="card-head"><span class="card-title">Tickets by Priority (Today)</span></div>
+          <div class="card-body" id="rpt-priority"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Tickets by Division (Today)</span></div>
+          <div class="card-body" id="rpt-division"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Avg. Response Time by Priority</span></div>
+          <div class="card-body" id="rpt-sla"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Volume — Last 7 Days</span></div>
+          <div class="card-body" id="rpt-trend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ADMIN ═══════════ -->
+    <div id="page-admin" class="page">
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">Administration</h2>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><span class="card-title">Users</span><button class="btn btn-sm btn-gold" onclick="openAddAgent()">+ Add User</button></div>
+        <table class="tkt-table"><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody id="admin-users"></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">SLA Targets (minutes)</span></div>
+        <div class="card-body">
+          <div class="form-row form-row-2">
+            <div class="fl"><label>Emergency response</label><input type="number" id="sla-em" value="5" min="1"></div>
+            <div class="fl"><label>High priority</label><input type="number" id="sla-hi" value="15" min="1"></div>
+            <div class="fl"><label>Medium priority</label><input type="number" id="sla-me" value="60" min="1"></div>
+            <div class="fl"><label>Low priority</label><input type="number" id="sla-lo" value="240" min="1"></div>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="saveSLAs()">Save SLA Targets</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══════════ NEW TICKET MODAL ═══════════ -->
+<div class="modal-bg" id="new-ticket-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Ticket
+    </div>
+    <div class="form-row form-row-2">
+      <div class="fl"><label>Caller / Reporter Name</label><input type="text" id="nt-caller" placeholder="e.g. John Mensah"></div>
+      <div class="fl"><label>Contact / Extension</label><input type="text" id="nt-contact" placeholder="e.g. 0244000000 / Ext. 1234"></div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="fl"><label>Caller Type</label>
+        <select id="nt-caller-type"><option>Passenger</option><option>Staff</option><option>Agency</option><option>Contractor</option><option>Media</option><option>Anonymous</option></select>
+      </div>
+      <div class="fl"><label>Category</label>
+        <select id="nt-category"><option>Complaint</option><option>Incident</option><option>Security Alert</option><option>Emergency</option><option>Service Request</option><option>Enquiry</option><option>Maintenance Fault</option><option>Inter-Agency Coordination</option><option>Social Media Escalation</option></select>
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="fl"><label>Priority <span style="color:var(--em)">*</span></label>
+        <select id="nt-priority" style="border-color:var(--border2)">
+          <option value="Low">🟢 Low</option>
+          <option value="Medium" selected>🔵 Medium</option>
+          <option value="High">🟡 High</option>
+          <option value="Emergency">🔴 Emergency</option>
+        </select>
+      </div>
+      <div class="fl"><label>Division / Department</label>
+        <select id="nt-division">
+          <option>AVSEC</option><option>Terminal Operations</option><option>Customer Service</option>
+          <option>RFFS</option><option>ICT</option><option>Facilities (FMD)</option>
+          <option>Corporate Comms</option><option>Airside Operations</option><option>General</option>
+        </select>
+      </div>
+    </div>
+    <div class="fl" style="margin-bottom:14px"><label>Issue Title / Subject <span style="color:var(--em)">*</span></label>
+      <input type="text" id="nt-title" placeholder="Brief description of the issue…"></div>
+    <div class="fl" style="margin-bottom:14px"><label>Full Description</label>
+      <textarea id="nt-desc" placeholder="Provide full details of the issue, location, persons involved…"></textarea>
+    </div>
+    <div class="fl" style="margin-bottom:18px"><label>Assigned To</label>
+      <select id="nt-assign"><option value="">— Self (me) —</option></select>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-gold" style="flex:1;justify-content:center" onclick="createTicket()">Log Ticket</button>
+      <button class="btn" onclick="closeModal('new-ticket-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ADD AGENT MODAL ═══════════ -->
+<div class="modal-bg" id="add-agent-modal">
+  <div class="modal">
+    <div class="modal-title">Add User</div>
+    <div class="form-row form-row-2">
+      <div class="fl"><label>Full Name</label><input type="text" id="aa-name" placeholder="e.g. Ama Boateng"></div>
+      <div class="fl"><label>Username</label><input type="text" id="aa-user" placeholder="e.g. aboateng"></div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="fl"><label>Password</label><input type="password" id="aa-pass" placeholder="Min 6 characters"></div>
+      <div class="fl"><label>Role</label><select id="aa-role"><option value="agent">Agent</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-gold" style="flex:1;justify-content:center" onclick="saveAgent()">Add User</button>
+      <button class="btn" onclick="closeModal('add-agent-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TICKET DETAIL PANEL ═══════════ -->
+<div class="tkt-detail" id="tkt-detail" onclick="closeTktDetail(event)">
+  <div class="tkt-panel" onclick="event.stopPropagation()">
+    <div class="tkt-panel-head">
+      <div>
+        <div class="tkt-id" id="det-id" style="font-size:14px;margin-bottom:4px"></div>
+        <div style="font-size:15px;font-weight:700" id="det-title"></div>
+      </div>
+      <button onclick="closeTktDetail()" style="border:none;background:transparent;color:var(--text2);font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div class="tkt-panel-body">
+      <div id="det-badges" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
+      <div style="background:var(--bg2);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px" id="det-desc"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:var(--text2);margin-bottom:16px" id="det-meta"></div>
+      <hr class="divider">
+      <!-- Quick actions -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+        <button class="btn btn-sm btn-green" onclick="updateTktStatus('In Progress')">▶ In Progress</button>
+        <button class="btn btn-sm btn-purple" onclick="updateTktStatus('Escalated')">⬆ Escalate</button>
+        <button class="btn btn-sm btn-green" onclick="updateTktStatus('Resolved')">✓ Resolve</button>
+        <button class="btn btn-sm" style="background:rgba(100,116,139,0.15);color:#94a3b8" onclick="updateTktStatus('Closed')">✕ Close</button>
+      </div>
+      <!-- Add note -->
+      <div style="margin-bottom:16px">
+        <div class="fl" style="margin-bottom:8px"><label>Add Note / Update</label>
+          <textarea id="det-note" style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:13px;resize:vertical;min-height:70px;outline:none" placeholder="Add a progress note…"></textarea>
+        </div>
+        <button class="btn btn-sm btn-gold" onclick="addNote()">Add Note</button>
+      </div>
+      <hr class="divider">
+      <!-- Activity log -->
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Activity Log</div>
+      <div id="det-log"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="t-icon">✓</span> <span id="t-msg"></span></div>
+
+<script>
+/* ════════════════════════════════════════
+   AOCC — Airport Operations Call Centre
+   Ghana Airports Company Limited
+   Data: localStorage  |  Auth: role-based
+   ════════════════════════════════════════ */
+
+/* ── Domain data ── */
+const DIVISIONS = ['AVSEC','Terminal Operations','Customer Service','RFFS','ICT','Facilities (FMD)','Corporate Comms','Airside Operations','General'];
+const CATEGORIES = ['Complaint','Incident','Security Alert','Emergency','Service Request','Enquiry','Maintenance Fault','Inter-Agency Coordination','Social Media Escalation'];
+const PRIORITIES = ['Emergency','High','Medium','Low'];
+
+const QUICK_CONTACTS = [
+  { div:'AVSEC', title:'Aviation Security Operations', ext:'2334', direct:'0302550612 Ext.2334', icon:'🛡️' },
+  { div:'AVSEC', title:'AVSEC Intelligence / Investigation', ext:'2504', direct:'', icon:'🔍' },
+  { div:'AVSEC', title:'MAVSEC Secretariat', ext:'2281', direct:'', icon:'🔐' },
+  { div:'Terminal Operations', title:'Airport Operations (Head KIA)', ext:'6142', direct:'', icon:'✈️' },
+  { div:'Terminal Operations', title:"OP'S Room", ext:'2319 / 2446', direct:'', icon:'📡' },
+  { div:'Terminal Operations', title:'OCC (T3)', ext:'3519', direct:'', icon:'🖥️' },
+  { div:'Customer Service', title:'Customer Service Manager', ext:'3383', direct:'', icon:'🎧' },
+  { div:'Customer Service', title:'Customer Service (T3 Info)', ext:'3196', direct:'', icon:'ℹ️' },
+  { div:'RFFS', title:'Fire Station (Watch Room)', ext:'2505', direct:'0302953429', icon:'🚒' },
+  { div:'RFFS', title:'Chief Fire Officer', ext:'6009', direct:'', icon:'👨‍🚒' },
+  { div:'ICT', title:'ICT Help Desk', ext:'1090', direct:'', icon:'💻' },
+  { div:'ICT', title:'Network Team', ext:'1091', direct:'', icon:'🌐' },
+  { div:'Facilities (FMD)', title:'FMCC Call Centre', ext:'3401 / 3402', direct:'', icon:'🔧' },
+  { div:'Facilities (FMD)', title:'Facilities Director', ext:'2211', direct:'', icon:'🏗️' },
+  { div:'Corporate Comms', title:'Head, Corporate Communications', ext:'6111', direct:'', icon:'📢' },
+  { div:'Airside Operations', title:'Airside Operations Office', ext:'2344', direct:'', icon:'🛫' },
+  { div:'Airside Operations', title:'Safety Manager', ext:'6161', direct:'0299002206', icon:'⚠️' },
+  { div:'General', title:'GACL Main Switchboard', ext:'', direct:'030 2550612', icon:'📞' },
+  { div:'General', title:'Executive Reception', ext:'2037', direct:'', icon:'🏢' },
+];
+
+/* ── SLA targets (minutes) ── */
+let SLA = { Emergency:5, High:15, Medium:60, Low:240 };
+
+/* ── Persistence ── */
+const K = { users:'aocc_users', tickets:'aocc_tickets', handover:'aocc_handover' };
+const getData = k => { try{ return JSON.parse(localStorage.getItem(k)||'[]'); }catch{ return []; }};
+const setData = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+
+function initStorage() {
+  const users = getData(K.users);
+  if (!users.length) {
+    setData(K.users, [
+      { id:1, name:'Control Room',   username:'admin',      password:'aocc2026', role:'admin',      status:'available' },
+      { id:2, name:'Agent A. Mensah',username:'amensah',    password:'agent123', role:'agent',      status:'available' },
+      { id:3, name:'Supervisor K. Asante', username:'kasante', password:'sup123', role:'supervisor', status:'available' },
+      { id:4, name:'Agent E. Owusu', username:'eowusu',     password:'agent123', role:'agent',      status:'break' },
+    ]);
+  }
+  // Seed demo tickets if empty
+  const tickets = getData(K.tickets);
+  if (!tickets.length) {
+    const now = Date.now();
+    setData(K.tickets, [
+      createTicketObj({ title:'Unattended bag in Departures T3', category:'Security Alert', priority:'Emergency', division:'AVSEC', callerName:'Staff Report', callerType:'Staff', contact:'Ext.2446', desc:'Passenger reported unattended bag near Gate 14, T3 Departures. Exact location: by row of seats near Gate 14 toilets.', assignedTo:'Agent A. Mensah', status:'In Progress', createdAt: now - 12*60000 }),
+      createTicketObj({ title:'Escalator malfunction — Arrivals Hall', category:'Maintenance Fault', priority:'High', division:'Facilities (FMD)', callerName:'Emmanuel Kwei', callerType:'Staff', contact:'Ext.3401', desc:'Both escalators in the main arrivals hall are out of service. Passengers are complaining. Elevator capacity overwhelmed.', assignedTo:'Control Room', status:'Open', createdAt: now - 45*60000 }),
+      createTicketObj({ title:'Flight OA 221 — passenger wheelchair request not met', category:'Complaint', priority:'Medium', division:'Customer Service', callerName:'Mrs. Adwoa Amponsah', callerType:'Passenger', contact:'0244112233', desc:'Passenger booked wheelchair assistance via airline but no agent was present at gate. Passenger had to walk.', assignedTo:'Agent E. Owusu', status:'In Progress', createdAt: now - 2*3600000 }),
+      createTicketObj({ title:'Power fluctuation — Terminal 2 East Wing', category:'Incident', priority:'High', division:'Facilities (FMD)', callerName:'Night Supervisor', callerType:'Staff', contact:'Ext.2035', desc:'Lights flickering repeatedly in T2 East Wing. Backup systems not engaging. Electricals called.', assignedTo:'Control Room', status:'Escalated', createdAt: now - 3*3600000 }),
+      createTicketObj({ title:'Query: Lost passport — Ethiopian Airlines passenger', category:'Enquiry', priority:'Low', division:'Customer Service', callerName:'Dawit Haile', callerType:'Passenger', contact:'0551234567', desc:'Passenger believes he left passport on Ethiopian Airlines ET929 seat 14A. Requesting liaison with airline.', assignedTo:'Agent A. Mensah', status:'Resolved', createdAt: now - 5*3600000 }),
+    ]);
+  }
+}
+
+let _ticket_counter = 1;
+function createTicketObj({ title,category,priority,division,callerName,callerType,contact,desc,assignedTo,status,createdAt }) {
+  const id = 'AOCC-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + String(_ticket_counter++).padStart(4,'0');
+  return { id, title, category, priority, division, callerName, callerType, contact, desc, assignedTo: assignedTo||'', status: status||'Open', createdAt: createdAt||Date.now(), updatedAt: Date.now(), logs: [{ time: createdAt||Date.now(), user:'System', action:'Ticket created', note:'' }] };
+}
+
+/* ── State ── */
+let USER = null, _viewTkt = null, _tt;
+
+/* ── Helpers ── */
+const priClass = p => ({ Emergency:'pri-em', High:'pri-hi', Medium:'pri-me', Low:'pri-lo' }[p]||'pri-lo');
+const staClass  = s => ({ Open:'sta-open','In Progress':'sta-prog', Escalated:'sta-esc', Resolved:'sta-res', Closed:'sta-cls' }[s]||'sta-open');
+function fmtAge(ms) {
+  const m = Math.floor((Date.now()-ms)/60000);
+  if(m<60)  return m+'m';
+  if(m<1440)return Math.floor(m/60)+'h '+(m%60)+'m';
+  return Math.floor(m/1440)+'d';
+}
+function fmtTime(ms) { return new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
+function fmtDT(ms)   { return new Date(ms).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }
+
+/* ── Auth ── */
+function doLogin() {
+  const u = document.getElementById('l-user').value.trim().toLowerCase();
+  const p = document.getElementById('l-pass').value;
+  const user = getData(K.users).find(x => x.username===u && x.password===p);
+  const err  = document.getElementById('login-err');
+  if (!user) { err.textContent='Incorrect username or password.'; err.classList.add('on'); return; }
+  USER = user; err.classList.remove('on');
+  document.getElementById('login-screen').classList.remove('on');
+  applySession();
+}
+function doLogout() { USER=null; location.reload(); }
+
+function applySession() {
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('app').style.display='flex';
+  const initials = USER.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('tb-av').textContent = initials;
+  document.getElementById('tb-name').textContent = USER.name + ' · ' + USER.role;
+  // Hide admin/reports from agents
+  if(USER.role==='agent') {
+    document.getElementById('nav-reports').style.display='none';
+    document.getElementById('nav-admin').style.display='none';
+  }
+  populateAssignSelect();
+  startClock();
+  renderDashboard();
+  renderBadges();
+  setInterval(() => { renderDashboard(); renderBadges(); }, 30000);
+}
+
+/* ── Clock ── */
+function startClock() {
+  function tick() {
+    const now = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:'Africa/Accra'});
+    document.getElementById('tb-clock').textContent = now;
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+/* ── Navigation ── */
+function goPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('on');
+  if (btn) btn.classList.add('active');
+  if (name==='tickets')  renderTickets();
+  if (name==='agents')   renderAgents();
+  if (name==='contacts') renderContacts();
+  if (name==='reports')  renderReports();
+  if (name==='admin')    renderAdmin();
+}
+
+/* ── Badges ── */
+function renderBadges() {
+  const tkts = getData(K.tickets);
+  const em  = tkts.filter(t=>t.priority==='Emergency'&&t.status!=='Closed'&&t.status!=='Resolved').length;
+  const op  = tkts.filter(t=>t.status==='Open').length;
+  const emB = document.getElementById('badge-emergency');
+  const opB = document.getElementById('badge-open');
+  emB.textContent=em; emB.style.display=em?'':'none';
+  opB.textContent=op; opB.style.display=op?'':'none';
+}
+
+/* ── Dashboard ── */
+function renderDashboard() {
+  const tkts = getData(K.tickets);
+  const now  = Date.now();
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+
+  const open    = tkts.filter(t=>t.status==='Open').length;
+  const prog    = tkts.filter(t=>t.status==='In Progress').length;
+  const esc     = tkts.filter(t=>t.status==='Escalated').length;
+  const resToday= tkts.filter(t=>t.status==='Resolved'&&t.updatedAt>=todayStart.getTime()).length;
+
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat-card stat-em"><div class="stat-val">${open}</div><div class="stat-label">Open</div></div>
+    <div class="stat-card stat-hi"><div class="stat-val">${prog}</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card stat-me"><div class="stat-val">${esc}</div><div class="stat-label">Escalated</div></div>
+    <div class="stat-card stat-lo"><div class="stat-val">${resToday}</div><div class="stat-label">Resolved Today</div></div>`;
+
+  // Live feed — active, sorted by priority then age
+  const pOrder = {Emergency:0,High:1,Medium:2,Low:3};
+  const active = tkts.filter(t=>t.status!=='Closed').sort((a,b)=>pOrder[a.priority]-pOrder[b.priority]||a.createdAt-b.createdAt).slice(0,8);
+  document.getElementById('dash-feed-body').innerHTML = active.length
+    ? active.map(t=>`<tr onclick="openTktDetail('${t.id}')">
+        <td class="tkt-id">${t.id}</td>
+        <td><div class="tkt-title">${t.title}</div><div class="tkt-sub">${t.callerName} · ${t.division}</div></td>
+        <td><span class="pri ${priClass(t.priority)}"><span class="pri-dot"></span>${t.priority}</span></td>
+        <td style="font-size:12px;color:var(--text2)">${t.division}</td>
+        <td><span class="sta ${staClass(t.status)}">${t.status}</span></td>
+        <td style="font-size:12px;color:var(--text3);font-family:var(--mono)">${fmtAge(t.createdAt)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">No active tickets.</td></tr>';
+
+  // Agents panel
+  const users = getData(K.users);
+  document.getElementById('dash-agents').innerHTML = users.map(u => {
+    const mine = tkts.filter(t=>t.assignedTo===u.name&&t.status!=='Closed'&&t.status!=='Resolved').length;
+    const dotC = {available:'var(--lo)',busy:'var(--em)',break:'var(--hi)'}[u.status]||'var(--text3)';
+    const initials = u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);border:2px solid ${dotC};display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--gold)">${initials}</div>
+        <div><div style="font-size:12px;font-weight:600">${u.name}</div><div style="font-size:10px;color:var(--text3);text-transform:capitalize">${u.status}</div></div>
+      </div>
+      <span style="font-size:11px;font-family:var(--mono);color:${mine>0?'var(--hi)':'var(--text3)'}">${mine} active</span>
+    </div>`;
+  }).join('');
+
+  // Summary
+  const byDiv = {};
+  tkts.filter(t=>t.createdAt>=todayStart.getTime()).forEach(t=>{ byDiv[t.division]=(byDiv[t.division]||0)+1; });
+  const topDivs = Object.entries(byDiv).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('dash-summary').innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;color:var(--text2)">Total today</span><span style="font-family:var(--mono);font-size:13px;font-weight:700">${tkts.filter(t=>t.createdAt>=todayStart.getTime()).length}</span></div>
+    ${topDivs.map(([div,cnt])=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:11px;color:var(--text2)">${div}</span><span style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--me)">${cnt}</span></div>`).join('')}
+    <div style="margin-top:10px;padding:8px 10px;background:var(--bg2);border-radius:6px;font-size:11px;color:var(--text3)">SLA targets: Em 5m · Hi 15m · Me 60m · Lo 240m</div>`;
+}
+
+/* ── Ticket Queue ── */
+function renderTickets() {
+  const tkts  = getData(K.tickets);
+  const fPri  = document.getElementById('f-priority')?.value||'';
+  const fSta  = document.getElementById('f-status')?.value||'';
+  const fDiv  = document.getElementById('f-division')?.value||'';
+  const fSrch = (document.getElementById('f-search')?.value||'').toLowerCase();
+  const pOrder = {Emergency:0,High:1,Medium:2,Low:3};
+  const filtered = tkts.filter(t=>
+    (!fPri||t.priority===fPri) && (!fSta||t.status===fSta) &&
+    (!fDiv||t.division===fDiv) && (!fSrch||t.title.toLowerCase().includes(fSrch)||t.id.toLowerCase().includes(fSrch)||t.callerName.toLowerCase().includes(fSrch))
+  ).sort((a,b)=>pOrder[a.priority]-pOrder[b.priority]||a.createdAt-b.createdAt);
+
+  document.getElementById('tickets-body').innerHTML = filtered.length
+    ? filtered.map(t=>`<tr onclick="openTktDetail('${t.id}')">
+        <td class="tkt-id">${t.id}</td>
+        <td><div class="tkt-title">${t.title}</div><div class="tkt-sub">${t.callerName} (${t.callerType}) · ${t.category}</div></td>
+        <td style="font-size:12px;color:var(--text2)">${t.category}</td>
+        <td><span class="pri ${priClass(t.priority)}"><span class="pri-dot"></span>${t.priority}</span></td>
+        <td style="font-size:12px;color:var(--text2)">${t.division}</td>
+        <td><span class="sta ${staClass(t.status)}">${t.status}</span></td>
+        <td style="font-size:12px;color:var(--text2)">${t.assignedTo||'—'}</td>
+        <td style="font-size:11px;font-family:var(--mono);color:var(--text3)">${fmtDT(t.createdAt)}</td>
+        <td><button class="btn btn-sm" onclick="event.stopPropagation();openTktDetail('${t.id}')">View →</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--text3)">No tickets match the current filters.</td></tr>';
+}
+
+/* ── New Ticket ── */
+function openNewTicket() {
+  document.getElementById('new-ticket-modal').classList.add('on');
+  document.getElementById('nt-caller').focus();
+}
+
+function createTicket() {
+  const title = document.getElementById('nt-title').value.trim();
+  const caller= document.getElementById('nt-caller').value.trim();
+  if (!title) { toast('Please enter an issue title','err'); return; }
+  const tkt = createTicketObj({
+    title,
+    category:   document.getElementById('nt-category').value,
+    priority:   document.getElementById('nt-priority').value,
+    division:   document.getElementById('nt-division').value,
+    callerName: caller||'Anonymous',
+    callerType: document.getElementById('nt-caller-type').value,
+    contact:    document.getElementById('nt-contact').value,
+    desc:       document.getElementById('nt-desc').value,
+    assignedTo: document.getElementById('nt-assign').value || USER.name,
+    status:     'Open',
+  });
+  _ticket_counter++;
+  // Give ticket a proper sequential ID
+  const tkts = getData(K.tickets);
+  const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const todayTickets = tkts.filter(t=>t.id.includes(today));
+  tkt.id = 'AOCC-' + today + '-' + String(todayTickets.length+1).padStart(4,'0');
+  tkts.unshift(tkt);
+  setData(K.tickets, tkts);
+  closeModal('new-ticket-modal');
+  // Reset form
+  ['nt-caller','nt-contact','nt-title','nt-desc'].forEach(id=>{ const el=document.getElementById(id); if(el)el.value=''; });
+  document.getElementById('nt-priority').value='Medium';
+  toast('Ticket ' + tkt.id + ' created ✓');
+  renderDashboard(); renderBadges();
+  if (document.getElementById('page-tickets').classList.contains('on')) renderTickets();
+  // If emergency, open detail immediately
+  if (tkt.priority==='Emergency') openTktDetail(tkt.id);
+}
+
+/* ── Ticket Detail ── */
+function openTktDetail(id) {
+  const tkts = getData(K.tickets);
+  const tkt  = tkts.find(t=>t.id===id);
+  if (!tkt) return;
+  _viewTkt = tkt;
+  document.getElementById('det-id').textContent    = tkt.id;
+  document.getElementById('det-title').textContent = tkt.title;
+  document.getElementById('det-desc').textContent  = tkt.desc || '(No description)';
+  document.getElementById('det-badges').innerHTML  =
+    `<span class="pri ${priClass(tkt.priority)}"><span class="pri-dot"></span>${tkt.priority}</span>` +
+    `<span class="sta ${staClass(tkt.status)}">${tkt.status}</span>` +
+    `<span style="font-size:11px;background:var(--bg2);padding:2px 8px;border-radius:4px;color:var(--text2)">${tkt.division}</span>` +
+    `<span style="font-size:11px;background:var(--bg2);padding:2px 8px;border-radius:4px;color:var(--text2)">${tkt.category}</span>`;
+  document.getElementById('det-meta').innerHTML =
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:3px">Caller</div><div>${tkt.callerName} (${tkt.callerType})</div></div>` +
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:3px">Contact</div><div>${tkt.contact||'—'}</div></div>` +
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:3px">Assigned To</div><div>${tkt.assignedTo||'—'}</div></div>` +
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:3px">Created</div><div>${fmtDT(tkt.createdAt)}</div></div>`;
+  document.getElementById('det-log').innerHTML = (tkt.logs||[]).slice().reverse().map(l=>
+    `<div class="log-entry">
+      <div class="log-dot"></div>
+      <div style="flex:1">
+        <div style="display:flex;gap:8px;margin-bottom:3px"><span style="font-size:11px;font-weight:600;color:var(--text)">${l.action}</span><span class="log-time">${fmtDT(l.time)}</span></div>
+        <div class="log-text">${l.user}${l.note?' — '+l.note:''}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('det-note').value='';
+  document.getElementById('tkt-detail').classList.add('on');
+}
+
+function closeTktDetail(e) {
+  if (!e||e.target===document.getElementById('tkt-detail')) {
+    document.getElementById('tkt-detail').classList.remove('on');
+    _viewTkt=null;
+  }
+}
+
+function updateTktStatus(status) {
+  if (!_viewTkt) return;
+  const tkts = getData(K.tickets);
+  const tkt  = tkts.find(t=>t.id===_viewTkt.id);
+  if (!tkt) return;
+  tkt.status = status; tkt.updatedAt = Date.now();
+  tkt.logs.push({ time:Date.now(), user:USER.name, action:'Status changed to '+status, note:'' });
+  setData(K.tickets, tkts);
+  _viewTkt = tkt;
+  openTktDetail(tkt.id);
+  renderDashboard(); renderBadges();
+  if (document.getElementById('page-tickets').classList.contains('on')) renderTickets();
+  toast('Status updated to ' + status);
+}
+
+function addNote() {
+  const note = document.getElementById('det-note').value.trim();
+  if (!note||!_viewTkt) return;
+  const tkts = getData(K.tickets);
+  const tkt  = tkts.find(t=>t.id===_viewTkt.id);
+  if (!tkt) return;
+  tkt.logs.push({ time:Date.now(), user:USER.name, action:'Note added', note });
+  tkt.updatedAt=Date.now();
+  setData(K.tickets, tkts);
+  _viewTkt=tkt;
+  openTktDetail(tkt.id);
+  toast('Note added ✓');
+}
+
+/* ── Agents ── */
+function renderAgents() {
+  const users  = getData(K.users);
+  const tkts   = getData(K.tickets);
+  const dotC   = s => ({available:'var(--lo)',busy:'var(--em)',break:'var(--hi)'}[s]||'var(--text3)');
+  document.getElementById('agents-grid').innerHTML = users.map(u => {
+    const mine   = tkts.filter(t=>t.assignedTo===u.name&&t.status!=='Closed'&&t.status!=='Resolved').length;
+    const initials = u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="agent-card">
+      <div class="agent-av" style="border-color:${dotC(u.status)}">${initials}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${u.name}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">${u.role} · ${u.username}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+          <div class="status-dot ${u.status}"></div>
+          <span style="font-size:11px;color:var(--text2);text-transform:capitalize">${u.status}</span>
+          ${mine>0?`<span style="font-size:10px;background:var(--hi-bg);color:var(--hi);padding:1px 6px;border-radius:10px;margin-left:4px">${mine} active</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('handover-notes').value = localStorage.getItem(K.handover)||'';
+}
+
+function saveHandover() {
+  localStorage.setItem(K.handover, document.getElementById('handover-notes').value);
+  const el = document.getElementById('handover-saved');
+  el.style.display='block'; setTimeout(()=>el.style.display='none', 2000);
+}
+
+function updateMyStatus(val) {
+  const users = getData(K.users);
+  const u = users.find(x=>x.id===USER.id);
+  if (u) { u.status=val; setData(K.users, users); USER.status=val; }
+}
+
+function openAddAgent() { document.getElementById('add-agent-modal').classList.add('on'); }
+function saveAgent() {
+  const name = document.getElementById('aa-name').value.trim();
+  const user = document.getElementById('aa-user').value.trim().toLowerCase();
+  const pass = document.getElementById('aa-pass').value;
+  const role = document.getElementById('aa-role').value;
+  if (!name||!user||!pass) { toast('Fill in all fields','err'); return; }
+  if (pass.length<6) { toast('Password min 6 characters','err'); return; }
+  const users = getData(K.users);
+  if (users.find(u=>u.username===user)) { toast('Username taken','err'); return; }
+  users.push({ id:Date.now(), name, username:user, password:pass, role, status:'available' });
+  setData(K.users, users);
+  closeModal('add-agent-modal');
+  ['aa-name','aa-user','aa-pass'].forEach(id=>document.getElementById(id).value='');
+  toast('User added: '+user); renderAgents(); renderAdmin();
+}
+
+/* ── Contacts ── */
+function renderContacts() {
+  const divColors = { 'AVSEC':'#9d174d','Terminal Operations':'#92400e','Customer Service':'#065f46','RFFS':'#c0392b','ICT':'#4c1d95','Facilities (FMD)':'#374151','Corporate Comms':'#1e40af','Airside Operations':'#0369a1','General':'#1a3a5c' };
+  document.getElementById('contacts-grid').innerHTML = QUICK_CONTACTS.map(c=>`
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid ${divColors[c.div]||'var(--navy)'};border-radius:var(--r);padding:14px 16px">
+      <div style="font-size:18px;margin-bottom:6px">${c.icon}</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:2px">${c.title}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">${c.div}</div>
+      ${c.ext?`<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--gold)">Ext. ${c.ext}</div>`:''}
+      ${c.direct?`<div style="font-family:var(--mono);font-size:12px;color:var(--me)">${c.direct}</div>`:''}
+    </div>`).join('');
+}
+
+/* ── Reports ── */
+function renderReports() {
+  const tkts = getData(K.tickets);
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const today = tkts.filter(t=>t.createdAt>=todayStart.getTime());
+
+  // By priority
+  const byPri = {Emergency:0,High:0,Medium:0,Low:0};
+  today.forEach(t=>byPri[t.priority]=(byPri[t.priority]||0)+1);
+  const priColor = {Emergency:'var(--em)',High:'var(--hi)',Medium:'var(--me)',Low:'var(--lo)'};
+  document.getElementById('rpt-priority').innerHTML = Object.entries(byPri).map(([p,n])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="width:80px;font-size:12px;color:var(--text2)">${p}</span>
+      <div style="flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:8px;overflow:hidden">
+        <div style="width:${today.length?Math.round(n/today.length*100):0}%;height:8px;background:${priColor[p]};border-radius:4px;transition:width .4s"></div>
+      </div>
+      <span style="font-family:var(--mono);font-size:12px;font-weight:700;color:${priColor[p]};min-width:20px">${n}</span>
+    </div>`).join('');
+
+  // By division
+  const byDiv = {};
+  today.forEach(t=>byDiv[t.division]=(byDiv[t.division]||0)+1);
+  const maxDiv = Math.max(...Object.values(byDiv),1);
+  document.getElementById('rpt-division').innerHTML = Object.entries(byDiv).sort((a,b)=>b[1]-a[1]).map(([d,n])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="width:120px;font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d}</span>
+      <div style="flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:8px;overflow:hidden">
+        <div style="width:${Math.round(n/maxDiv*100)}%;height:8px;background:var(--me);border-radius:4px;transition:width .4s"></div>
+      </div>
+      <span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--me);min-width:20px">${n}</span>
+    </div>`).join('');
+
+  // SLA performance
+  document.getElementById('rpt-sla').innerHTML = PRIORITIES.map(p=>{
+    const target = SLA[p];
+    const resolved = tkts.filter(t=>t.priority===p&&t.status==='Resolved'&&t.logs.length>1);
+    const avgMs = resolved.length ? resolved.reduce((s,t)=>s+(t.updatedAt-t.createdAt),0)/resolved.length : 0;
+    const avgMin = Math.round(avgMs/60000);
+    const met = resolved.filter(t=>(t.updatedAt-t.createdAt)/60000<=target).length;
+    const pct = resolved.length?Math.round(met/resolved.length*100):null;
+    return `<div style="margin-bottom:12px;padding:10px 12px;background:var(--bg2);border-radius:var(--r);border-left:3px solid ${priColor[p]}">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;font-weight:700;color:${priColor[p]}">${p}</span>
+        <span style="font-family:var(--mono);font-size:12px;color:var(--text2)">Target: ${target}m</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">
+        ${resolved.length?`Avg response: ${avgMin}m · SLA met: ${pct}% (${met}/${resolved.length})` : 'No resolved tickets yet'}
+      </div>
+    </div>`;
+  }).join('');
+
+  // 7-day trend (mocked with seeded data shape)
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const mockCounts = [8,12,7,15,11,6,today.length];
+  const maxC = Math.max(...mockCounts);
+  document.getElementById('rpt-trend').innerHTML = `
+    <div style="display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:8px">
+      ${days.map((d,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+        <span style="font-size:10px;color:var(--text3)">${mockCounts[i]}</span>
+        <div style="width:100%;background:var(--me-bg);border-radius:3px 3px 0 0" title="${d}: ${mockCounts[i]} tickets">
+          <div style="height:${Math.round(mockCounts[i]/maxC*60)}px;background:var(--me);border-radius:3px 3px 0 0;transition:height .4s"></div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="display:flex;gap:6px">
+      ${days.map(d=>`<div style="flex:1;text-align:center;font-size:10px;color:var(--text3)">${d}</div>`).join('')}
+    </div>`;
+}
+
+/* ── Admin ── */
+function renderAdmin() {
+  const users = getData(K.users);
+  const rc    = {admin:'var(--gold)',supervisor:'var(--me)',agent:'var(--lo)'};
+  document.getElementById('admin-users').innerHTML = users.map(u=>`<tr>
+    <td style="font-size:13px;font-weight:500">${u.name}</td>
+    <td style="font-family:var(--mono);font-size:12px;color:var(--text2)">${u.username}</td>
+    <td><span style="font-size:11px;font-weight:700;color:${rc[u.role]||'var(--text2)'}">${u.role}</span></td>
+    <td style="font-size:12px;text-transform:capitalize;color:var(--text2)">${u.status}</td>
+    <td>${u.id!==USER.id?`<button class="btn btn-sm btn-red" onclick="deleteUser(${u.id})">Remove</button>`:'<span style="font-size:11px;color:var(--text3)">You</span>'}</td>
+  </tr>`).join('');
+}
+
+function deleteUser(id) {
+  if (!confirm('Remove this user?')) return;
+  setData(K.users, getData(K.users).filter(u=>u.id!==id));
+  renderAdmin(); renderAgents(); toast('User removed');
+}
+
+function saveSLAs() {
+  SLA = { Emergency:+document.getElementById('sla-em').value, High:+document.getElementById('sla-hi').value, Medium:+document.getElementById('sla-me').value, Low:+document.getElementById('sla-lo').value };
+  toast('SLA targets saved ✓');
+}
+
+/* ── Utilities ── */
+function populateAssignSelect() {
+  const sel = document.getElementById('nt-assign');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Self (me) —</option>';
+  getData(K.users).forEach(u=>{ const o=document.createElement('option'); o.value=u.name; o.textContent=u.name+' ('+u.role+')'; sel.appendChild(o); });
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+
+function exportCSV() {
+  const tkts = getData(K.tickets);
+  let csv = 'ID,Title,Category,Priority,Division,Caller,Contact,Assigned To,Status,Created\n';
+  tkts.forEach(t=>{ csv+=`"${t.id}","${t.title}","${t.category}","${t.priority}","${t.division}","${t.callerName}","${t.contact}","${t.assignedTo}","${t.status}","${fmtDT(t.createdAt)}"\n`; });
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='AOCC_Tickets_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  toast('Exported CSV ✓');
+}
+
+let _toastTT;
+function toast(msg, type) {
+  const el=document.getElementById('toast'); if(!el)return;
+  document.getElementById('t-msg').textContent=msg;
+  document.getElementById('t-icon').textContent=type==='err'?'✕':'✓';
+  el.style.background=type==='err'?'rgba(239,68,68,0.9)':'var(--surface2)';
+  el.classList.add('on'); clearTimeout(_toastTT); _toastTT=setTimeout(()=>el.classList.remove('on'),3500);
+}
+
+/* ── Init ── */
+initStorage();
+</script>
+</body>
+</html>

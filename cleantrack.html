@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CleanTrack — BPG · GACL</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0f2744;--navy-mid:#1a3a5c;--navy-light:#234870;
+  --gold:#e8a020;--gold-light:#f5c355;
+  --cream:#f8f5ef;--cream-dark:#ede9e0;
+  --white:#fff;--text:#1a1a2e;--text-mid:#4a5568;--text-light:#8896a8;
+  --green:#2d7a4f;--green-bg:#e8f5ee;
+  --red:#c0392b;--red-bg:#fdf0ee;
+  --amber:#b07d1a;--amber-bg:#fdf3e0;
+  --border:rgba(15,39,68,.12);
+  --r:10px;--r-lg:16px;
+  --shadow:0 2px 16px rgba(15,39,68,.08);
+  --shadow-lg:0 8px 40px rgba(15,39,68,.14);
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--cream);color:var(--text);min-height:100vh}
+
+/* ── BOOT / LOGIN ── */
+#boot-screen{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
+#boot-screen.off{display:none}
+.boot-logo{width:48px;height:48px;background:var(--gold);border-radius:14px;display:grid;place-items:center;font-size:24px;font-weight:700;color:var(--navy)}
+.boot-text{color:rgba(255,255,255,0.5);font-size:13px}
+.boot-spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+#login-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:var(--navy)}
+#login-screen.on{display:flex}
+.login-card{background:#fff;border-radius:var(--r-lg);padding:36px 32px;max-width:400px;width:100%;box-shadow:var(--shadow-lg)}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.login-mark{width:36px;height:36px;background:var(--gold);border-radius:9px;display:grid;place-items:center;font-size:18px;font-weight:700;color:var(--navy)}
+.login-title{font-size:20px;font-weight:700;color:var(--navy)}
+.login-sub{font-size:13px;color:var(--text-light);margin-top:2px}
+.lf{margin-bottom:14px}
+.lf label{display:block;font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase}
+.lf input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font);font-size:14px;color:var(--text);background:var(--cream);outline:none;transition:border .18s}
+.lf input:focus{border-color:var(--navy);background:#fff;box-shadow:0 0 0 3px rgba(15,39,68,.08)}
+.login-err{background:var(--red-bg);color:var(--red);border-radius:8px;padding:10px 13px;font-size:13px;margin-bottom:14px;display:none}
+.login-err.on{display:block}
+.login-hint{font-size:11px;color:var(--text-light);margin-top:12px;text-align:center}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);color:#fff;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:50;box-shadow:0 2px 20px rgba(0,0,0,.25)}
+.logo{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:600;cursor:pointer}
+.logo-mark{width:28px;height:28px;background:var(--gold);border-radius:7px;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--navy)}
+.tabs{display:flex;gap:3px}
+.tab{background:none;border:none;color:rgba(255,255,255,.55);font-family:var(--font);font-size:13px;font-weight:500;padding:6px 13px;border-radius:6px;cursor:pointer;transition:all .18s;white-space:nowrap}
+.tab:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
+.tab.on{background:var(--gold);color:var(--navy);font-weight:600}
+.user-pill{display:flex;align-items:center;gap:8px}
+.av{width:28px;height:28px;background:var(--navy-light);border:1.5px solid rgba(255,255,255,.15);border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--gold)}
+#uname{font-size:12px;color:rgba(255,255,255,.6)}
+.top-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-family:var(--font);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer}
+.top-btn:hover{background:rgba(255,255,255,.15)}
+
+/* ── PAGES ── */
+.page{display:none;max-width:900px;margin:0 auto;padding:24px 18px}
+.page.on{display:block}
+.page.wide{max-width:1180px}
+
+/* ── CARDS ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);margin-bottom:16px}
+.ch{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cb{padding:18px 22px}
+.ct{font-size:15px;font-weight:600;color:var(--navy)}
+.cs{font-size:12px;color:var(--text-light);margin-top:3px}
+
+/* ── HUB ── */
+.hub-header{text-align:center;padding:32px 20px 24px}
+.hub-title{font-size:24px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.hub-sub{font-size:14px;color:var(--text-light)}
+.hub-date{display:inline-block;background:var(--navy);color:var(--gold);font-family:var(--mono);font-size:13px;padding:5px 14px;border-radius:20px;margin-top:10px}
+.forms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:24px}
+.form-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:24px;box-shadow:var(--shadow);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.form-card:hover{border-color:var(--navy-light);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.form-card.green::before{background:var(--green)}
+.form-card.amber::before{background:var(--amber)}
+.form-icon{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;font-size:20px;margin-bottom:14px}
+.form-icon.green{background:var(--green-bg)}
+.form-icon.amber{background:var(--amber-bg)}
+.form-card-title{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:5px}
+.form-card-desc{font-size:12px;color:var(--text-light);line-height:1.6;margin-bottom:14px}
+.form-card-meta{display:flex;align-items:center;justify-content:space-between}
+.form-freq{font-size:11px;font-weight:600;color:var(--text-mid);background:var(--cream-dark);padding:3px 9px;border-radius:20px}
+.form-status{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+.status-done{background:var(--green-bg);color:var(--green)}
+.status-pending{background:var(--amber-bg);color:var(--amber)}
+.form-arrow{font-size:18px;color:var(--text-light);transition:transform .2s}
+.form-card:hover .form-arrow{transform:translateX(4px);color:var(--navy)}
+
+/* ── DATE BAR ── */
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-mid);cursor:pointer;margin-bottom:16px;padding:6px 0}
+.back-btn:hover{color:var(--navy)}
+.datebar{background:var(--navy-mid);border-radius:var(--r-lg);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.datebar-left{color:#fff}
+.db-day{font-size:22px;font-weight:700;font-family:var(--mono);color:var(--gold);letter-spacing:-1px}
+.db-date{font-size:13px;color:rgba(255,255,255,.6);margin-top:2px}
+.datebar-right{display:flex;align-items:center;gap:8px}
+.day-nav{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:7px;padding:6px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
+.day-nav:hover{background:rgba(255,255,255,.18)}
+.day-nav.today-btn{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+
+/* ── SUBMITTED BANNER ── */
+.sub-banner{background:var(--green-bg);border:1px solid rgba(45,122,79,.2);border-radius:var(--r-lg);padding:13px 16px;display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.sub-banner svg{flex-shrink:0;color:var(--green)}
+.sb-text{font-size:13px;color:var(--green);font-weight:500}
+.sb-sub{font-size:12px;color:var(--green);opacity:.8;margin-top:2px}
+
+/* ── FORM FIELDS ── */
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.fl label{display:block;font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:5px;letter-spacing:.04em;text-transform:uppercase}
+.fl input,.fl select,.fl textarea{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font);font-size:13px;color:var(--text);background:var(--cream);outline:none;transition:border .18s}
+.fl input:focus,.fl select:focus,.fl textarea:focus{border-color:var(--navy);background:#fff}
+.fl input[readonly]{background:var(--cream-dark);cursor:default}
+
+/* ── EVAL ITEMS ── */
+.items-list{display:flex;flex-direction:column}
+.item-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--cream-dark)}
+.item-row:last-child{border:none}
+.item-num{font-size:10px;font-family:var(--mono);color:var(--text-light);min-width:22px}
+.item-name{flex:1;font-size:13px;color:var(--text)}
+.score-in{width:72px;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--mono);font-size:14px;text-align:center;color:var(--navy);background:var(--cream);outline:none;transition:border .18s,background .18s}
+.score-in:focus{border-color:var(--navy);background:#fff}
+.score-in.lo{border-color:var(--red);background:var(--red-bg);color:var(--red)}
+.score-in.mi{border-color:var(--amber);background:var(--amber-bg);color:var(--amber)}
+.score-in.hi{border-color:var(--green);background:var(--green-bg);color:var(--green)}
+.max-lbl{font-size:11px;color:var(--text-light)}
+
+/* ── PROGRESS ── */
+.progress-wrap{margin-bottom:16px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-mid);margin-bottom:5px}
+.progress-track{background:var(--cream-dark);border-radius:10px;height:7px;overflow:hidden}
+.progress-fill{height:7px;border-radius:10px;transition:width .4s,background .3s}
+.slbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:8px}
+
+/* ── COMPLIANCE ── */
+.compliance-table{width:100%;border-collapse:collapse;font-size:13px}
+.compliance-table th{background:var(--navy);color:rgba(255,255,255,.8);font-weight:500;font-size:11px;padding:10px 12px;text-align:center;letter-spacing:.03em}
+.compliance-table th.desc-th{text-align:left;min-width:280px}
+.compliance-table th.pen-th{min-width:100px}
+.compliance-table td{border-bottom:1px solid var(--cream-dark);padding:0;vertical-align:middle}
+.compliance-table td.desc-td{padding:10px 12px;font-size:12px;color:var(--text);line-height:1.5;border-right:1px solid var(--cream-dark)}
+.compliance-table td.pen-td{padding:8px 10px;font-size:11px;color:var(--amber);font-weight:600;text-align:center;border-right:1px solid var(--cream-dark);white-space:nowrap;font-family:var(--mono)}
+.compliance-table tr:hover td{background:rgba(232,160,32,.03)}
+.compliance-table tfoot td{background:var(--cream-dark);font-weight:700;font-size:13px;color:var(--navy);padding:10px 12px}
+.viol-tick{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:var(--font);transition:all .18s;white-space:nowrap}
+.viol-tick.on{background:var(--red-bg);color:var(--red);border-color:rgba(192,57,43,.3)}
+.viol-tick.off{background:var(--green-bg);color:var(--green);border-color:rgba(45,122,79,.2)}
+
+/* ── STATS ── */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.sc{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--shadow)}
+.sc.hl{background:var(--navy)}
+.sv{font-size:26px;font-weight:600;color:var(--navy);font-family:var(--mono);letter-spacing:-1px}
+.sc.hl .sv{color:var(--gold)}
+.sl{font-size:11px;color:var(--text-light);font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+.sc.hl .sl{color:rgba(255,255,255,.45)}
+
+/* ── CALENDAR ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:14px}
+.cal-day-hd{text-align:center;font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.05em;padding:4px 0}
+.cal-cell{border-radius:8px;padding:7px 4px;text-align:center;cursor:pointer;transition:all .15s;border:1.5px solid transparent;min-height:50px}
+.cal-cell.empty,.cal-cell.future{cursor:default}
+.cal-cell.future{opacity:.35}
+.cal-cell.has-sub{background:var(--green-bg);border-color:rgba(45,122,79,.2)}
+.cal-cell.has-sub:hover{border-color:var(--green)}
+.cal-cell.no-sub{background:var(--red-bg);border-color:rgba(192,57,43,.12)}
+.cal-cell.today-cell{border-color:var(--gold)!important;background:var(--amber-bg)}
+.cal-num{font-size:13px;font-weight:600;color:var(--text)}
+.cal-pct{font-size:10px;font-family:var(--mono);margin-top:2px}
+.cal-dot{width:5px;height:5px;border-radius:50%;margin:3px auto 0}
+
+/* ── REPORT TABLE ── */
+.fbar{display:flex;gap:9px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.fbar select,.fbar input[type=month]{padding:7px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font);font-size:13px;background:#fff;color:var(--text);outline:none}
+.rt-wrap{overflow:auto;max-height:58vh;border-radius:var(--r)}
+table.rt{width:100%;border-collapse:collapse;font-size:12px}
+table.rt th{background:var(--navy);color:rgba(255,255,255,.8);font-weight:500;font-size:10px;padding:9px 8px;text-align:center;position:sticky;top:0;z-index:3;letter-spacing:.04em;white-space:nowrap}
+table.rt th.lth{text-align:left;padding-left:14px;min-width:200px;position:sticky;left:0;z-index:5}
+table.rt td{border-bottom:1px solid var(--cream-dark);padding:7px 8px;text-align:center;font-family:var(--mono);font-size:11px}
+table.rt td.ltd{text-align:left;font-family:var(--font);font-size:12px;background:#fff;position:sticky;left:0;border-right:2px solid var(--cream-dark);padding-left:14px}
+table.rt tr:hover td{background:rgba(232,160,32,.04)}
+table.rt tfoot td{background:var(--navy-mid);color:#fff;font-weight:600;padding:8px 8px;position:sticky;bottom:0;font-family:var(--mono)}
+table.rt tfoot td.ltd{background:var(--navy-mid);color:rgba(255,255,255,.8);font-family:var(--font);padding-left:14px}
+.ri{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--cream-dark)}
+.ri:last-child{border:none}
+.rname{font-size:12px;color:var(--text);min-width:185px;max-width:185px;flex-shrink:0}
+.rbw{flex:1;background:var(--cream-dark);border-radius:10px;height:6px;overflow:hidden}
+.rb{height:6px;border-radius:10px}
+.rpct{font-size:12px;font-weight:600;font-family:var(--mono);min-width:36px;text-align:right}
+
+/* ── REPORT TOGGLE ── */
+.rpt-toggle{display:flex;gap:0;background:var(--cream-dark);border-radius:var(--r);padding:3px;margin-bottom:18px;width:fit-content}
+.rpt-toggle-btn{padding:7px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text-mid);font-family:var(--font);transition:all .18s;white-space:nowrap}
+.rpt-toggle-btn.on{background:#fff;color:var(--navy);font-weight:600;box-shadow:0 1px 4px rgba(15,39,68,.1)}
+
+/* ── ADMIN ── */
+.admin-table{width:100%;border-collapse:collapse;font-size:13px}
+.admin-table th{background:var(--cream-dark);color:var(--text-mid);font-weight:600;font-size:11px;padding:9px 12px;text-align:left;letter-spacing:.04em;text-transform:uppercase}
+.admin-table td{border-bottom:1px solid var(--cream-dark);padding:10px 12px;vertical-align:middle}
+.role-badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.role-admin{background:rgba(15,39,68,.1);color:var(--navy)}
+.role-supervisor{background:var(--amber-bg);color:var(--amber)}
+.role-staff{background:var(--green-bg);color:var(--green)}
+
+/* ── BUTTONS ── */
+.br{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:var(--r);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text);transition:all .15s}
+.btn:hover{background:var(--cream)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-p{background:var(--navy);color:#fff;border-color:var(--navy)}.btn-p:hover{background:var(--navy-mid)}
+.btn-g{background:var(--gold);color:var(--navy);border-color:var(--gold)}.btn-g:hover{background:var(--gold-light)}
+.btn-r{background:var(--red-bg);color:var(--red);border-color:rgba(192,57,43,.2)}
+.btn-sm{padding:6px 13px;font-size:12px}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(10,20,40,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:var(--r-lg);padding:26px;max-width:440px;width:100%;box-shadow:var(--shadow-lg);max-height:90vh;overflow-y:auto}
+.modal-title{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:16px}
+.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}
+.mf{margin-bottom:13px}
+.mf label{display:block;font-size:11px;font-weight:700;color:var(--text-mid);margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase}
+.mf input,.mf select{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--font);font-size:13px;color:var(--text);background:var(--cream);outline:none;transition:border .18s}
+.mf input:focus,.mf select:focus{border-color:var(--navy);background:#fff}
+.mf .hint{font-size:11px;color:var(--text-light);margin-top:4px}
+
+/* ── DB STATUS ── */
+.db-status{display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(255,255,255,.4);margin-right:8px}
+.db-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:var(--r);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;transform:translateY(70px);opacity:0;transition:all .28s;z-index:9999;max-width:340px;pointer-events:none}
+.toast.on{transform:translateY(0);opacity:1}
+
+@media(max-width:600px){
+  .topbar{padding:0 12px}
+  .logo span{display:none}
+  .tab{font-size:11px;padding:5px 9px}
+  .page{padding:14px 11px}
+  .mg{grid-template-columns:1fr}
+  .forms-grid{grid-template-columns:1fr}
+  #uname,.db-status{display:none}
+}
+@media print{.topbar,.br,.fbar,.day-nav,.btn,.back-btn{display:none!important}.page{padding:0}.card{box-shadow:none;border:1px solid #ccc}}
+</style>
+</head>
+<body>
+
+<!-- BOOT -->
+<div id="boot-screen">
+  <div class="boot-logo">✦</div>
+  <div style="color:#fff;font-size:18px;font-weight:700;margin-top:4px">CleanTrack — BPG</div>
+  <div class="boot-text">Initialising local database…</div>
+  <div class="boot-spinner"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-mark">✦</div>
+      <div>
+        <div class="login-title">CleanTrack — BPG</div>
+        <div class="login-sub">Facilities &amp; Infrastructure Management · GACL</div>
+      </div>
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <div class="lf"><label>Username</label><input id="l-user" type="text" placeholder="Enter username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="lf"><label>Password</label><input id="l-pass" type="password" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-p" style="width:100%;justify-content:center;padding:12px" id="login-btn" onclick="doLogin()">Sign in →</button>
+    <div class="login-hint" id="first-run-hint" style="display:none">First run — default: <strong>admin / admin123</strong></div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="logo" onclick="goHub()"><div class="logo-mark">✦</div><span>CleanTrack — BPG</span></div>
+  <div class="tabs">
+    <button class="tab on" id="tab-hub" onclick="go('hub',this)">🏠 Forms</button>
+    <button class="tab" id="tab-sv" onclick="go('supervisor',this)">👁 Supervisor</button>
+    <button class="tab" id="tab-reports" onclick="go('reports',this)">📊 Reports</button>
+    <button class="tab" id="tab-admin" onclick="go('admin',this)">⚙ Admin</button>
+  </div>
+  <div class="user-pill">
+    <div class="db-status" title="Local SQLite database active"><div class="db-dot"></div>SQLite</div>
+    <div class="av" id="av">?</div>
+    <span id="uname"></span>
+    <button class="top-btn" onclick="openMyPassword()" style="margin-right:4px">🔑</button>
+    <button class="top-btn" onclick="doLogout()">Sign out</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+
+  <!-- HUB -->
+  <div id="page-hub" class="page on">
+    <div class="hub-header">
+      <div class="hub-title">Good day, <span id="hub-name"></span></div>
+      <div class="hub-sub">Select a form to fill for today</div>
+      <div class="hub-date" id="hub-date"></div>
+    </div>
+    <div class="forms-grid" id="forms-grid"></div>
+  </div>
+
+  <!-- DAILY EVALUATION -->
+  <div id="page-eval" class="page">
+    <div class="back-btn" onclick="goHub()">← Back to Forms</div>
+    <div class="datebar">
+      <div class="datebar-left"><div class="db-day" id="db-day">Day —</div><div class="db-date" id="db-date">—</div></div>
+      <div class="datebar-right">
+        <button class="day-nav" onclick="changeDay(-1,'eval')">← Prev</button>
+        <button class="day-nav today-btn" onclick="goToday('eval')">Today</button>
+        <button class="day-nav" onclick="changeDay(1,'eval')">Next →</button>
+      </div>
+    </div>
+    <div class="sub-banner" id="eval-banner" style="display:none">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <div><div class="sb-text" id="eval-banner-text">Already submitted</div><div class="sb-sub">You can edit and resubmit</div></div>
+    </div>
+    <div class="card">
+      <div class="ch">
+        <div><div class="ct">Daily Evaluation</div><div class="cs">Facilities &amp; Infrastructure Management — BPG</div></div>
+        <div style="text-align:right"><div style="font-size:24px;font-weight:700;font-family:var(--mono);color:var(--navy)" id="eval-live-pct">—</div><div style="font-size:11px;color:var(--text-light)">score</div></div>
+      </div>
+      <div class="cb">
+        <div class="mg">
+          <div class="fl"><label>Location</label><select id="eval-loc"><option value="">— select —</option></select></div>
+          <div class="fl"><label>Submitted by</label><input type="text" id="eval-who" readonly></div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-label"><span id="eval-prog-label">0 of 24 scored</span><span id="eval-prog-pct">0%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="eval-prog-fill" style="width:0%;background:var(--green)"></div></div>
+        </div>
+        <div class="slbl">Score each item — 0 to 140</div>
+        <div class="items-list" id="eval-items"></div>
+        <div class="br">
+          <button class="btn btn-p" id="eval-submit-btn" onclick="submitEval()">✈ Submit</button>
+          <button class="btn btn-g" onclick="evalFillAll()">⚡ Fill all 140</button>
+          <button class="btn btn-sm" onclick="evalClear()">🗑 Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLIANCE -->
+  <div id="page-compliance" class="page wide">
+    <div class="back-btn" onclick="goHub()">← Back to Forms</div>
+    <div class="datebar">
+      <div class="datebar-left"><div class="db-day" id="comp-db-day">Day —</div><div class="db-date" id="comp-db-date">—</div></div>
+      <div class="datebar-right">
+        <button class="day-nav" onclick="changeDay(-1,'compliance')">← Prev</button>
+        <button class="day-nav today-btn" onclick="goToday('compliance')">Today</button>
+        <button class="day-nav" onclick="changeDay(1,'compliance')">Next →</button>
+      </div>
+    </div>
+    <div class="sub-banner" id="comp-banner" style="display:none">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <div><div class="sb-text" id="comp-banner-text">Already submitted</div><div class="sb-sub">You can edit and resubmit</div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Operational Compliance &amp; Applicable Penalties</div><div class="cs">BPG | Janitorial &amp; Cleaning Services</div></div></div>
+      <div class="cb">
+        <div class="mg">
+          <div class="fl"><label>Location</label><select id="comp-loc"><option value="">— select —</option></select></div>
+          <div class="fl"><label>Service provider</label><input type="text" id="comp-provider" placeholder="e.g. DURA TPL"></div>
+          <div class="fl"><label>Submitted by</label><input type="text" id="comp-who" readonly></div>
+        </div>
+        <div class="slbl">Mark violations observed</div>
+        <div style="overflow-x:auto">
+          <table class="compliance-table">
+            <thead><tr><th class="desc-th">Violation</th><th class="pen-th">Penalty</th><th style="min-width:160px">Today's status</th><th style="min-width:160px">Notes</th></tr></thead>
+            <tbody id="comp-tbody"></tbody>
+            <tfoot><tr><td colspan="2" style="padding:10px 12px;font-weight:700;color:var(--navy)">Total violations today</td><td colspan="2" style="padding:10px 12px;font-weight:700;font-family:var(--mono);color:var(--green);text-align:center" id="comp-total-pct">None</td></tr></tfoot>
+          </table>
+        </div>
+        <div class="br">
+          <button class="btn btn-p" id="comp-submit-btn" onclick="submitCompliance()">✈ Submit</button>
+          <button class="btn btn-sm" onclick="compClear()">🗑 Clear all</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPERVISOR -->
+  <div id="page-supervisor" class="page wide">
+    <div class="sg">
+      <div class="sc hl"><div class="sv" id="sv-days">—</div><div class="sl">Eval days</div></div>
+      <div class="sc"><div class="sv" id="sv-avg">—</div><div class="sl">Eval average</div></div>
+      <div class="sc"><div class="sv" id="sv-comp-days">—</div><div class="sl">Compliance days</div></div>
+      <div class="sc"><div class="sv" id="sv-violations">—</div><div class="sl">Total violations</div></div>
+    </div>
+    <div class="fbar">
+      <input type="month" id="sv-month" onchange="loadSupervisor()">
+      <select id="sv-loc" onchange="loadSupervisor()"><option value="">All locations</option></select>
+      <button class="btn btn-sm" onclick="loadSupervisor()">↻ Refresh</button>
+      <button class="btn btn-sm btn-p" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Evaluation Calendar</div><div class="cs" id="sv-cal-sub">Click a day to view details</div></div></div>
+      <div class="cb">
+        <div class="cal-grid" id="cal-grid"></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-mid);margin-top:2px">
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--green-bg);border:1px solid rgba(45,122,79,.3);border-radius:3px;margin-right:4px"></span>Submitted</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--red-bg);border:1px solid rgba(192,57,43,.2);border-radius:3px;margin-right:4px"></span>Missing</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--amber-bg);border:1px solid var(--gold);border-radius:3px;margin-right:4px"></span>Today</span>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="day-detail" style="display:none">
+      <div class="ch"><div><div class="ct" id="dd-title">Day detail</div><div class="cs" id="dd-sub"></div></div><button class="btn btn-sm" onclick="document.getElementById('day-detail').style.display='none'">✕</button></div>
+      <div class="cb"><div class="rt-wrap"><table class="rt"><thead><tr><th class="lth">Item</th><th>Score</th><th>Max</th><th>%</th></tr></thead><tbody id="dd-body"></tbody><tfoot><tr><td class="ltd">Total</td><td id="dd-tot">—</td><td id="dd-max">—</td><td id="dd-pct">—</td></tr></tfoot></table></div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">Monthly evaluation summary</div></div>
+      <div class="cb"><div class="rt-wrap"><table class="rt"><thead id="sv-thead"></thead><tbody id="sv-tbody"></tbody><tfoot id="sv-tfoot"></tfoot></table></div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">Compliance violations this month</div></div>
+      <div class="cb" id="comp-sv-body"><p style="color:var(--text-light);font-size:13px">Select a month above.</p></div>
+    </div>
+  </div>
+
+  <!-- REPORTS -->
+  <div id="page-reports" class="page wide">
+    <div class="fbar">
+      <input type="month" id="rpt-month" onchange="loadReports()">
+      <select id="rpt-loc" onchange="loadReports()"><option value="">All locations</option></select>
+      <button class="btn btn-sm" onclick="loadReports()">↻ Refresh</button>
+      <button class="btn btn-sm btn-p" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn btn-sm" onclick="window.print()">🖨 Print</button>
+    </div>
+    <div class="rpt-toggle">
+      <button class="rpt-toggle-btn on" onclick="setRptView('all',this)">📊 Combined</button>
+      <button class="rpt-toggle-btn" onclick="setRptView('eval',this)">📋 Evaluation</button>
+      <button class="rpt-toggle-btn" onclick="setRptView('comp',this)">⚠ Compliance</button>
+    </div>
+    <div id="rpt-stats-wrap"><div class="sg" id="rpt-stats"><div class="sc"><div class="sv">—</div><div class="sl">Select a month</div></div></div></div>
+    <div id="rpt-eval-section">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div class="card"><div class="ch"><div class="ct">Score by item</div><div class="cs">Monthly average</div></div><div class="cb" id="rpt-items"><p style="color:var(--text-light);font-size:13px">Select a month.</p></div></div>
+        <div class="card"><div class="ch"><div class="ct">Daily trend</div><div class="cs">Score % per day</div></div><div class="cb" id="rpt-trend"><p style="color:var(--text-light);font-size:13px">Select a month.</p></div></div>
+      </div>
+    </div>
+    <div id="rpt-comp-section">
+      <div class="card"><div class="ch"><div class="ct">Compliance &amp; Penalties — monthly summary</div></div><div class="cb" id="rpt-compliance"><p style="color:var(--text-light);font-size:13px">Select a month.</p></div></div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="page-admin" class="page">
+    <!-- DB management -->
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <div class="ch"><div><div class="ct">Database Management</div><div class="cs">Your data is stored locally as a SQLite database</div></div></div>
+      <div class="cb">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-p" onclick="exportDB()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Backup Database (.sqlite)
+          </button>
+          <label class="btn" style="cursor:pointer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Restore Database
+            <input type="file" accept=".sqlite,.db" onchange="importDB(this)" style="display:none">
+          </label>
+          <button class="btn btn-r btn-sm" onclick="clearAllData()">⚠ Reset All Data</button>
+          <span id="db-size-info" style="font-size:12px;color:var(--text-light);margin-left:4px"></span>
+        </div>
+        <div style="margin-top:12px;padding:10px 14px;background:var(--cream);border-radius:var(--r);font-size:12px;color:var(--text-mid);line-height:1.7">
+          <strong>Backup regularly</strong> — click "Backup Database" to download a <code>.sqlite</code> file.
+          Use any SQLite viewer (e.g. <a href="https://sqlitebrowser.org" target="_blank" rel="noopener" style="color:var(--navy)">DB Browser for SQLite</a>) to open and query your data directly.
+          To restore, click "Restore Database" and select your backup file.
+        </div>
+      </div>
+    </div>
+    <!-- Users -->
+    <div class="card">
+      <div class="ch"><div><div class="ct">Users</div><div class="cs">Manage who can access CleanTrack</div></div><button class="btn btn-p btn-sm" onclick="openUserModal()">+ Add user</button></div>
+      <div style="padding:0"><table class="admin-table"><thead><tr><th>Username</th><th>Full name</th><th>Role</th><th>Location</th><th></th></tr></thead><tbody id="users-body"></tbody></table></div>
+    </div>
+    <!-- Locations -->
+    <div class="card">
+      <div class="ch"><div><div class="ct">Locations</div><div class="cs">Add or remove inspection locations</div></div><button class="btn btn-p btn-sm" onclick="openLocModal()">+ Add location</button></div>
+      <div style="padding:0"><table class="admin-table"><thead><tr><th>Location name</th><th>Added</th><th></th></tr></thead><tbody id="locs-body"></tbody></table></div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- MODALS -->
+<div class="modal-bg" id="user-modal">
+  <div class="modal">
+    <div class="modal-title" id="um-title">Add user</div>
+    <div class="mf"><label>Full name</label><input id="um-name" type="text" placeholder="e.g. John Mensah"></div>
+    <div class="mf"><label>Username</label><input id="um-user" type="text" placeholder="e.g. jmensah"><div class="hint">Lowercase, no spaces</div></div>
+    <div class="mf"><label>Password</label><input id="um-pass" type="password" placeholder="Min 6 characters"></div>
+    <div class="mf"><label>Role</label><select id="um-role"><option value="staff">Staff</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
+    <div class="mf"><label>Location (optional)</label><select id="um-loc"><option value="">All locations</option></select></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('user-modal')">Cancel</button><button class="btn btn-p" onclick="saveUser()">Save user</button></div>
+  </div>
+</div>
+<div class="modal-bg" id="loc-modal">
+  <div class="modal">
+    <div class="modal-title">Add location</div>
+    <div class="mf"><label>Location name</label><input id="lm-name" type="text" placeholder="e.g. Departures T2"></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('loc-modal')">Cancel</button><button class="btn btn-p" onclick="saveLocation()">Add location</button></div>
+  </div>
+</div>
+<div class="modal-bg" id="pw-modal">
+  <div class="modal">
+    <div class="modal-title" id="pw-title">Change password</div>
+    <div class="mf" id="pw-old-wrap"><label>Current password</label><input id="pw-old" type="password"></div>
+    <div class="mf"><label>New password</label><input id="pw-new" type="password" placeholder="Min 6 characters"></div>
+    <div class="mf"><label>Confirm new password</label><input id="pw-confirm" type="password"></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('pw-modal')">Cancel</button><button class="btn btn-p" onclick="savePassword()">Change password</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="t-icon">✓</span> <span id="t-msg"></span></div>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   CLEANTRACK BPG — SQLite Edition
+   Data engine: sql.js (SQLite via WebAssembly)
+   Storage: localStorage (binary SQLite DB)
+   ════════════════════════════════════════════════════════ */
+
+/* ── CONSTANTS ── */
+const EVAL_ITEMS = [
+  "Base of partitions, base boards, sills, kick plates",
+  "Canopies for bays and seating (above and beneath)",
+  "Carpets - door mats, praying carpet, bath mats, entrance mats",
+  "Chair & table legs, sides of desks, cabinets",
+  "Stainless steel surfaces and fixtures",
+  "Wood surfaces, paques, etc",
+  "Hard floors",
+  "Counters, booths, horizontal surfaces (internal & external of booths)",
+  "Countertops and sinks",
+  "Sanitising dispensers and stands",
+  "Doors, door handles and push plates",
+  "Drinking fountains, fridge",
+  "Glass facade inside and outside, end to end",
+  "Glass facade/panels/frames up soffit/ceiling",
+  "Glass counters and kiosk, etc",
+  "Grout lines",
+  "Walls - vertical surfaces, partitions, and wall hangings",
+  "Horizontal surfaces, sills, eaves",
+  "Telephones and ICT gadgets",
+  "Ceiling/soffit",
+  "Hand rails",
+  "Trash can",
+  "Vents, curtains, blinds",
+  "Wayfinding/directional signages"
+];
+const EVAL_MAX = 140;
+
+const DAILY_VIOLATIONS = [
+  { id:'safety',     short:'Safety methods',         desc:"Non-conformance to safety methods, PCO compliance, screening-off during high-level works and deep scrubbing, mounting caution signs, etc.", penalty:"3% of Contract Sum" },
+  { id:'staff',      short:'Staff availability',     desc:"Non-availability of agreed number of staff — daily shortages not replaced within 3 hours, new staff resume/records/certificates not submitted prior to commencing work, staff not attending daily briefing/debriefing sessions, etc.", penalty:"2% of Contract Sum" },
+  { id:'audit',      short:'Audit response',         desc:"Not responding to audit/adverse findings on-time (daily and before closing the day's activities).", penalty:"2% of Contract Sum" },
+  { id:'equipment',  short:'Equipment availability', desc:"Non-availability of equipment/tools or faulty equipment/tools for scheduled deep cleaning, scrubbing and other activities.", penalty:"3% of Contract Sum" },
+  { id:'inspection', short:'Supervisor inspection',  desc:"Inspection not being carried out by Supervisors as scheduled and inspection sheets not signed.", penalty:"2% of Contract Sum" },
+  { id:'ppe',        short:'PPE & uniforms',         desc:"Staff undertaking works without appropriate PPEs, uniforms, AVSEC ID cards, no Motorola gadgets for communication, etc.", penalty:"3% of Contract Sum" },
+  { id:'consumables',short:'Consumables stock',      desc:"Non-availability of minimum stock of consumables — bin liners, air-fresheners, urinal deodorizers, T-rolls, tissue paper, etc.", penalty:"3% of Contract Sum" }
+];
+
+/* ── STATE ── */
+let db = null, USER = null, LOCATIONS = [];
+let monthData = {}, compMonthData = {};
+let evalViewDate = new Date(), compViewDate = new Date();
+let _pwTargetId = null, _tt, currentRptView = 'all';
+
+/* ── HELPERS ── */
+const isoDate  = d => d.toISOString().slice(0,10);
+const isoMonth = d => d.toISOString().slice(0,7);
+const today    = () => new Date();
+const daysInMonth = (y,m) => new Date(y,m+1,0).getDate();
+function fmtDate(d){ return new Date(d).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); }
+function pctColor(p){ return p>=95?'var(--green)':p>=80?'var(--amber)':'var(--red)'; }
+function calcRAGPenalty(p){ if(p>=90)return{pct:0,label:'Pass',color:'var(--green)'}; if(p>=80)return{pct:2,label:'2% penalty',color:'var(--amber)'}; if(p>=70)return{pct:4,label:'4% penalty',color:'var(--red)'}; return{pct:6,label:'6% penalty',color:'var(--red)'}; }
+
+/* ══════════════════════════════════════════════
+   SQL ENGINE
+   ══════════════════════════════════════════════ */
+
+const DB_KEY = 'cleantrack_bpg_db';
+
+/* Save the in-memory SQLite DB to localStorage */
+function saveDB() {
+  try {
+    const data = db.export();
+    localStorage.setItem(DB_KEY, JSON.stringify(Array.from(data)));
+    updateDbSizeInfo();
+  } catch(e) { toast('Warning: could not save DB — ' + e.message, 'err'); }
+}
+
+function updateDbSizeInfo() {
+  const raw = localStorage.getItem(DB_KEY);
+  if (!raw) return;
+  const kb = Math.round(raw.length / 1024);
+  const el = document.getElementById('db-size-info');
+  if (el) el.textContent = `Database size: ${kb} KB`;
+}
+
+/* Run a SELECT and return array of objects */
+function dbQuery(sql, params) {
+  const res = db.exec(sql, params);
+  if (!res.length) return [];
+  const { columns, values } = res[0];
+  return values.map(row => {
+    const obj = {};
+    columns.forEach((col, i) => obj[col] = row[i]);
+    return obj;
+  });
+}
+
+/* Run INSERT/UPDATE/DELETE */
+function dbRun(sql, params) {
+  db.run(sql, params);
+  saveDB();
+}
+
+/* Initialise SQLite via sql.js, load from localStorage if exists */
+async function initDB() {
+  const SQL = await initSqlJs({
+    locateFile: file => `https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/${file}`
+  });
+
+  const saved = localStorage.getItem(DB_KEY);
+  if (saved) {
+    try {
+      const arr = new Uint8Array(JSON.parse(saved));
+      db = new SQL.Database(arr);
+      toast('Database loaded');
+    } catch(e) {
+      db = new SQL.Database();
+      createSchema(true);
+    }
+  } else {
+    db = new SQL.Database();
+    createSchema(false);
+  }
+
+  document.getElementById('boot-screen').classList.add('off');
+  document.getElementById('login-screen').classList.add('on');
+  updateDbSizeInfo();
+}
+
+function createSchema(isReset) {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS ct_users (
+      id        INTEGER PRIMARY KEY AUTOINCREMENT,
+      username  TEXT    UNIQUE NOT NULL,
+      password  TEXT    NOT NULL,
+      full_name TEXT    NOT NULL,
+      role      TEXT    NOT NULL DEFAULT 'staff',
+      location_id INTEGER,
+      created_at TEXT   DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS ct_locations (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      name       TEXT NOT NULL,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS ct_daily_evaluations (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      eval_date    TEXT NOT NULL,
+      month        TEXT NOT NULL,
+      location_id  INTEGER NOT NULL,
+      location_name TEXT,
+      submitted_by TEXT,
+      scores       TEXT NOT NULL,
+      total_score  INTEGER,
+      filled_cells INTEGER,
+      submitted_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(eval_date, location_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS ct_compliance_entries (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      eval_date       TEXT NOT NULL,
+      month           TEXT NOT NULL,
+      location_id     INTEGER NOT NULL,
+      location_name   TEXT,
+      submitted_by    TEXT,
+      comp_provider   TEXT,
+      violations      TEXT,
+      total_violations INTEGER DEFAULT 0,
+      submitted_at    TEXT DEFAULT (datetime('now')),
+      UNIQUE(eval_date, location_id)
+    );
+  `);
+
+  /* Seed default admin + starter locations */
+  const existing = dbQuery('SELECT id FROM ct_users WHERE username=?', ['admin']);
+  if (!existing.length) {
+    db.run("INSERT INTO ct_users (username,password,full_name,role) VALUES ('admin','admin123','Administrator','admin')");
+    db.run("INSERT INTO ct_locations (name) VALUES ('Arrivals T3')");
+    db.run("INSERT INTO ct_locations (name) VALUES ('Departures T1')");
+    document.getElementById('first-run-hint').style.display = 'block';
+  }
+  saveDB();
+  if (isReset) toast('Database reset — default admin restored');
+}
+
+/* ── DB BACKUP / RESTORE ── */
+function exportDB() {
+  const data = db.export();
+  const blob = new Blob([data], { type:'application/x-sqlite3' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'CleanTrack_BPG_' + isoDate(today()) + '.sqlite';
+  a.click();
+  toast('Database backed up');
+}
+
+function importDB(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!confirm('This will REPLACE the current database with the selected backup. Continue?')) { input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const SQL = await initSqlJs({ locateFile: f => `https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/${f}` });
+      db = new SQL.Database(new Uint8Array(e.target.result));
+      saveDB();
+      toast('Database restored from ' + file.name);
+      doLogout();
+    } catch(err) { toast('Failed to load database: ' + err.message, 'err'); }
+  };
+  reader.readAsArrayBuffer(file);
+  input.value = '';
+}
+
+function clearAllData() {
+  if (!confirm('⚠ This will delete ALL data — evaluations, compliance records, users, and locations.\n\nThe default admin account will be restored.\n\nContinue?')) return;
+  localStorage.removeItem(DB_KEY);
+  db = new (db.constructor)();  // new empty DB
+  createSchema(true);
+  doLogout();
+}
+
+/* ══════════════════════════════════════════════
+   AUTH
+   ══════════════════════════════════════════════ */
+function doLogin() {
+  const username = document.getElementById('l-user').value.trim().toLowerCase();
+  const password = document.getElementById('l-pass').value;
+  const errEl = document.getElementById('login-err');
+  errEl.classList.remove('on');
+
+  const rows = dbQuery('SELECT * FROM ct_users WHERE username=? AND password=?', [username, password]);
+  if (!rows.length) {
+    errEl.textContent = 'Incorrect username or password.';
+    errEl.classList.add('on');
+    return;
+  }
+  USER = rows[0];
+  document.getElementById('login-screen').classList.remove('on');
+  applySession();
+}
+
+function doLogout() {
+  USER = null;
+  document.getElementById('l-user').value = '';
+  document.getElementById('l-pass').value = '';
+  document.getElementById('login-screen').classList.add('on');
+  document.getElementById('topbar').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+}
+
+/* ── SESSION ── */
+function applySession() {
+  document.getElementById('topbar').style.display = 'flex';
+  document.getElementById('app').style.display = 'block';
+  const name = USER.full_name;
+  document.getElementById('av').textContent = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('uname').textContent = name + ' · ' + USER.role;
+  document.getElementById('hub-name').textContent = name.split(' ')[0];
+  document.getElementById('hub-date').textContent = fmtDate(today());
+  document.getElementById('eval-who').value = name;
+  document.getElementById('comp-who').value = name;
+  const isSup = ['supervisor','admin'].includes(USER.role);
+  const isAdmin = USER.role === 'admin';
+  document.getElementById('tab-sv').style.display = isSup ? '' : 'none';
+  document.getElementById('tab-reports').style.display = isSup ? '' : 'none';
+  document.getElementById('tab-admin').style.display = isAdmin ? '' : 'none';
+  loadLocations();
+  buildEvalForm();
+  buildComplianceForm();
+  evalViewDate = today();
+  compViewDate = today();
+  go('hub', document.getElementById('tab-hub'));
+  loadHubStatus();
+}
+
+/* ══════════════════════════════════════════════
+   LOCATIONS
+   ══════════════════════════════════════════════ */
+function loadLocations() {
+  LOCATIONS = dbQuery('SELECT * FROM ct_locations ORDER BY name');
+  ['eval-loc','comp-loc','sv-loc','rpt-loc','um-loc'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const isFilter = ['sv-loc','rpt-loc','um-loc'].includes(id);
+    sel.innerHTML = isFilter ? '<option value="">All locations</option>' : '<option value="">— select location —</option>';
+    LOCATIONS.forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l.id;
+      opt.textContent = l.name;
+      if (['eval-loc','comp-loc'].includes(id) && USER.location_id && l.id == USER.location_id) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════
+   HUB
+   ══════════════════════════════════════════════ */
+function loadHubStatus() {
+  const todayIso = isoDate(today());
+  const locId = USER.location_id;
+  const evalDone = dbQuery(
+    'SELECT id FROM ct_daily_evaluations WHERE eval_date=?' + (locId ? ' AND location_id=?' : ''),
+    locId ? [todayIso, locId] : [todayIso]
+  ).length > 0;
+  const compDone = dbQuery(
+    'SELECT id FROM ct_compliance_entries WHERE eval_date=?' + (locId ? ' AND location_id=?' : ''),
+    locId ? [todayIso, locId] : [todayIso]
+  ).length > 0;
+
+  document.getElementById('forms-grid').innerHTML = [
+    { id:'eval',       title:'Daily Evaluation',      desc:'Score all 24 cleaning items across the facility for today.', icon:'📋', color:'green', done:evalDone },
+    { id:'compliance', title:'Compliance & Penalties', desc:'Record operational compliance violations and applicable penalty flags.', icon:'⚠️', color:'amber', done:compDone }
+  ].map(f => `
+    <div class="form-card ${f.color}" onclick="openForm('${f.id}')">
+      <div class="form-icon ${f.color}">${f.icon}</div>
+      <div class="form-card-title">${f.title}</div>
+      <div class="form-card-desc">${f.desc}</div>
+      <div class="form-card-meta">
+        <span class="form-freq">Daily</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="form-status ${f.done?'status-done':'status-pending'}">${f.done?'✓ Done today':'Pending'}</span>
+          <span class="form-arrow">→</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openForm(id) {
+  if (id==='eval') { go('eval',null); loadEvalDay(evalViewDate); }
+  else              { go('compliance',null); loadCompDay(compViewDate); }
+}
+function goHub() { go('hub',document.getElementById('tab-hub')); loadHubStatus(); }
+
+/* ══════════════════════════════════════════════
+   DAILY EVALUATION
+   ══════════════════════════════════════════════ */
+function buildEvalForm() {
+  document.getElementById('eval-items').innerHTML = EVAL_ITEMS.map((item,i) => `
+    <div class="item-row">
+      <span class="item-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="item-name">${item}</span>
+      <input type="number" class="score-in" id="sc${i}" min="0" max="140" placeholder="—" oninput="onEvalScore()">
+      <span class="max-lbl">/140</span>
+    </div>`).join('');
+}
+
+function onEvalScore() {
+  let filled = 0, total = 0;
+  EVAL_ITEMS.forEach((_,i) => {
+    const el = document.getElementById('sc'+i);
+    const v = parseInt(el.value);
+    if (el.value!=='' && !isNaN(v)) {
+      filled++; total+=v;
+      el.classList.toggle('lo', v<100);
+      el.classList.toggle('mi', v>=100 && v<130);
+      el.classList.toggle('hi', v>=130);
+    } else el.classList.remove('lo','mi','hi');
+  });
+  const pct = filled>0 ? Math.round(total/(filled*EVAL_MAX)*100) : 0;
+  const lp = document.getElementById('eval-live-pct');
+  lp.textContent = filled>0 ? pct+'%' : '—';
+  lp.style.color = filled>0 ? pctColor(pct) : 'var(--navy)';
+  document.getElementById('eval-prog-label').textContent = `${filled} of ${EVAL_ITEMS.length} scored`;
+  document.getElementById('eval-prog-pct').textContent = filled>0 ? pct+'%' : '0%';
+  const pf = document.getElementById('eval-prog-fill');
+  pf.style.width = (filled/EVAL_ITEMS.length*100)+'%';
+  pf.style.background = pctColor(pct);
+}
+
+function evalFillAll() { EVAL_ITEMS.forEach((_,i)=>{ const el=document.getElementById('sc'+i); el.value=140; el.classList.remove('lo','mi'); el.classList.add('hi'); }); onEvalScore(); }
+function evalClear()   { if(!confirm('Clear all?'))return; EVAL_ITEMS.forEach((_,i)=>{ const el=document.getElementById('sc'+i); el.value=''; el.classList.remove('lo','mi','hi'); }); onEvalScore(); }
+
+function updateEvalDateBar() {
+  const d=evalViewDate, isT=isoDate(d)===isoDate(today());
+  document.getElementById('db-day').textContent = 'Day ' + d.getDate();
+  document.getElementById('db-date').textContent = fmtDate(d) + (isT?' — Today':'');
+}
+
+function changeDay(delta,form) {
+  const vd = form==='eval' ? evalViewDate : compViewDate;
+  const d = new Date(vd); d.setDate(d.getDate()+delta);
+  if (d>today()) { toast('Cannot go to future dates','err'); return; }
+  if (form==='eval') { evalViewDate=d; loadEvalDay(d); }
+  else               { compViewDate=d; loadCompDay(d); }
+}
+function goToday(form) {
+  if (form==='eval') { evalViewDate=today(); loadEvalDay(evalViewDate); }
+  else               { compViewDate=today(); loadCompDay(compViewDate); }
+}
+
+function loadEvalDay(d) {
+  updateEvalDateBar();
+  const key = isoDate(d);
+  const locId = document.getElementById('eval-loc').value;
+  const rows = locId
+    ? dbQuery('SELECT * FROM ct_daily_evaluations WHERE eval_date=? AND location_id=?', [key, locId])
+    : dbQuery('SELECT * FROM ct_daily_evaluations WHERE eval_date=?', [key]);
+  const sub = rows[0] || null;
+  const banner = document.getElementById('eval-banner');
+  if (sub) {
+    banner.style.display = 'flex';
+    const pct = Math.round(sub.total_score / (sub.filled_cells * EVAL_MAX) * 100);
+    document.getElementById('eval-banner-text').textContent = `Submitted by ${sub.submitted_by} — ${pct}%`;
+    const scores = JSON.parse(sub.scores);
+    scores.forEach((v,i) => { const el=document.getElementById('sc'+i); if(el) el.value=v!==null?v:''; });
+  } else {
+    banner.style.display = 'none';
+    EVAL_ITEMS.forEach((_,i) => { const el=document.getElementById('sc'+i); if(el){el.value='';el.classList.remove('lo','mi','hi');} });
+  }
+  onEvalScore();
+}
+
+function submitEval() {
+  const locId = document.getElementById('eval-loc').value;
+  const who   = document.getElementById('eval-who').value.trim();
+  if (!locId) { toast('Select a location','err'); return; }
+  const locName = LOCATIONS.find(l=>String(l.id)===String(locId))?.name||'';
+  const scores = EVAL_ITEMS.map((_,i)=>{ const v=parseInt(document.getElementById('sc'+i)?.value); return isNaN(v)?null:v; });
+  const filled = scores.filter(v=>v!==null);
+  if (!filled.length) { toast('Enter at least one score','err'); return; }
+  const total = filled.reduce((a,b)=>a+b,0);
+  const btn = document.getElementById('eval-submit-btn');
+  btn.textContent='Saving…'; btn.disabled=true;
+  try {
+    dbRun(`
+      INSERT INTO ct_daily_evaluations
+        (eval_date,month,location_id,location_name,submitted_by,scores,total_score,filled_cells,submitted_at)
+      VALUES (?,?,?,?,?,?,?,?,datetime('now'))
+      ON CONFLICT(eval_date,location_id) DO UPDATE SET
+        submitted_by=excluded.submitted_by, scores=excluded.scores,
+        total_score=excluded.total_score, filled_cells=excluded.filled_cells,
+        submitted_at=excluded.submitted_at
+    `, [isoDate(evalViewDate), isoMonth(evalViewDate), parseInt(locId), locName, who,
+        JSON.stringify(scores), total, filled.length]);
+    toast('Evaluation saved ✓');
+    loadEvalDay(evalViewDate);
+  } catch(e) { toast('Error: '+e.message,'err'); }
+  finally { btn.textContent='✈ Submit'; btn.disabled=false; }
+}
+
+/* ══════════════════════════════════════════════
+   COMPLIANCE
+   ══════════════════════════════════════════════ */
+function buildComplianceForm() {
+  document.getElementById('comp-tbody').innerHTML = DAILY_VIOLATIONS.map((item,i) => `
+    <tr>
+      <td class="desc-td">
+        <div style="font-weight:600;color:var(--navy);margin-bottom:3px;font-size:12px">${item.short}</div>
+        <div style="font-size:11px;color:var(--text-mid);line-height:1.5">${item.desc}</div>
+      </td>
+      <td class="pen-td">${item.penalty}</td>
+      <td style="padding:8px 14px;text-align:center;border-right:1px solid var(--cream-dark)">
+        <button class="viol-tick off" id="viol_${i}" onclick="toggleViolation(${i})">
+          <span class="tick-no">✕ No violation</span>
+          <span class="tick-yes" style="display:none">⚠ Flagged</span>
+        </button>
+      </td>
+      <td style="padding:4px 8px">
+        <input type="text" id="note_${i}" placeholder="Add note…"
+          style="width:100%;padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;background:var(--cream);font-family:var(--font);outline:none">
+      </td>
+    </tr>`).join('');
+}
+
+function toggleViolation(i) {
+  const btn = document.getElementById('viol_'+i);
+  const isOn = btn.classList.contains('on');
+  btn.classList.toggle('on',!isOn); btn.classList.toggle('off',isOn);
+  btn.querySelector('.tick-no').style.display = isOn?'':'none';
+  btn.querySelector('.tick-yes').style.display = isOn?'none':'';
+  updateCompTotals();
+}
+
+function updateCompTotals() {
+  let n=0; DAILY_VIOLATIONS.forEach((_,i)=>{ if(document.getElementById('viol_'+i)?.classList.contains('on'))n++; });
+  const el = document.getElementById('comp-total-pct');
+  if(el){ el.textContent=n>0?n+' violation'+(n>1?'s':''):'None'; el.style.color=n>0?'var(--red)':'var(--green)'; }
+}
+
+function compClear() {
+  if(!confirm('Clear all?'))return;
+  DAILY_VIOLATIONS.forEach((_,i)=>{
+    const btn=document.getElementById('viol_'+i);
+    if(btn){btn.classList.remove('on');btn.classList.add('off');btn.querySelector('.tick-no').style.display='';btn.querySelector('.tick-yes').style.display='none';}
+    const note=document.getElementById('note_'+i); if(note)note.value='';
+  });
+  updateCompTotals();
+}
+
+function updateCompDateBar() {
+  const d=compViewDate, isT=isoDate(d)===isoDate(today());
+  document.getElementById('comp-db-day').textContent='Day '+d.getDate();
+  document.getElementById('comp-db-date').textContent=fmtDate(d)+(isT?' — Today':'');
+}
+
+function loadCompDay(d) {
+  updateCompDateBar();
+  const key=isoDate(d), locId=document.getElementById('comp-loc').value;
+  const rows = locId
+    ? dbQuery('SELECT * FROM ct_compliance_entries WHERE eval_date=? AND location_id=?',[key,locId])
+    : dbQuery('SELECT * FROM ct_compliance_entries WHERE eval_date=?',[key]);
+  const sub = rows[0]||null;
+  DAILY_VIOLATIONS.forEach((_,i)=>{
+    const btn=document.getElementById('viol_'+i);
+    if(btn){btn.classList.remove('on');btn.classList.add('off');btn.querySelector('.tick-no').style.display='';btn.querySelector('.tick-yes').style.display='none';}
+    const note=document.getElementById('note_'+i);if(note)note.value='';
+  });
+  const banner=document.getElementById('comp-banner');
+  if(sub){
+    banner.style.display='flex';
+    document.getElementById('comp-banner-text').textContent=`Submitted by ${sub.submitted_by} — ${sub.total_violations} violation(s)`;
+    if(sub.comp_provider)document.getElementById('comp-provider').value=sub.comp_provider;
+    const viols=JSON.parse(sub.violations||'[]');
+    viols.forEach(({row,note})=>{
+      const btn=document.getElementById('viol_'+row);
+      if(btn){btn.classList.add('on');btn.classList.remove('off');btn.querySelector('.tick-no').style.display='none';btn.querySelector('.tick-yes').style.display='';}
+      const noteEl=document.getElementById('note_'+row);if(noteEl&&note)noteEl.value=note;
+    });
+    updateCompTotals();
+  } else { banner.style.display='none'; updateCompTotals(); }
+}
+
+function submitCompliance() {
+  const locId=document.getElementById('comp-loc').value;
+  const who=document.getElementById('comp-who').value.trim();
+  const provider=document.getElementById('comp-provider').value.trim();
+  if(!locId){toast('Select a location','err');return;}
+  const locName=LOCATIONS.find(l=>String(l.id)===String(locId))?.name||'';
+  const violations=[];
+  DAILY_VIOLATIONS.forEach((item,i)=>{
+    if(document.getElementById('viol_'+i)?.classList.contains('on')){
+      const note=document.getElementById('note_'+i)?.value.trim()||'';
+      violations.push({row:i,id:item.id,short:item.short,penalty:item.penalty,note});
+    }
+  });
+  const btn=document.getElementById('comp-submit-btn');btn.textContent='Saving…';btn.disabled=true;
+  try{
+    dbRun(`
+      INSERT INTO ct_compliance_entries
+        (eval_date,month,location_id,location_name,submitted_by,comp_provider,violations,total_violations,submitted_at)
+      VALUES (?,?,?,?,?,?,?,?,datetime('now'))
+      ON CONFLICT(eval_date,location_id) DO UPDATE SET
+        submitted_by=excluded.submitted_by, comp_provider=excluded.comp_provider,
+        violations=excluded.violations, total_violations=excluded.total_violations,
+        submitted_at=excluded.submitted_at
+    `,[isoDate(compViewDate),isoMonth(compViewDate),parseInt(locId),locName,who,provider,JSON.stringify(violations),violations.length]);
+    toast('Compliance saved ✓');
+    loadCompDay(compViewDate);
+  }catch(e){toast('Error: '+e.message,'err');}
+  finally{btn.textContent='✈ Submit';btn.disabled=false;}
+}
+
+/* ══════════════════════════════════════════════
+   SUPERVISOR
+   ══════════════════════════════════════════════ */
+function loadSupervisor() {
+  const mv=document.getElementById('sv-month').value; if(!mv)return;
+  const[y,m]=mv.split('-').map(Number);
+  const locId=document.getElementById('sv-loc').value;
+  const locFilter=locId?' AND location_id=?':'';
+  const params=locId?[mv,locId]:[mv];
+  const evals=dbQuery('SELECT * FROM ct_daily_evaluations WHERE month=?'+locFilter+' ORDER BY eval_date',params);
+  const comps=dbQuery('SELECT * FROM ct_compliance_entries WHERE month=?'+locFilter+' ORDER BY eval_date',params);
+  evals.forEach(s=>{s.scores=JSON.parse(s.scores||'[]');});
+  comps.forEach(s=>{s.violations=JSON.parse(s.violations||'[]');});
+  const byDate={};evals.forEach(s=>byDate[s.eval_date]=s);monthData=byDate;
+  const compByDate={};comps.forEach(s=>compByDate[s.eval_date]=s);compMonthData=compByDate;
+  const pcts=evals.map(s=>s.filled_cells>0?Math.round(s.total_score/(s.filled_cells*EVAL_MAX)*100):0);
+  const totalViol=comps.reduce((a,s)=>a+(s.total_violations||0),0);
+  document.getElementById('sv-days').textContent=evals.length+'/'+daysInMonth(y,m-1);
+  document.getElementById('sv-avg').textContent=pcts.length>0?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length)+'%':'—';
+  document.getElementById('sv-comp-days').textContent=comps.length+'/'+daysInMonth(y,m-1);
+  document.getElementById('sv-violations').textContent=totalViol;
+  document.getElementById('sv-cal-sub').textContent=new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'})+' — Click a day to view details';
+  buildCalendar(y,m-1,byDate);
+  buildSvTable(y,m-1,byDate);
+  buildCompSv(comps,pcts.length>0?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0);
+}
+
+function buildCalendar(year,month,byDate){
+  const today_iso=isoDate(today());
+  const grid=document.getElementById('cal-grid');
+  let html=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-day-hd">${d}</div>`).join('');
+  const first=new Date(year,month,1).getDay();
+  for(let i=0;i<first;i++)html+='<div class="cal-cell empty"></div>';
+  for(let d=1;d<=daysInMonth(year,month);d++){
+    const iso=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const sub=byDate[iso];
+    const isFuture=iso>today_iso, isToday=iso===today_iso;
+    const pct=sub?Math.round(sub.total_score/(sub.filled_cells*EVAL_MAX)*100):null;
+    let cls='cal-cell';
+    if(isFuture)cls+=' future';
+    else if(isToday)cls+=' today-cell';
+    if(sub)cls+=' has-sub';
+    else if(!isFuture&&!isToday)cls+=' no-sub';
+    html+=`<div class="${cls}" ${sub&&!isFuture?`onclick="showDayDetail('${iso}')"`:''}>
+      <div class="cal-num">${d}</div>
+      ${pct!==null?`<div class="cal-pct" style="color:${pctColor(pct)}">${pct}%</div>`:''}
+      ${!sub&&!isFuture&&!isToday?`<div class="cal-dot" style="background:var(--red)"></div>`:''}
+    </div>`;
+  }
+  grid.innerHTML=html;
+}
+
+function buildSvTable(year,month,byDate){
+  const today_iso=isoDate(today());
+  const submitted=[];
+  for(let d=1;d<=daysInMonth(year,month);d++){
+    const iso=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    if(iso<=today_iso&&byDate[iso])submitted.push({d,iso,sub:byDate[iso]});
+  }
+  if(!submitted.length){
+    document.getElementById('sv-thead').innerHTML='';
+    document.getElementById('sv-tbody').innerHTML='<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text-light)">No submissions yet this month.</td></tr>';
+    document.getElementById('sv-tfoot').innerHTML='';
+    return;
+  }
+  document.getElementById('sv-thead').innerHTML=`<tr><th class="lth">Item</th>${submitted.map(({d})=>`<th>Day ${d}</th>`).join('')}<th>Avg%</th></tr>`;
+  document.getElementById('sv-tbody').innerHTML=EVAL_ITEMS.map((item,i)=>{
+    let row=`<tr><td class="ltd">${i+1}. ${item}</td>`;let tot=0,cnt=0;
+    submitted.forEach(({sub})=>{const v=sub.scores[i];const p=v!=null?Math.round(v/EVAL_MAX*100):null;const c=p!=null?pctColor(p):'var(--text-light)';row+=`<td style="color:${c}">${v!=null?v:'—'}</td>`;if(v!=null){tot+=v;cnt++;}});
+    const avg=cnt>0?Math.round(tot/(cnt*EVAL_MAX)*100):0;
+    return row+`<td style="color:${pctColor(avg)};font-weight:600">${cnt>0?avg+'%':'—'}</td></tr>`;
+  }).join('');
+  const oa=submitted.length>0?Math.round(submitted.map(({sub})=>sub.filled_cells>0?Math.round(sub.total_score/(sub.filled_cells*EVAL_MAX)*100):0).reduce((a,b)=>a+b,0)/submitted.length):0;
+  document.getElementById('sv-tfoot').innerHTML=`<tr><td class="ltd">Daily %</td>${submitted.map(({sub})=>{const p=sub.filled_cells>0?Math.round(sub.total_score/(sub.filled_cells*EVAL_MAX)*100):0;return`<td style="color:var(--gold)">${p}%</td>`;}).join('')}<td style="color:var(--gold)">${oa}%</td></tr>`;
+}
+
+function buildCompSv(comps,evalAvgPct){
+  const rag=calcRAGPenalty(evalAvgPct||0);
+  const vioCounts=DAILY_VIOLATIONS.map((_,i)=>{let c=0;comps.forEach(s=>(s.violations||[]).forEach(v=>{if(v.row===i)c++;}));return c;});
+  const getWeek=ds=>Math.ceil(new Date(ds).getDate()/7);
+  const weeklyData=DAILY_VIOLATIONS.map((_,i)=>{const w={1:0,2:0,3:0,4:0,5:0};comps.forEach(s=>{if((s.violations||[]).some(v=>v.row===i)){const wk=getWeek(s.eval_date);if(w[wk]!==undefined)w[wk]++;}});return w;});
+  document.getElementById('comp-sv-body').innerHTML=`
+    <div style="margin-bottom:14px;background:var(--cream);border-radius:var(--r);padding:14px 16px;border:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--text-mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">RAG Audit Score</div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="font-size:28px;font-weight:700;font-family:var(--mono);color:${evalAvgPct>=90?'var(--green)':evalAvgPct>=80?'var(--amber)':'var(--red)'}">${evalAvgPct||0}%</div>
+        <div><div style="font-size:13px;font-weight:600;color:${rag.color}">${rag.label}</div><div style="font-size:11px;color:var(--text-light)">Pass mark: 90% | Penalty tiers: 2% / 4% / 6%</div></div>
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table class="rt">
+      <thead><tr><th class="lth">Violation</th><th>Penalty</th><th>Wk1</th><th>Wk2</th><th>Wk3</th><th>Wk4</th><th>Wk5</th><th>Total days</th><th>Penalty applicable</th></tr></thead>
+      <tbody>
+        <tr><td class="ltd" style="font-style:italic;font-size:11px">Failure to achieve 90% RAG Audit Score</td>
+        <td style="color:var(--amber);font-size:11px">2%,4% or 6%</td>
+        <td colspan="5" style="color:var(--text-light);font-size:11px">Auto-calculated</td>
+        <td style="color:${rag.color};font-weight:600">—</td>
+        <td style="color:${rag.color};font-weight:600">${rag.pct>0?rag.pct+'%':'Pass'}</td></tr>
+        ${DAILY_VIOLATIONS.map((item,i)=>`<tr>
+          <td class="ltd" style="font-size:11px">${item.short}</td>
+          <td style="color:var(--amber);font-size:11px">${item.penalty}</td>
+          ${[1,2,3,4,5].map(w=>`<td style="color:${weeklyData[i][w]>0?'var(--red)':'var(--text-light)'};font-weight:${weeklyData[i][w]>0?600:400}">${weeklyData[i][w]>0?weeklyData[i][w]:'—'}</td>`).join('')}
+          <td style="color:${vioCounts[i]>0?'var(--red)':'var(--green)'};font-weight:600">${vioCounts[i]}</td>
+          <td style="color:${vioCounts[i]>0?'var(--red)':'var(--green)'};font-weight:600">${vioCounts[i]>0?item.penalty.replace(' of Contract Sum',''):'—'}</td>
+        </tr>`).join('')}
+      </tbody>
+      <tfoot><tr><td class="ltd">Total</td><td></td><td colspan="5"></td>
+        <td style="color:var(--gold)">${vioCounts.reduce((a,b)=>a+b,0)} days</td>
+        <td style="color:var(--gold);font-weight:700">${rag.pct>0?rag.pct+'% + daily':'Daily penalties only'}</td>
+      </tr></tfoot>
+    </table></div>`;
+}
+
+function showDayDetail(iso){
+  const sub=monthData[iso];if(!sub)return;
+  const pct=Math.round(sub.total_score/(sub.filled_cells*EVAL_MAX)*100);
+  document.getElementById('dd-title').textContent=fmtDate(iso);
+  document.getElementById('dd-sub').textContent=`${sub.submitted_by} — ${sub.location_name||''} — ${pct}%`;
+  document.getElementById('dd-body').innerHTML=EVAL_ITEMS.map((item,i)=>{const v=sub.scores[i];const p=v!=null?Math.round(v/EVAL_MAX*100):null;const c=p!=null?pctColor(p):'var(--text-light)';return`<tr><td class="ltd">${i+1}. ${item}</td><td style="color:${c}">${v!=null?v:'—'}</td><td style="color:var(--text-light)">${EVAL_MAX}</td><td style="color:${c};font-weight:600">${p!=null?p+'%':'—'}</td></tr>`;}).join('');
+  document.getElementById('dd-tot').textContent=sub.total_score;
+  document.getElementById('dd-max').textContent=sub.filled_cells*EVAL_MAX;
+  document.getElementById('dd-pct').textContent=pct+'%';
+  const panel=document.getElementById('day-detail');panel.style.display='block';panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ══════════════════════════════════════════════
+   REPORTS
+   ══════════════════════════════════════════════ */
+function loadReports(){
+  const mv=document.getElementById('rpt-month').value;if(!mv)return;
+  const locId=document.getElementById('rpt-loc').value;
+  const locFilter=locId?' AND location_id=?':'';
+  const params=locId?[mv,locId]:[mv];
+  const evals=dbQuery('SELECT * FROM ct_daily_evaluations WHERE month=?'+locFilter+' ORDER BY eval_date',params);
+  const comps=dbQuery('SELECT * FROM ct_compliance_entries WHERE month=?'+locFilter+' ORDER BY eval_date',params);
+  evals.forEach(s=>s.scores=JSON.parse(s.scores||'[]'));
+  comps.forEach(s=>s.violations=JSON.parse(s.violations||'[]'));
+  const pcts=evals.map(s=>s.filled_cells>0?Math.round(s.total_score/(s.filled_cells*EVAL_MAX)*100):0);
+  const avg=pcts.length>0?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0;
+  const totalViol=comps.reduce((a,s)=>a+(s.total_violations||0),0);
+  document.getElementById('rpt-stats').innerHTML=`
+    <div class="sc hl"><div class="sv">${evals.length}</div><div class="sl">Eval days</div></div>
+    <div class="sc"><div class="sv">${avg}%</div><div class="sl">Eval average</div></div>
+    <div class="sc"><div class="sv">${comps.length}</div><div class="sl">Compliance days</div></div>
+    <div class="sc"><div class="sv">${totalViol}</div><div class="sl">Total violations</div></div>`;
+  if(evals.length){
+    const iavg=EVAL_ITEMS.map((_,i)=>{let tot=0,cnt=0;evals.forEach(s=>{const v=s.scores[i];if(v!=null){tot+=v;cnt++;}});return cnt>0?Math.round(tot/(cnt*EVAL_MAX)*100):0;});
+    document.getElementById('rpt-items').innerHTML=EVAL_ITEMS.map((item,i)=>{const p=iavg[i];const col=p>=95?'#2d7a4f':p>=80?'#b07d1a':'#c0392b';return`<div class="ri"><span class="rname">${i+1}. ${item}</span><div class="rbw"><div class="rb" style="width:${p}%;background:${col}"></div></div><span class="rpct" style="color:${col}">${p}%</span></div>`;}).join('');
+    const MH=80;
+    document.getElementById('rpt-trend').innerHTML=`<div style="display:flex;align-items:flex-end;gap:3px;height:${MH}px">${evals.map(s=>{const p=s.filled_cells>0?Math.round(s.total_score/(s.filled_cells*EVAL_MAX)*100):0;const h=Math.max(3,Math.round(p/100*MH));const c=p>=95?'#2d7a4f':p>=80?'#b07d1a':'#c0392b';return`<div title="Day ${new Date(s.eval_date).getDate()}: ${p}%" style="flex:1;background:${c};height:${h}px;border-radius:2px 2px 0 0;min-width:4px"></div>`;}).join('')}</div>`;
+  }else{document.getElementById('rpt-items').innerHTML='<p style="color:var(--text-light);font-size:13px">No data this month.</p>';document.getElementById('rpt-trend').innerHTML='<p style="color:var(--text-light);font-size:13px">No data.</p>';}
+  // Compliance report — reuse buildCompSv logic
+  if(comps.length||evals.length){
+    buildCompSv(comps,avg);
+    document.getElementById('rpt-compliance').innerHTML=document.getElementById('comp-sv-body').innerHTML;
+  }else{document.getElementById('rpt-compliance').innerHTML='<p style="color:var(--text-light);font-size:13px">No compliance data.</p>';}
+}
+
+function setRptView(view,btn){
+  currentRptView=view;
+  document.querySelectorAll('.rpt-toggle-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.getElementById('rpt-eval-section').style.display=view==='comp'?'none':'block';
+  document.getElementById('rpt-comp-section').style.display=view==='eval'?'none':'block';
+  document.getElementById('rpt-stats-wrap').style.display=view==='comp'?'none':'block';
+}
+
+/* ══════════════════════════════════════════════
+   EXPORT CSV
+   ══════════════════════════════════════════════ */
+function exportCSV(){
+  const mv=document.getElementById('sv-month')?.value||document.getElementById('rpt-month')?.value;
+  if(!mv){toast('Select a month','err');return;}
+  const locId=document.getElementById('sv-loc')?.value||document.getElementById('rpt-loc')?.value||'';
+  const locFilter=locId?' AND location_id=?':'';
+  const params=locId?[mv,locId]:[mv];
+  const evals=dbQuery('SELECT * FROM ct_daily_evaluations WHERE month=?'+locFilter+' ORDER BY eval_date',params);
+  const comps=dbQuery('SELECT * FROM ct_compliance_entries WHERE month=?'+locFilter+' ORDER BY eval_date',params);
+  let csv=`BPG CleanTrack Report — ${mv}\n\nEVALUATION SCORES\nDate,Location,Submitted by,Total,Max,Score%\n`;
+  evals.forEach(s=>{const p=Math.round(s.total_score/(s.filled_cells*EVAL_MAX)*100);csv+=`${s.eval_date},${s.location_name},${s.submitted_by},${s.total_score},${s.filled_cells*EVAL_MAX},${p}%\n`;});
+  csv+=`\nCOMPLIANCE VIOLATIONS\nDate,Location,Submitted by,Total violations\n`;
+  comps.forEach(s=>{csv+=`${s.eval_date},${s.location_name},${s.submitted_by},${s.total_violations}\n`;});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`BPG_${mv}.csv`;a.click();
+  toast('Downloaded BPG_'+mv+'.csv');
+}
+
+/* ══════════════════════════════════════════════
+   ADMIN — USERS & LOCATIONS
+   ══════════════════════════════════════════════ */
+function loadUsers(){
+  const users=dbQuery('SELECT * FROM ct_users ORDER BY full_name');
+  const rc={admin:'role-admin',supervisor:'role-supervisor',staff:'role-staff'};
+  document.getElementById('users-body').innerHTML=users.length?users.map(u=>`<tr>
+    <td style="font-family:var(--mono);font-size:12px">${u.username}</td>
+    <td>${u.full_name}</td>
+    <td><span class="role-badge ${rc[u.role]||''}">${u.role}</span></td>
+    <td style="color:var(--text-light);font-size:12px">${LOCATIONS.find(l=>l.id==u.location_id)?.name||'All locations'}</td>
+    <td style="text-align:right;display:flex;gap:5px;justify-content:flex-end">
+      <button class="btn btn-sm" style="font-size:11px" onclick="openResetPassword(${u.id},'${u.full_name}')">🔑 Reset pw</button>
+      ${u.id!==USER.id?`<button class="btn btn-r btn-sm" style="font-size:11px" onclick="deleteUser(${u.id})">Remove</button>`:'<span style="font-size:11px;color:var(--text-light)">You</span>'}
+    </td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-light)">No users.</td></tr>';
+}
+function openUserModal(){['um-name','um-user','um-pass'].forEach(id=>document.getElementById(id).value='');document.getElementById('um-role').value='staff';document.getElementById('um-loc').value='';document.getElementById('user-modal').classList.add('on');}
+function saveUser(){
+  const name=document.getElementById('um-name').value.trim();
+  const username=document.getElementById('um-user').value.trim().toLowerCase().replace(/\s+/g,'');
+  const pass=document.getElementById('um-pass').value;
+  const role=document.getElementById('um-role').value;
+  const locId=document.getElementById('um-loc').value||null;
+  if(!name||!username||!pass){toast('Fill in all fields','err');return;}
+  if(pass.length<6){toast('Password min 6 characters','err');return;}
+  const exists=dbQuery('SELECT id FROM ct_users WHERE username=?',[username]);
+  if(exists.length){toast('Username already taken','err');return;}
+  dbRun('INSERT INTO ct_users (username,password,full_name,role,location_id) VALUES (?,?,?,?,?)',[username,pass,name,role,locId?parseInt(locId):null]);
+  closeModal('user-modal');toast('User added: '+username);loadUsers();
+}
+function deleteUser(id){
+  if(!confirm('Remove this user?'))return;
+  dbRun('DELETE FROM ct_users WHERE id=?',[id]);
+  toast('User removed');loadUsers();
+}
+function loadAdminLocations(){
+  document.getElementById('locs-body').innerHTML=LOCATIONS.length?LOCATIONS.map(l=>`<tr>
+    <td>${l.name}</td>
+    <td style="color:var(--text-light);font-size:12px">${new Date(l.created_at).toLocaleDateString('en-GB')}</td>
+    <td style="text-align:right"><button class="btn btn-r btn-sm" style="font-size:11px" onclick="deleteLoc(${l.id})">Remove</button></td>
+  </tr>`).join(''):'<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text-light)">No locations.</td></tr>';
+}
+function openLocModal(){document.getElementById('lm-name').value='';document.getElementById('loc-modal').classList.add('on');}
+function saveLocation(){
+  const name=document.getElementById('lm-name').value.trim();
+  if(!name){toast('Enter a name','err');return;}
+  dbRun('INSERT INTO ct_locations (name) VALUES (?)',[name]);
+  closeModal('loc-modal');toast('Location added: '+name);loadLocations();loadAdminLocations();
+}
+function deleteLoc(id){
+  if(!confirm('Remove location?'))return;
+  dbRun('DELETE FROM ct_locations WHERE id=?',[id]);
+  toast('Location removed');loadLocations();loadAdminLocations();
+}
+
+/* ── PASSWORDS ── */
+function openMyPassword(){_pwTargetId=null;document.getElementById('pw-title').textContent='Change my password';document.getElementById('pw-old-wrap').style.display='block';['pw-old','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');document.getElementById('pw-modal').classList.add('on');}
+function openResetPassword(userId,userName){_pwTargetId=userId;document.getElementById('pw-title').textContent='Reset password for '+userName;document.getElementById('pw-old-wrap').style.display='none';['pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');document.getElementById('pw-modal').classList.add('on');}
+function savePassword(){
+  const oldPw=document.getElementById('pw-old').value;
+  const newPw=document.getElementById('pw-new').value;
+  const conf=document.getElementById('pw-confirm').value;
+  if(!newPw){toast('Enter a new password','err');return;}
+  if(newPw.length<6){toast('Min 6 characters','err');return;}
+  if(newPw!==conf){toast('Passwords do not match','err');return;}
+  const isOwn=_pwTargetId===null;
+  if(isOwn){
+    const ok=dbQuery('SELECT id FROM ct_users WHERE id=? AND password=?',[USER.id,oldPw]);
+    if(!ok.length){toast('Current password incorrect','err');return;}
+  }
+  const targetId=isOwn?USER.id:_pwTargetId;
+  dbRun('UPDATE ct_users SET password=? WHERE id=?',[newPw,targetId]);
+  if(isOwn)USER.password=newPw;
+  closeModal('pw-modal');toast(isOwn?'Password changed':'Password reset');
+}
+
+/* ── NAV ── */
+function go(name,btn){
+  const restricted=['supervisor','reports'];
+  const adminOnly=['admin'];
+  if(restricted.includes(name)&&USER?.role==='staff'){toast('Access restricted','err');return;}
+  if(adminOnly.includes(name)&&USER?.role!=='admin'){toast('Admin only','err');return;}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+name).classList.add('on');
+  if(btn)btn.classList.add('on');
+  if(name==='supervisor'){document.getElementById('sv-month').value=isoMonth(today());loadSupervisor();}
+  if(name==='reports'){document.getElementById('rpt-month').value=isoMonth(today());loadReports();}
+  if(name==='admin'){loadUsers();loadAdminLocations();updateDbSizeInfo();}
+}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
+function toast(msg,type){const el=document.getElementById('toast');document.getElementById('t-msg').textContent=msg;document.getElementById('t-icon').textContent=type==='err'?'✕':'✓';el.style.background=type==='err'?'var(--red)':'var(--navy)';el.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),3500);}
+
+/* ══════════════════════════════════════════════
+   BOOT — load sql.js then init DB
+   ══════════════════════════════════════════════ */
+window.addEventListener('load', initDB);
+</script>
+
+<!-- sql.js: SQLite compiled to WebAssembly -->
+<script src="https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/sql-wasm.js"></script>
+</body>
+</html>

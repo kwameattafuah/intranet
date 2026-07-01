@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FMCC — Facilities Management Control Centre · GACL</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0c1a14;
+  --bg2:     #111f17;
+  --bg3:     #1a2e22;
+  --surface: #1a2e22;
+  --surface2:#223829;
+  --border:  rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text:    #f0f7f2;
+  --text2:   #8fb89a;
+  --text3:   #4a7558;
+  --green:   #10b981;
+  --gold:    #f0a500;
+  --navy:    #1a3a5c;
+  --crit:    #ef4444; --crit-bg: rgba(239,68,68,0.15);
+  --high:    #f59e0b; --high-bg: rgba(245,158,11,0.15);
+  --med:     #3b82f6; --med-bg:  rgba(59,130,246,0.15);
+  --low:     #10b981; --low-bg:  rgba(16,185,129,0.15);
+  --plan:    #8b5cf6; --plan-bg: rgba(139,92,246,0.15);
+  --r:8px; --r-lg:12px;
+  --font:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* LOGIN */
+#login-screen{display:none;min-height:100vh;align-items:center;justify-content:center;background:radial-gradient(ellipse at 30% 30%,rgba(16,185,129,0.12),transparent 60%),var(--bg);flex-direction:column}
+#login-screen.on{display:flex}
+.login-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);padding:40px 36px;width:360px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.login-brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.login-badge{width:40px;height:40px;background:var(--green);border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:11px;color:#0c1a14;letter-spacing:.3px}
+.login-title{font-size:17px;font-weight:700}
+.login-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.lf{margin-bottom:14px}
+.lf label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.lf input,.lf select{width:100%;padding:10px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border .15s}
+.lf input:focus,.lf select:focus{border-color:var(--green)}
+.lf select option{background:var(--bg2)}
+.login-err{background:var(--crit-bg);color:var(--crit);border-radius:6px;padding:8px 12px;font-size:12px;margin-bottom:12px;display:none}
+.login-err.on{display:block}
+.live-tag{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:11px;margin-top:16px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:50}
+.tb-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;cursor:pointer}
+.tb-badge{width:28px;height:28px;background:var(--green);border-radius:7px;display:grid;place-items:center;font-size:10px;font-weight:800;color:#0c1a14}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-clock{font-family:var(--mono);font-size:13px;color:var(--text2)}
+.tb-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .15s}
+.tb-btn:hover{background:rgba(255,255,255,0.12);color:var(--text)}
+.tb-av{width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--border2);display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--green)}
+.tb-sep{width:1px;height:20px;background:var(--border)}
+.tb-live{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green);font-weight:600}
+
+/* LAYOUT */
+.app{display:flex;height:calc(100vh - 52px)}
+
+/* SIDEBAR */
+.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);padding:16px 10px;display:flex;flex-direction:column;gap:2px;flex-shrink:0;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s;border:none;background:transparent;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:var(--text)}
+.nav-item.active{background:rgba(16,185,129,0.15);color:var(--green)}
+.nav-item svg{width:15px;height:15px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--crit);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+.nav-section{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);padding:10px 12px 4px;margin-top:4px}
+.tech-status{margin-top:auto;padding:10px 12px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:20px}
+.page{display:none}
+.page.on{display:block}
+
+/* PAGE HEADER */
+.pg-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.pg-title{font-size:18px;font-weight:700}
+
+/* STAT CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.sc-crit::before{background:var(--crit)}.sc-high::before{background:var(--high)}.sc-med::before{background:var(--med)}.sc-low::before{background:var(--low)}.sc-plan::before{background:var(--plan)}
+.stat-val{font-size:28px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:4px}
+.sc-crit .stat-val{color:var(--crit)}.sc-high .stat-val{color:var(--high)}.sc-med .stat-val{color:var(--med)}.sc-low .stat-val{color:var(--low)}.sc-plan .stat-val{color:var(--plan)}
+.stat-label{font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px}
+.card-head{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-title{font-size:13px;font-weight:700}
+.card-body{padding:16px 18px}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);padding:8px 14px;border-bottom:1px solid var(--border)}
+.tbl td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;font-size:13px}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,0.03);cursor:pointer}
+.tkt-id{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--green)}
+
+/* PRIORITY BADGE */
+.pri{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.pri-crit{background:var(--crit-bg);color:var(--crit)}.pri-high{background:var(--high-bg);color:var(--high)}
+.pri-med{background:var(--med-bg);color:var(--med)}.pri-low{background:var(--low-bg);color:var(--low)}.pri-plan{background:var(--plan-bg);color:var(--plan)}
+.pri-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* STATUS BADGE */
+.sta{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600}
+.sta-new{background:rgba(239,68,68,0.15);color:#ef4444}
+.sta-assigned{background:rgba(245,158,11,0.15);color:#f59e0b}
+.sta-prog{background:rgba(59,130,246,0.15);color:#3b82f6}
+.sta-parts{background:rgba(168,85,247,0.15);color:#a855f7}
+.sta-resolved{background:rgba(16,185,129,0.15);color:#10b981}
+.sta-closed{background:rgba(100,116,139,0.15);color:#94a3b8}
+.sta-overdue{background:rgba(239,68,68,0.2);color:#f87171;font-style:italic}
+
+/* CATEGORY ICON CHIP */
+.cat-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.06);color:var(--text2)}
+
+/* FORMS */
+.form-row{display:grid;gap:14px;margin-bottom:14px}
+.fr2{grid-template-columns:1fr 1fr}.fr3{grid-template-columns:1fr 1fr 1fr}
+.fl label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.fl input,.fl select,.fl textarea{width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:border .15s}
+.fl input:focus,.fl select:focus,.fl textarea:focus{border-color:var(--green)}
+.fl select option{background:var(--bg2)}
+.fl textarea{resize:vertical;min-height:80px}
+.fl input[readonly]{opacity:.6}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--r);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:rgba(255,255,255,0.06);color:var(--text);transition:all .15s}
+.btn:hover{background:rgba(255,255,255,0.12)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-green{background:var(--low-bg);color:var(--low);border-color:rgba(16,185,129,0.3)}.btn-green:hover{background:rgba(16,185,129,0.25)}
+.btn-gold{background:var(--gold);color:#0c1a14;border-color:var(--gold)}.btn-gold:hover{background:#e09400}
+.btn-red{background:var(--crit-bg);color:var(--crit);border-color:rgba(239,68,68,0.3)}
+.btn-purple{background:rgba(168,85,247,0.15);color:#a855f7;border-color:rgba(168,85,247,0.3)}
+.btn-amber{background:rgba(245,158,11,0.15);color:var(--high);border-color:rgba(245,158,11,0.3)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-full{width:100%;justify-content:center}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-bar select,.filter-bar input{padding:7px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:12px;outline:none}
+.filter-bar select option{background:var(--bg2)}
+
+/* FAULT DETAIL PANEL */
+.fault-panel{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:flex-start;justify-content:flex-end}
+.fault-panel.on{display:flex}
+.fp-inner{width:540px;height:100vh;background:var(--bg2);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.fp-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2)}
+.fp-body{padding:20px;flex:1}
+.log-entry{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:12px}
+.log-entry:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-lg);padding:28px;width:620px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+
+/* PPM */
+.ppm-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);margin-bottom:8px}
+.ppm-freq{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--plan-bg);color:var(--plan)}
+.ppm-due{font-family:var(--mono);font-size:11px}
+.ppm-overdue{color:var(--crit)}
+.ppm-ok{color:var(--low)}
+.ppm-soon{color:var(--high)}
+
+/* ASSETS */
+.asset-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.asset-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.as-ok{background:var(--low)}.as-fault{background:var(--crit)}.as-maint{background:var(--high)}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--bg2);padding:4px;border-radius:var(--r);width:fit-content}
+.tab{padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border:none;background:transparent;transition:all .15s}
+.tab.active{background:var(--surface2);color:var(--text)}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:10px 18px;border-radius:var(--r);font-size:13px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,.4);transform:translateY(60px);opacity:0;transition:all .25s;z-index:9999;pointer-events:none;display:flex;align-items:center;gap:8px}
+.toast.on{transform:translateY(0);opacity:1}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.sla-bar{height:6px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;margin-top:5px}
+.sla-fill{height:6px;border-radius:3px;transition:width .3s}
+@media(max-width:900px){.sidebar{display:none}.stats-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen" class="on">
+  <div class="login-card">
+    <div class="login-brand" style="flex-direction:column;align-items:flex-start;gap:14px">
+      <svg viewBox="0 0 170 40" height="32" xmlns="http://www.w3.org/2000/svg" aria-label="Ghana Airports Company Limited">
+        <g transform="translate(20,2)" fill="#1a3a6e">
+          <ellipse cx="0" cy="14" rx="3" ry="4"/>
+          <path d="M-3,11 C-8,7 -14,4 -22,3 C-17,6 -11,9 -6,12Z"/>
+          <path d="M-3,14 C-10,11 -18,9 -26,9 C-20,11 -13,13 -7,14Z"/>
+          <path d="M-3,17 C-9,16 -16,16 -24,17 C-18,18 -11,18 -6,17Z"/>
+          <path d="M3,11 C8,7 14,4 22,3 C17,6 11,9 6,12Z"/>
+          <path d="M3,14 C10,11 18,9 26,9 C20,11 13,13 7,14Z"/>
+          <path d="M3,17 C9,16 16,16 24,17 C18,18 11,18 6,17Z"/>
+          <path d="M-3,8 C-6,4 -11,1 -17,0 C-13,4 -8,7 -4,10Z"/>
+          <path d="M3,8 C6,4 11,1 17,0 C13,4 8,7 4,10Z"/>
+        </g>
+        <text x="48" y="24" font-size="18" font-weight="700" fill="#1a3a6e" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">ghana</text>
+        <text x="107" y="24" font-size="18" font-weight="700" fill="#8dc440" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">airports</text>
+        <text x="48" y="34" font-size="5.5" fill="#1a3a6e" font-family="Arial,sans-serif" letter-spacing="1.8">COMPANY LIMITED</text>
+      </svg>
+      <div>
+        <div class="login-title">Facilities Management Control Centre</div>
+        <div class="login-sub" style="display:flex;align-items:center;gap:6px"><span class="live-dot" style="width:7px;height:7px"></span> FMCC · All GACL Airports</div>
+      </div>
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <div class="lf"><label>Username</label><input id="l-user" type="text" placeholder="Enter username" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="lf"><label>Password</label><input id="l-pass" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-green btn-full" style="margin-bottom:16px;background:var(--green);color:#0c1a14;border-color:var(--green)" onclick="doLogin()">Sign in →</button>
+    <div class="live-tag"><span class="live-dot"></span>Facilities Management · All GACL Airports</div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar" id="topbar" style="display:none">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="tb-brand" onclick="goPage('dashboard')" style="gap:12px">
+      <svg viewBox="0 0 170 40" height="30" xmlns="http://www.w3.org/2000/svg" aria-label="Ghana Airports Company Limited" style="flex-shrink:0">
+        <g transform="translate(20,2)" fill="#1a3a6e">
+          <ellipse cx="0" cy="14" rx="3" ry="4"/>
+          <path d="M-3,11 C-8,7 -14,4 -22,3 C-17,6 -11,9 -6,12Z"/>
+          <path d="M-3,14 C-10,11 -18,9 -26,9 C-20,11 -13,13 -7,14Z"/>
+          <path d="M-3,17 C-9,16 -16,16 -24,17 C-18,18 -11,18 -6,17Z"/>
+          <path d="M3,11 C8,7 14,4 22,3 C17,6 11,9 6,12Z"/>
+          <path d="M3,14 C10,11 18,9 26,9 C20,11 13,13 7,14Z"/>
+          <path d="M3,17 C9,16 16,16 24,17 C18,18 11,18 6,17Z"/>
+          <path d="M-3,8 C-6,4 -11,1 -17,0 C-13,4 -8,7 -4,10Z"/>
+          <path d="M3,8 C6,4 11,1 17,0 C13,4 8,7 4,10Z"/>
+        </g>
+        <text x="48" y="24" font-size="18" font-weight="700" fill="#1a3a6e" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">ghana</text>
+        <text x="107" y="24" font-size="18" font-weight="700" fill="#8dc440" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">airports</text>
+        <text x="48" y="34" font-size="5.5" fill="#1a3a6e" font-family="Arial,sans-serif" letter-spacing="1.8">COMPANY LIMITED</text>
+      </svg>
+      <div class="tb-sep"></div>
+      <span style="font-size:12px;font-weight:700;color:#1a3a6e">FMCC</span>
+    </div>
+    <div class="tb-sep"></div>
+    <div class="tb-live"><div class="live-dot"></div> LIVE</div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-clock" id="tb-clock">--:--:--</div>
+    <button style="background:var(--green);color:#0c1a14;border-color:var(--green);font-weight:700;padding:7px 16px;border-radius:var(--r);font-family:var(--font);font-size:13px;cursor:pointer;border:none" onclick="openNewFault()">+ New Fault</button>
+    <div class="tb-right" style="gap:8px">
+      <div class="tb-av" id="tb-av">?</div>
+      <span style="font-size:12px;color:var(--text2)" id="tb-name"></span>
+      <button class="tb-btn" onclick="doLogout()">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <button class="nav-item active" onclick="goPage('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+      <span class="nav-badge" id="badge-crit" style="display:none">0</span>
+    </button>
+    <button class="nav-item" onclick="goPage('faults',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Fault Queue
+      <span class="nav-badge" id="badge-open" style="background:var(--med)">0</span>
+    </button>
+    <button class="nav-item" onclick="openNewFault()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Log Fault
+    </button>
+    <span class="nav-section">Maintenance</span>
+    <button class="nav-item" onclick="goPage('ppm',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      PPM Schedule
+      <span class="nav-badge" id="badge-ppm" style="background:var(--high);display:none">0</span>
+    </button>
+    <button class="nav-item" onclick="goPage('assets',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      Asset Register
+    </button>
+    <span class="nav-section">Management</span>
+    <button class="nav-item" id="nav-reports" onclick="goPage('reports',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Reports
+    </button>
+    <button class="nav-item" id="nav-admin" onclick="goPage('admin',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M12 2v2M4.93 4.93l1.41 1.41M2 12h2M4.93 19.07l1.41-1.41M12 22v-2M19.07 19.07l-1.41-1.41M22 12h-2"/></svg>
+      Admin
+    </button>
+    <button class="nav-item" onclick="window.open('aocc.html','_blank')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.54 3.17 2 2 0 0 1 3.52 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 5.99 5.99l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Open AOCC ↗
+    </button>
+
+    <div class="tech-status">
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px">My Status</div>
+      <select id="my-status" onchange="updateMyStatus(this.value)" style="background:transparent;border:none;color:var(--text);font-size:12px;font-weight:600;outline:none;cursor:pointer;width:100%">
+        <option value="available">🟢 Available</option>
+        <option value="busy">🔴 On Task</option>
+        <option value="offsite">🟡 Off-site</option>
+      </select>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px" id="tech-location">Location: KIA</div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div id="page-dashboard" class="page on">
+      <div class="stats-row" id="dash-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:16px">
+        <div>
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">🔴 Critical &amp; High Priority Faults</span>
+              <button class="btn btn-sm" onclick="goPage('faults',document.querySelectorAll('.nav-item')[1])">All faults →</button>
+            </div>
+            <table class="tbl" id="dash-active">
+              <thead><tr><th>ID</th><th>Fault / Location</th><th>Category</th><th>Priority</th><th>Status</th><th>SLA</th></tr></thead>
+              <tbody id="dash-active-body"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">📅 PPM Due This Week</span><button class="btn btn-sm" onclick="goPage('ppm',document.querySelectorAll('.nav-item')[4])">View all →</button></div>
+            <div class="card-body" id="dash-ppm"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div class="card-head"><span class="card-title">📊 By Category (Open)</span></div>
+            <div class="card-body" id="dash-bycat"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">👷 Technicians</span></div>
+            <div class="card-body" id="dash-techs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FAULT QUEUE ══ -->
+    <div id="page-faults" class="page">
+      <div class="pg-head">
+        <span class="pg-title">Fault Queue</span>
+        <button class="btn btn-green" onclick="openNewFault()">+ Log Fault</button>
+      </div>
+      <div class="filter-bar">
+        <select id="f-pri" onchange="renderFaults()"><option value="">All Priorities</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>Planned</option></select>
+        <select id="f-sta" onchange="renderFaults()"><option value="">All Statuses</option><option>New</option><option>Assigned</option><option>In Progress</option><option>Pending Parts</option><option>Resolved</option><option>Closed</option></select>
+        <select id="f-cat" onchange="renderFaults()"><option value="">All Categories</option><option>Electrical</option><option>HVAC</option><option>Lifts &amp; Escalators</option><option>Plumbing</option><option>Civil/Structural</option><option>Fire Systems</option><option>Generator/Power</option><option>Pest Control</option><option>Cleaning</option><option>Security Systems</option><option>Signage</option><option>Other</option></select>
+        <select id="f-loc" onchange="renderFaults()"><option value="">All Locations</option><option>KIA — Accra</option><option>Kumasi Airport</option><option>Tamale Airport</option><option>Sunyani Airport</option><option>Ho Airport</option><option>Wa Airport</option></select>
+        <input type="search" id="f-srch" placeholder="Search…" oninput="renderFaults()" style="flex:1;min-width:160px">
+        <button class="btn btn-sm" onclick="exportCSV()">⬇ CSV</button>
+      </div>
+      <div class="card">
+        <table class="tbl">
+          <thead><tr><th>ID</th><th>Fault / Location</th><th>Category</th><th>Priority</th><th>Assigned To</th><th>Status</th><th>SLA</th><th>Logged</th><th></th></tr></thead>
+          <tbody id="faults-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ PPM ══ -->
+    <div id="page-ppm" class="page">
+      <div class="pg-head">
+        <span class="pg-title">PPM — Planned Preventive Maintenance</span>
+        <button class="btn btn-green" onclick="openAddPPM()">+ Add PPM Task</button>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="ppmTab('all',this)">All</button>
+        <button class="tab" onclick="ppmTab('overdue',this)">Overdue</button>
+        <button class="tab" onclick="ppmTab('upcoming',this)">Due This Week</button>
+        <button class="tab" onclick="ppmTab('done',this)">Completed</button>
+      </div>
+      <div id="ppm-list"></div>
+    </div>
+
+    <!-- ══ ASSETS ══ -->
+    <div id="page-assets" class="page">
+      <div class="pg-head">
+        <span class="pg-title">Asset Register</span>
+        <button class="btn btn-green" onclick="openAddAsset()">+ Add Asset</button>
+      </div>
+      <div class="filter-bar">
+        <select id="a-cat" onchange="renderAssets()"><option value="">All Categories</option><option>HVAC Unit</option><option>Lift/Escalator</option><option>Generator</option><option>Fire Panel</option><option>Pump</option><option>Electrical Panel</option><option>UPS</option><option>CCTV</option><option>Other</option></select>
+        <select id="a-loc" onchange="renderAssets()"><option value="">All Locations</option><option>KIA — Accra</option><option>Kumasi Airport</option><option>Tamale Airport</option></select>
+        <input type="search" id="a-srch" placeholder="Search asset…" oninput="renderAssets()" style="flex:1;min-width:160px">
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px" id="assets-grid"></div>
+    </div>
+
+    <!-- ══ REPORTS ══ -->
+    <div id="page-reports" class="page">
+      <div class="pg-head"><span class="pg-title">Reports &amp; Analytics</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card"><div class="card-head"><span class="card-title">Faults by Category (All time)</span></div><div class="card-body" id="rpt-cat"></div></div>
+        <div class="card"><div class="card-head"><span class="card-title">Faults by Priority (All time)</span></div><div class="card-body" id="rpt-pri"></div></div>
+        <div class="card"><div class="card-head"><span class="card-title">SLA Performance by Priority</span></div><div class="card-body" id="rpt-sla"></div></div>
+        <div class="card"><div class="card-head"><span class="card-title">Resolution Time (Avg by Category)</span></div><div class="card-body" id="rpt-res"></div></div>
+      </div>
+    </div>
+
+    <!-- ══ ADMIN ══ -->
+    <div id="page-admin" class="page">
+      <div class="pg-head"><span class="pg-title">Administration</span></div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><span class="card-title">Users &amp; Technicians</span><button class="btn btn-sm btn-green" onclick="openAddUser()">+ Add User</button></div>
+        <table class="tbl"><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Speciality</th><th>Location</th><th></th></tr></thead><tbody id="admin-users"></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">SLA Targets (hours)</span></div>
+        <div class="card-body">
+          <div class="form-row fr2">
+            <div class="fl"><label>Critical response</label><input type="number" id="sla-crit" value="2" min="1"></div>
+            <div class="fl"><label>High</label><input type="number" id="sla-high" value="8" min="1"></div>
+            <div class="fl"><label>Medium</label><input type="number" id="sla-med" value="24" min="1"></div>
+            <div class="fl"><label>Low</label><input type="number" id="sla-low" value="72" min="1"></div>
+          </div>
+          <button class="btn btn-green btn-sm" onclick="saveSLAs()">Save Targets</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ NEW FAULT MODAL ══ -->
+<div class="modal-bg" id="new-fault-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Log New Fault
+    </div>
+    <div class="form-row fr2">
+      <div class="fl"><label>Category <span style="color:var(--crit)">*</span></label>
+        <select id="nf-cat" onchange="updateSubcat()">
+          <option value="">— Select —</option>
+          <option>Electrical</option><option>HVAC</option><option>Lifts &amp; Escalators</option>
+          <option>Plumbing</option><option>Civil/Structural</option><option>Fire Systems</option>
+          <option>Generator/Power</option><option>Pest Control</option><option>Cleaning</option>
+          <option>Security Systems</option><option>Signage</option><option>Other</option>
+        </select>
+      </div>
+      <div class="fl"><label>Sub-category</label><select id="nf-subcat"><option value="">— Select category first —</option></select></div>
+    </div>
+    <div class="form-row fr3">
+      <div class="fl"><label>Airport</label>
+        <select id="nf-airport">
+          <option>KIA — Accra</option><option>Kumasi Airport</option><option>Tamale Airport</option><option>Sunyani Airport</option><option>Ho Airport</option><option>Wa Airport</option>
+        </select>
+      </div>
+      <div class="fl"><label>Terminal / Zone</label>
+        <select id="nf-terminal">
+          <option>Terminal 1</option><option>Terminal 2</option><option>Terminal 3</option>
+          <option>Arrivals Hall</option><option>Departures Hall</option><option>Airside</option>
+          <option>Landside</option><option>Car Park</option><option>Admin Block</option>
+          <option>Fire Station</option><option>Cargo Terminal</option><option>External/Grounds</option>
+        </select>
+      </div>
+      <div class="fl"><label>Specific Location</label><input type="text" id="nf-location" placeholder="e.g. Gate 14, Level 2"></div>
+    </div>
+    <div class="form-row fr2">
+      <div class="fl"><label>Priority <span style="color:var(--crit)">*</span></label>
+        <select id="nf-priority">
+          <option value="Low">🟢 Low</option>
+          <option value="Medium" selected>🔵 Medium</option>
+          <option value="High">🟡 High</option>
+          <option value="Critical">🔴 Critical</option>
+          <option value="Planned">🟣 Planned</option>
+        </select>
+      </div>
+      <div class="fl"><label>Assign To</label>
+        <select id="nf-assign"><option value="">— Unassigned —</option></select>
+      </div>
+    </div>
+    <div class="fl" style="margin-bottom:14px"><label>Fault Title / Subject <span style="color:var(--crit)">*</span></label>
+      <input type="text" id="nf-title" placeholder="e.g. Air conditioning not cooling — Gate 5 waiting area">
+    </div>
+    <div class="form-row fr2">
+      <div class="fl"><label>Reported By</label><input type="text" id="nf-reporter" placeholder="Name"></div>
+      <div class="fl"><label>Contact</label><input type="text" id="nf-contact" placeholder="Ext. or phone"></div>
+    </div>
+    <div class="fl" style="margin-bottom:14px"><label>Description / Observations</label>
+      <textarea id="nf-desc" placeholder="Describe the fault in detail. Include any error codes, sounds, smells, affected equipment, number of people impacted…"></textarea>
+    </div>
+    <div class="fl" style="margin-bottom:14px"><label>Asset ID / Equipment (if known)</label>
+      <input type="text" id="nf-asset" placeholder="e.g. AHU-T3-02, LIFT-A-KIA">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-green" style="flex:1;justify-content:center;background:var(--green);color:#0c1a14;border-color:var(--green)" onclick="createFault()">Log Fault</button>
+      <button class="btn" onclick="closeModal('new-fault-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD PPM MODAL ══ -->
+<div class="modal-bg" id="add-ppm-modal">
+  <div class="modal">
+    <div class="modal-title">Add PPM Task</div>
+    <div class="fl" style="margin-bottom:14px"><label>Task Title <span style="color:var(--crit)">*</span></label><input type="text" id="pp-title" placeholder="e.g. Monthly HVAC filter inspection — T3"></div>
+    <div class="form-row fr3">
+      <div class="fl"><label>Category</label><select id="pp-cat"><option>Electrical</option><option>HVAC</option><option>Lifts &amp; Escalators</option><option>Plumbing</option><option>Fire Systems</option><option>Generator/Power</option><option>Civil/Structural</option><option>Other</option></select></div>
+      <div class="fl"><label>Frequency</label><select id="pp-freq"><option>Daily</option><option>Weekly</option><option>Monthly</option><option>Quarterly</option><option>Annual</option></select></div>
+      <div class="fl"><label>Next Due</label><input type="date" id="pp-due"></div>
+    </div>
+    <div class="form-row fr2">
+      <div class="fl"><label>Location</label><input type="text" id="pp-loc" placeholder="e.g. KIA Terminal 3"></div>
+      <div class="fl"><label>Assigned To</label><select id="pp-assign"><option value="">— Any available —</option></select></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-green" style="flex:1;justify-content:center;background:var(--green);color:#0c1a14;border-color:var(--green)" onclick="savePPM()">Add Task</button>
+      <button class="btn" onclick="closeModal('add-ppm-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD ASSET MODAL ══ -->
+<div class="modal-bg" id="add-asset-modal">
+  <div class="modal">
+    <div class="modal-title">Add Asset</div>
+    <div class="form-row fr2">
+      <div class="fl"><label>Asset ID <span style="color:var(--crit)">*</span></label><input type="text" id="as-id" placeholder="e.g. AHU-T3-02"></div>
+      <div class="fl"><label>Asset Name <span style="color:var(--crit)">*</span></label><input type="text" id="as-name" placeholder="e.g. AHU Unit — T3 Gate 5"></div>
+    </div>
+    <div class="form-row fr3">
+      <div class="fl"><label>Category</label><select id="as-cat"><option>HVAC Unit</option><option>Lift/Escalator</option><option>Generator</option><option>Fire Panel</option><option>Pump</option><option>Electrical Panel</option><option>UPS</option><option>CCTV</option><option>Other</option></select></div>
+      <div class="fl"><label>Location</label><input type="text" id="as-loc" placeholder="KIA T3 Level 2"></div>
+      <div class="fl"><label>Status</label><select id="as-status"><option value="ok">Operational</option><option value="fault">Faulty</option><option value="maint">Under Maintenance</option></select></div>
+    </div>
+    <div class="form-row fr2">
+      <div class="fl"><label>Make / Model</label><input type="text" id="as-model" placeholder="e.g. Carrier 30HXC"></div>
+      <div class="fl"><label>Installation Date</label><input type="date" id="as-date"></div>
+    </div>
+    <div class="fl" style="margin-bottom:14px"><label>Notes</label><textarea id="as-notes" style="min-height:60px" placeholder="Warranty info, last service date, vendor contact…"></textarea></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-green" style="flex:1;justify-content:center;background:var(--green);color:#0c1a14;border-color:var(--green)" onclick="saveAsset()">Add Asset</button>
+      <button class="btn" onclick="closeModal('add-asset-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD USER MODAL ══ -->
+<div class="modal-bg" id="add-user-modal">
+  <div class="modal">
+    <div class="modal-title">Add User</div>
+    <div class="form-row fr2">
+      <div class="fl"><label>Full Name</label><input type="text" id="au-name"></div>
+      <div class="fl"><label>Username</label><input type="text" id="au-user"></div>
+    </div>
+    <div class="form-row fr3">
+      <div class="fl"><label>Password</label><input type="password" id="au-pass"></div>
+      <div class="fl"><label>Role</label><select id="au-role"><option value="technician">Technician</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
+      <div class="fl"><label>Speciality</label><select id="au-spec"><option>Electrical</option><option>HVAC</option><option>Plumbing</option><option>Civil</option><option>Fire Systems</option><option>Mechanical</option><option>General</option></select></div>
+    </div>
+    <div class="fl" style="margin-bottom:14px"><label>Primary Location</label><select id="au-loc"><option>KIA — Accra</option><option>Kumasi Airport</option><option>Tamale Airport</option><option>Sunyani Airport</option><option>Ho Airport</option><option>Wa Airport</option></select></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-green" style="flex:1;justify-content:center;background:var(--green);color:#0c1a14;border-color:var(--green)" onclick="saveUser()">Add User</button>
+      <button class="btn" onclick="closeModal('add-user-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FAULT DETAIL PANEL ══ -->
+<div class="fault-panel" id="fault-panel" onclick="closeFaultPanel(event)">
+  <div class="fp-inner" onclick="event.stopPropagation()">
+    <div class="fp-head">
+      <div>
+        <div class="tkt-id" id="fp-id" style="font-size:13px;margin-bottom:4px"></div>
+        <div style="font-size:15px;font-weight:700" id="fp-title"></div>
+      </div>
+      <button onclick="closeFaultPanel()" style="border:none;background:transparent;color:var(--text2);font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div class="fp-body">
+      <div id="fp-badges" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"></div>
+      <div style="background:var(--bg2);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px" id="fp-desc"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:var(--text2);margin-bottom:16px" id="fp-meta"></div>
+
+      <!-- SLA bar -->
+      <div id="fp-sla-section" style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px">
+          <span>SLA Progress</span><span id="fp-sla-label"></span>
+        </div>
+        <div class="sla-bar"><div class="sla-fill" id="fp-sla-fill"></div></div>
+      </div>
+
+      <hr class="divider">
+      <!-- Actions -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+        <button class="btn btn-sm btn-amber" onclick="updateStatus('Assigned')">Assign</button>
+        <button class="btn btn-sm" style="background:rgba(59,130,246,0.15);color:var(--med);border-color:rgba(59,130,246,0.3)" onclick="updateStatus('In Progress')">▶ In Progress</button>
+        <button class="btn btn-sm btn-purple" onclick="updateStatus('Pending Parts')">⏳ Pending Parts</button>
+        <button class="btn btn-sm btn-green" onclick="updateStatus('Resolved')">✓ Resolved</button>
+        <button class="btn btn-sm" style="background:rgba(100,116,139,0.15);color:#94a3b8" onclick="updateStatus('Closed')">✕ Close</button>
+      </div>
+
+      <!-- Reassign + escalate -->
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Reassign To</div>
+          <select id="fp-reassign" style="width:100%;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:12px;outline:none">
+            <option value="">— Select technician —</option>
+          </select>
+        </div>
+        <button class="btn btn-sm" style="margin-top:22px;align-self:flex-start" onclick="reassign()">Reassign</button>
+        <button class="btn btn-sm btn-red" style="margin-top:22px;align-self:flex-start" onclick="escalateToAOCC()">🔴 Escalate to AOCC</button>
+      </div>
+
+      <!-- Work notes -->
+      <div style="margin-bottom:16px">
+        <div class="fl" style="margin-bottom:8px"><label>Work Done / Notes</label>
+          <textarea id="fp-note" style="width:100%;padding:9px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:13px;resize:vertical;min-height:70px;outline:none" placeholder="Describe work done, parts used, observations…"></textarea>
+        </div>
+        <button class="btn btn-sm btn-green" onclick="addNote()">Add Note</button>
+      </div>
+
+      <hr class="divider">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Activity Log</div>
+      <div id="fp-log"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="t-icon">✓</span><span id="t-msg"></span></div>
+
+<script>
+/* ════════════════════════════════════════════
+   FMCC — Facilities Management Control Centre
+   Ghana Airports Company Limited
+   ════════════════════════════════════════════ */
+
+const CATEGORIES = ['Electrical','HVAC','Lifts & Escalators','Plumbing','Civil/Structural','Fire Systems','Generator/Power','Pest Control','Cleaning','Security Systems','Signage','Other'];
+const SUBCATS = {
+  'Electrical':       ['Power outage','Lighting fault','Socket/outlet','Distribution board','Wiring issue','Emergency lighting','Other'],
+  'HVAC':             ['AC not cooling','AC leaking','Ventilation fault','Thermostat','Filter replacement','Chiller issue','Other'],
+  'Lifts & Escalators':['Lift out of service','Escalator fault','Lift door issue','Control panel fault','Safety sensor','Overload fault','Other'],
+  'Plumbing':         ['Leaking pipe','Blocked drain','Toilet fault','No water supply','Water contamination','Sewage issue','Other'],
+  'Civil/Structural': ['Ceiling damage','Floor damage','Door/window fault','Wall crack','Roof leak','Signage structure','Other'],
+  'Fire Systems':     ['Fire alarm fault','Sprinkler issue','Extinguisher inspection','Fire door fault','Smoke detector','Emergency exit','Other'],
+  'Generator/Power':  ['Generator fault','Fuel level','Automatic transfer failure','UPS fault','Power quality','Load shedding impact','Other'],
+  'Pest Control':     ['Rodent sighting','Insect infestation','Bird control','Preventive treatment','Other'],
+  'Cleaning':         ['Deep cleaning required','Spill/contamination','Restroom issue','Waste overflow','Other'],
+  'Security Systems': ['CCTV fault','Access control','Intercom fault','Other'],
+  'Signage':          ['Broken sign','Faded/illegible','Directional update needed','Illuminated sign fault','Other'],
+  'Other':            ['General maintenance','Other']
+};
+const AIRPORTS = ['KIA — Accra','Kumasi Airport','Tamale Airport','Sunyani Airport','Ho Airport','Wa Airport'];
+const CAT_ICONS = {'Electrical':'⚡','HVAC':'❄️','Lifts & Escalators':'🛗','Plumbing':'🔧','Civil/Structural':'🏗️','Fire Systems':'🔥','Generator/Power':'⚙️','Pest Control':'🐛','Cleaning':'🧹','Security Systems':'🔐','Signage':'🪧','Other':'🔩'};
+
+let SLA_H = { Critical:2, High:8, Medium:24, Low:72, Planned:168 };
+const K = { users:'fmcc_users', faults:'fmcc_faults', ppm:'fmcc_ppm', assets:'fmcc_assets' };
+const getData = k => { try{ return JSON.parse(localStorage.getItem(k)||'[]'); }catch{ return []; }};
+const setData = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+
+function initStorage() {
+  if (!getData(K.users).length) {
+    setData(K.users,[
+      { id:1, name:'FMCC Control',     username:'admin',    password:'fmcc2026', role:'admin',       spec:'General',   loc:'KIA — Accra', status:'available' },
+      { id:2, name:'Kweku Asante',     username:'kasante',  password:'tech123',  role:'technician',  spec:'Electrical',loc:'KIA — Accra', status:'available' },
+      { id:3, name:'Emmanuel Darko',   username:'edarko',   password:'tech123',  role:'technician',  spec:'HVAC',      loc:'KIA — Accra', status:'available' },
+      { id:4, name:'Abena Frimpong',   username:'afrimpong',password:'tech123',  role:'technician',  spec:'Plumbing',  loc:'KIA — Accra', status:'busy' },
+      { id:5, name:'Kofi Owusu',       username:'kowusu',   password:'sup123',   role:'supervisor',  spec:'General',   loc:'KIA — Accra', status:'available' },
+    ]);
+  }
+
+  if (!getData(K.faults).length) {
+    const now = Date.now();
+    const faults = [
+      mkFault({cat:'HVAC',sub:'AC not cooling',airport:'KIA — Accra',terminal:'Terminal 3',loc:'Gate 5 waiting area',priority:'High',title:'Air conditioning not cooling — Gate 5 waiting area',reporter:'Passenger Services',contact:'Ext. 3196',desc:'Multiple passengers complaining of excessive heat in the Gate 5 seating area. AC unit appears to be running but blowing warm air. Started approximately 2 hours ago.',assign:'Emmanuel Darko',status:'In Progress',asset:'AHU-T3-05',created:now-3*3600000}),
+      mkFault({cat:'Lifts & Escalators',sub:'Escalator fault',airport:'KIA — Accra',terminal:'Arrivals Hall',loc:'Main escalator, south side',priority:'Critical',title:'Main arrivals escalator out of service',reporter:'Night Supervisor',contact:'Ext. 2035',desc:'Main escalator in arrivals hall has stopped. Passengers with heavy luggage unable to use. Elevator capacity overwhelmed. Fault code E-17 showing on panel.',assign:'Kofi Owusu',status:'Assigned',asset:'ESC-ARR-01',created:now-45*60000}),
+      mkFault({cat:'Plumbing',sub:'Blocked drain',airport:'KIA — Accra',terminal:'Terminal 2',loc:"Gents' restroom, Level 1",priority:'High',title:"Blocked drain — Gents' restroom T2 Level 1",reporter:'Cleaning Supervisor',contact:'Ext. 2441',desc:'Two urinals and a floor drain blocked. Water pooling on floor. Health and safety risk. Smells reported by passengers.',assign:'Abena Frimpong',status:'In Progress',asset:'',created:now-90*60000}),
+      mkFault({cat:'Electrical',sub:'Lighting fault',airport:'KIA — Accra',terminal:'Car Park',loc:'Multi-storey car park Level 3',priority:'Medium',title:'40% of lighting failed — Car Park Level 3',reporter:'Security Officer',contact:'Ext. 2504',desc:'Approximately 40% of fluorescent lights on Level 3 not working. Safety concern especially at night. May be a faulty breaker.',assign:'Kweku Asante',status:'Assigned',asset:'ELEC-PARK-L3',created:now-5*3600000}),
+      mkFault({cat:'Fire Systems',sub:'Fire alarm fault',airport:'KIA — Accra',terminal:'Admin Block',loc:'3rd Floor Server Room',priority:'Critical',title:'Fire alarm panel fault — Admin Block server room',reporter:'ICT Help Desk',contact:'Ext. 1090',desc:'Fire alarm panel showing fault code on 3rd floor zone. System showing partial failure. Server room fire suppression may be affected.',assign:'Kofi Owusu',status:'New',asset:'FA-ADMIN-01',created:now-15*60000}),
+      mkFault({cat:'Generator/Power',sub:'Fuel level',airport:'Kumasi Airport',terminal:'Terminal 1',loc:'Generator room',priority:'Low',title:'Standby generator fuel level low — Kumasi',reporter:'Airport Manager',contact:'0322080800',desc:'Standby generator at 20% fuel. Scheduled fuel delivery overdue by 3 days. Request urgent top-up.',assign:'',status:'New',asset:'GEN-KSI-01',created:now-8*3600000}),
+      mkFault({cat:'HVAC',sub:'Filter replacement',airport:'KIA — Accra',terminal:'Terminal 1',loc:'AHU Room, Basement',priority:'Planned',title:'Quarterly HVAC filter replacement — T1',reporter:'PPM Schedule',contact:'FMCC',desc:'Scheduled quarterly filter replacement for all 12 AHU units in Terminal 1. Last done 3 months ago.',assign:'Emmanuel Darko',status:'Resolved',asset:'AHU-T1-ALL',created:now-7*24*3600000}),
+    ];
+    setData(K.faults, faults);
+  }
+
+  if (!getData(K.ppm).length) {
+    const today = new Date();
+    const addDays = d => { const n=new Date(); n.setDate(n.getDate()+d); return n.toISOString().slice(0,10); };
+    setData(K.ppm,[
+      { id:'PPM-001', title:'Weekly fire extinguisher visual inspection', cat:'Fire Systems', freq:'Weekly', loc:'KIA — All terminals', assign:'Kofi Owusu', nextDue:addDays(1), lastDone:addDays(-6), status:'upcoming' },
+      { id:'PPM-002', title:'Monthly HVAC filter inspection — T3', cat:'HVAC', freq:'Monthly', loc:'KIA Terminal 3', assign:'Emmanuel Darko', nextDue:addDays(3), lastDone:addDays(-27), status:'upcoming' },
+      { id:'PPM-003', title:'Lift safety inspection — T1, T2, T3', cat:'Lifts & Escalators', freq:'Monthly', loc:'KIA — All terminals', assign:'Kofi Owusu', nextDue:addDays(-2), lastDone:addDays(-32), status:'overdue' },
+      { id:'PPM-004', title:'Generator load test and fuel check', cat:'Generator/Power', freq:'Monthly', loc:'KIA Ramp/Apron', assign:'Kweku Asante', nextDue:addDays(7), lastDone:addDays(-21), status:'upcoming' },
+      { id:'PPM-005', title:'Annual fire alarm panel service', cat:'Fire Systems', freq:'Annual', loc:'All GACL airports', assign:'Kofi Owusu', nextDue:addDays(45), lastDone:addDays(-320), status:'upcoming' },
+      { id:'PPM-006', title:'Quarterly electrical panel inspection', cat:'Electrical', freq:'Quarterly', loc:'KIA Admin Block', assign:'Kweku Asante', nextDue:addDays(-5), lastDone:addDays(-95), status:'overdue' },
+      { id:'PPM-007', title:'Daily terminal cleanliness walk-through', cat:'Cleaning', freq:'Daily', loc:'KIA — All terminals', assign:'', nextDue:addDays(0), lastDone:addDays(-1), status:'upcoming' },
+    ]);
+  }
+
+  if (!getData(K.assets).length) {
+    setData(K.assets,[
+      { id:'AHU-T3-05', name:'AHU Unit — T3 Gate 5 area', cat:'HVAC Unit', loc:'KIA T3 Level 1', status:'fault', model:'Carrier 30HXC-250', installed:'2018-03-15', notes:'Warranty expired 2021. Last full service: Jan 2026.' },
+      { id:'ESC-ARR-01', name:'Main Arrivals Escalator', cat:'Lift/Escalator', loc:'KIA Arrivals Hall', status:'fault', model:'Schindler 9300', installed:'2015-06-01', notes:'Annual inspection due. KONE service contract.' },
+      { id:'GEN-KSI-01', name:'Standby Generator — Kumasi', cat:'Generator', loc:'Kumasi Airport', status:'ok', model:'Caterpillar 3516B', installed:'2012-04-10', notes:'1MW capacity. 5000-hour service due Q3 2026.' },
+      { id:'FA-ADMIN-01', name:'Fire Alarm Panel — Admin Block', cat:'Fire Panel', loc:'KIA Admin Block', status:'fault', model:'Notifier NFS-3030', installed:'2019-11-20', notes:'Zone 3 partial fault. Service call logged.' },
+      { id:'AHU-T1-ALL', name:'AHU Units — Terminal 1 (x12)', cat:'HVAC Unit', loc:'KIA Terminal 1 Basement', status:'ok', model:'Trane CGAM-120', installed:'2014-08-01', notes:'Filters replaced Jan 2026. Next: Apr 2026.' },
+    ]);
+  }
+}
+
+function mkFault({cat,sub,airport,terminal,loc,priority,title,reporter,contact,desc,assign,status,asset,created}) {
+  const today = new Date(created||Date.now()).toISOString().slice(0,10).replace(/-/g,'');
+  const existing = getData(K.faults).filter(f=>f.id.includes(today));
+  const id = 'FMCC-'+today+'-'+String(existing.length+1).padStart(4,'0');
+  return { id, cat, sub, airport, terminal, loc, priority, title, reporter, contact, desc, assignedTo:assign||'', status, asset, createdAt:created||Date.now(), updatedAt:created||Date.now(), resolvedAt:null, aoccRef:'', logs:[{time:created||Date.now(),user:'System',action:'Fault logged',note:''}] };
+}
+
+let USER=null, _viewFault=null, _ppmFilter='all';
+
+/* ── AUTH ── */
+function doLogin() {
+  const u = document.getElementById('l-user').value.trim().toLowerCase();
+  const p = document.getElementById('l-pass').value;
+  const user = getData(K.users).find(x=>x.username===u&&x.password===p);
+  const err = document.getElementById('login-err');
+  if (!user) { err.textContent='Incorrect username or password.'; err.classList.add('on'); return; }
+  USER=user; err.classList.remove('on');
+  document.getElementById('login-screen').classList.remove('on');
+  startApp();
+}
+function doLogout() { USER=null; location.reload(); }
+
+function startApp() {
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('app').style.display='flex';
+  const ini = USER.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('tb-av').textContent=ini;
+  document.getElementById('tb-name').textContent=USER.name+' · '+USER.role;
+  document.getElementById('tech-location').textContent='Location: '+USER.loc;
+  if(USER.role==='technician') { document.getElementById('nav-reports').style.display='none'; document.getElementById('nav-admin').style.display='none'; }
+  populateSelects();
+  startClock();
+  renderDashboard();
+  renderBadges();
+  setInterval(()=>{ renderDashboard(); renderBadges(); },60000);
+}
+
+function startClock() {
+  function tick(){ document.getElementById('tb-clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:'Africa/Accra'}); }
+  tick(); setInterval(tick,1000);
+}
+
+/* ── NAV ── */
+function goPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('on');
+  if(btn) btn.classList.add('active');
+  if(name==='faults') renderFaults();
+  if(name==='ppm')    renderPPM();
+  if(name==='assets') renderAssets();
+  if(name==='reports')renderReports();
+  if(name==='admin')  renderAdmin();
+}
+
+/* ── BADGES ── */
+function renderBadges() {
+  const faults = getData(K.faults);
+  const crit = faults.filter(f=>f.priority==='Critical'&&f.status!=='Closed'&&f.status!=='Resolved').length;
+  const open = faults.filter(f=>f.status==='New'||f.status==='Assigned').length;
+  const ppm  = getData(K.ppm).filter(p=>p.status==='overdue').length;
+  const bC=document.getElementById('badge-crit'), bO=document.getElementById('badge-open'), bP=document.getElementById('badge-ppm');
+  bC.textContent=crit; bC.style.display=crit?'':'none';
+  bO.textContent=open; bO.style.display=open?'':'none';
+  bP.textContent=ppm;  bP.style.display=ppm?'':'none';
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard() {
+  const faults=getData(K.faults);
+  const todayStart=new Date(); todayStart.setHours(0,0,0,0);
+  const open   =faults.filter(f=>f.status==='New').length;
+  const inProg =faults.filter(f=>f.status==='In Progress'||f.status==='Assigned').length;
+  const parts  =faults.filter(f=>f.status==='Pending Parts').length;
+  const resToday=faults.filter(f=>f.status==='Resolved'&&f.updatedAt>=todayStart.getTime()).length;
+  const overdue=faults.filter(f=>!['Resolved','Closed'].includes(f.status)&&slaRemain(f)<0).length;
+
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat-card sc-crit"><div class="stat-val">${open}</div><div class="stat-label">New / Open</div></div>
+    <div class="stat-card sc-high"><div class="stat-val">${inProg}</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card sc-med"><div class="stat-val">${parts}</div><div class="stat-label">Pending Parts</div></div>
+    <div class="stat-card sc-low"><div class="stat-val">${resToday}</div><div class="stat-label">Resolved Today</div></div>
+    <div class="stat-card sc-plan" style="border-left-color:var(--crit)"><div class="stat-val" style="color:var(--crit)">${overdue}</div><div class="stat-label">SLA Breached</div></div>`;
+
+  const pOrder={Critical:0,High:1,Medium:2,Low:3,Planned:4};
+  const active=faults.filter(f=>['Critical','High'].includes(f.priority)&&!['Resolved','Closed'].includes(f.status))
+    .sort((a,b)=>pOrder[a.priority]-pOrder[b.priority]||a.createdAt-b.createdAt).slice(0,6);
+
+  document.getElementById('dash-active-body').innerHTML=active.length
+    ? active.map(f=>`<tr onclick="openFaultDetail('${f.id}')">
+        <td class="tkt-id">${f.id}</td>
+        <td><div style="font-weight:500;font-size:13px">${f.title}</div><div style="font-size:11px;color:var(--text2)">${CAT_ICONS[f.cat]||'🔩'} ${f.cat} · ${f.airport} · ${f.terminal}</div></td>
+        <td><span class="cat-chip">${CAT_ICONS[f.cat]||''} ${f.cat}</span></td>
+        <td>${priBadge(f.priority)}</td>
+        <td>${staBadge(f.status)}</td>
+        <td>${slaWidget(f)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">No critical/high priority active faults.</td></tr>';
+
+  // By category
+  const byCat={};
+  faults.filter(f=>!['Resolved','Closed'].includes(f.status)).forEach(f=>byCat[f.cat]=(byCat[f.cat]||0)+1);
+  const maxC=Math.max(...Object.values(byCat),1);
+  document.getElementById('dash-bycat').innerHTML=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([c,n])=>`
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+        <span style="color:var(--text2)">${CAT_ICONS[c]||''} ${c}</span><span style="font-family:var(--mono);font-weight:700;color:var(--green)">${n}</span>
+      </div>
+      <div class="sla-bar"><div class="sla-fill" style="width:${Math.round(n/maxC*100)}%;background:var(--green)"></div></div>
+    </div>`).join('');
+
+  // Techs
+  const users=getData(K.users);
+  document.getElementById('dash-techs').innerHTML=users.filter(u=>u.role==='technician').map(u=>{
+    const mine=faults.filter(f=>f.assignedTo===u.name&&!['Resolved','Closed'].includes(f.status)).length;
+    const dotC={available:'var(--low)',busy:'var(--crit)',offsite:'var(--high)'}[u.status]||'var(--text3)';
+    const ini=u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--bg3);border:2px solid ${dotC};display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--green)">${ini}</div>
+        <div><div style="font-size:12px;font-weight:600">${u.name}</div><div style="font-size:10px;color:var(--text3)">${u.spec}</div></div>
+      </div>
+      <span style="font-size:11px;font-family:var(--mono);color:${mine>0?'var(--high)':'var(--text3)'}">${mine} active</span>
+    </div>`;
+  }).join('');
+
+  // PPM due this week
+  const ppm=getData(K.ppm);
+  const weekEnd=new Date(); weekEnd.setDate(weekEnd.getDate()+7);
+  const dueWeek=ppm.filter(p=>{ const d=new Date(p.nextDue); return d<=weekEnd&&p.status!=='done'; }).slice(0,4);
+  document.getElementById('dash-ppm').innerHTML=dueWeek.length
+    ? dueWeek.map(p=>`<div class="ppm-row" style="margin-bottom:8px">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600">${p.title}</div><div style="font-size:11px;color:var(--text3);margin-top:2px">${p.loc}</div></div>
+        <span class="ppm-freq">${p.freq}</span>
+        <span class="ppm-due ${new Date(p.nextDue)<new Date()?'ppm-overdue':'ppm-ok'}">${fmtDate(p.nextDue)}</span>
+      </div>`).join('')
+    : '<div style="color:var(--text3);font-size:12px;padding:12px 0">No PPM tasks due this week.</div>';
+}
+
+/* ── FAULT QUEUE ── */
+function renderFaults() {
+  const faults=getData(K.faults);
+  const fPri=document.getElementById('f-pri')?.value||'';
+  const fSta=document.getElementById('f-sta')?.value||'';
+  const fCat=document.getElementById('f-cat')?.value||'';
+  const fLoc=document.getElementById('f-loc')?.value||'';
+  const fSrc=(document.getElementById('f-srch')?.value||'').toLowerCase();
+  const pO={Critical:0,High:1,Medium:2,Low:3,Planned:4};
+  const filtered=faults.filter(f=>
+    (!fPri||f.priority===fPri)&&(!fSta||f.status===fSta)&&
+    (!fCat||f.cat===fCat)&&(!fLoc||f.airport===fLoc)&&
+    (!fSrc||f.title.toLowerCase().includes(fSrc)||f.id.toLowerCase().includes(fSrc)||f.cat.toLowerCase().includes(fSrc))
+  ).sort((a,b)=>pO[a.priority]-pO[b.priority]||a.createdAt-b.createdAt);
+
+  document.getElementById('faults-body').innerHTML=filtered.length
+    ? filtered.map(f=>`<tr onclick="openFaultDetail('${f.id}')">
+        <td class="tkt-id">${f.id}</td>
+        <td><div style="font-weight:500">${f.title}</div><div style="font-size:11px;color:var(--text2)">${f.airport} · ${f.terminal}${f.loc?' · '+f.loc:''}</div></td>
+        <td><span class="cat-chip">${CAT_ICONS[f.cat]||''} ${f.cat}</span></td>
+        <td>${priBadge(f.priority)}</td>
+        <td style="font-size:12px;color:var(--text2)">${f.assignedTo||'<span style="color:var(--text3)">Unassigned</span>'}</td>
+        <td>${staBadge(f.status)}</td>
+        <td>${slaWidget(f)}</td>
+        <td style="font-size:11px;font-family:var(--mono);color:var(--text3)">${fmtDT(f.createdAt)}</td>
+        <td><button class="btn btn-sm" onclick="event.stopPropagation();openFaultDetail('${f.id}')">View →</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--text3)">No faults match the current filters.</td></tr>';
+}
+
+/* ── NEW FAULT ── */
+function openNewFault() {
+  document.getElementById('new-fault-modal').classList.add('on');
+  document.getElementById('nf-cat').focus();
+  // Set today as default
+}
+
+function updateSubcat() {
+  const cat=document.getElementById('nf-cat').value;
+  const sel=document.getElementById('nf-subcat');
+  const opts=(SUBCATS[cat]||['Other']);
+  sel.innerHTML=opts.map(o=>`<option>${o}</option>`).join('');
+}
+
+function createFault() {
+  const cat=document.getElementById('nf-cat').value;
+  const title=document.getElementById('nf-title').value.trim();
+  if(!cat){toast('Select a category','err');return;}
+  if(!title){toast('Enter a fault title','err');return;}
+  const faults=getData(K.faults);
+  const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const todayFaults=faults.filter(f=>f.id.includes(today));
+  const fault={
+    id:'FMCC-'+today+'-'+String(todayFaults.length+1).padStart(4,'0'),
+    cat, sub:document.getElementById('nf-subcat').value,
+    airport:document.getElementById('nf-airport').value,
+    terminal:document.getElementById('nf-terminal').value,
+    loc:document.getElementById('nf-location').value,
+    priority:document.getElementById('nf-priority').value,
+    title, reporter:document.getElementById('nf-reporter').value||'FMCC',
+    contact:document.getElementById('nf-contact').value,
+    desc:document.getElementById('nf-desc').value,
+    assignedTo:document.getElementById('nf-assign').value,
+    status:document.getElementById('nf-assign').value?'Assigned':'New',
+    asset:document.getElementById('nf-asset').value,
+    createdAt:Date.now(), updatedAt:Date.now(), resolvedAt:null, aoccRef:'',
+    logs:[{time:Date.now(),user:USER.name,action:'Fault logged',note:''}]
+  };
+  faults.unshift(fault);
+  setData(K.faults,faults);
+  closeModal('new-fault-modal');
+  ['nf-title','nf-desc','nf-reporter','nf-contact','nf-location','nf-asset'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('nf-cat').value='';
+  document.getElementById('nf-priority').value='Medium';
+  toast('Fault '+fault.id+' logged ✓');
+  renderDashboard(); renderBadges();
+  if(document.getElementById('page-faults').classList.contains('on')) renderFaults();
+  if(fault.priority==='Critical') openFaultDetail(fault.id);
+}
+
+/* ── FAULT DETAIL ── */
+function openFaultDetail(id) {
+  const fault=getData(K.faults).find(f=>f.id===id);
+  if(!fault)return;
+  _viewFault=fault;
+  document.getElementById('fp-id').textContent=fault.id;
+  document.getElementById('fp-title').textContent=fault.title;
+  document.getElementById('fp-desc').textContent=fault.desc||'(No description)';
+  document.getElementById('fp-badges').innerHTML=
+    priBadge(fault.priority)+' '+staBadge(fault.status)+
+    `<span style="font-size:11px;background:var(--bg2);padding:2px 8px;border-radius:4px;color:var(--text2)">${CAT_ICONS[fault.cat]||''} ${fault.cat}</span>`+
+    (fault.sub?`<span style="font-size:11px;background:var(--bg2);padding:2px 8px;border-radius:4px;color:var(--text2)">${fault.sub}</span>`:'')+
+    (fault.aoccRef?`<span style="font-size:11px;background:rgba(239,68,68,0.15);padding:2px 8px;border-radius:4px;color:var(--crit)">AOCC: ${fault.aoccRef}</span>`:'');
+  document.getElementById('fp-meta').innerHTML=
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:2px">Location</div><div>${fault.airport} · ${fault.terminal}${fault.loc?' · '+fault.loc:''}</div></div>`+
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:2px">Asset</div><div>${fault.asset||'—'}</div></div>`+
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:2px">Assigned To</div><div>${fault.assignedTo||'Unassigned'}</div></div>`+
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:2px">Reporter</div><div>${fault.reporter} · ${fault.contact||'—'}</div></div>`+
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:2px">Logged</div><div>${fmtDT(fault.createdAt)}</div></div>`+
+    `<div><div style="color:var(--text3);font-size:10px;text-transform:uppercase;margin-bottom:2px">SLA Target</div><div>${SLA_H[fault.priority]}h</div></div>`;
+
+  // SLA bar
+  const remH=slaRemain(fault);
+  const targetH=SLA_H[fault.priority];
+  const pct=Math.max(0,Math.min(100,Math.round((targetH-Math.abs(remH))/targetH*100)));
+  const barColor=remH<0?'var(--crit)':remH<targetH*0.25?'var(--high)':'var(--green)';
+  document.getElementById('fp-sla-label').textContent=remH<0?`Breached by ${Math.abs(Math.round(remH))}h`:`${Math.round(remH)}h remaining`;
+  document.getElementById('fp-sla-fill').style.cssText=`width:${pct}%;background:${barColor}`;
+
+  // Populate reassign
+  const sel=document.getElementById('fp-reassign');
+  sel.innerHTML='<option value="">— Select technician —</option>';
+  getData(K.users).filter(u=>u.role==='technician'||u.role==='supervisor').forEach(u=>{
+    const o=document.createElement('option'); o.value=u.name; o.textContent=u.name+' ('+u.spec+')'; sel.appendChild(o);
+  });
+
+  // Log
+  document.getElementById('fp-log').innerHTML=(fault.logs||[]).slice().reverse().map(l=>`
+    <div class="log-entry">
+      <div class="log-dot"></div>
+      <div style="flex:1">
+        <div style="display:flex;gap:8px;margin-bottom:2px"><span style="font-size:11px;font-weight:600">${l.action}</span><span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${fmtDT(l.time)}</span></div>
+        <div style="font-size:12px;color:var(--text2)">${l.user}${l.note?' — '+l.note:''}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('fp-note').value='';
+  document.getElementById('fault-panel').classList.add('on');
+}
+
+function closeFaultPanel(e) {
+  if(!e||e.target===document.getElementById('fault-panel')){ document.getElementById('fault-panel').classList.remove('on'); _viewFault=null; }
+}
+
+function updateStatus(status) {
+  if(!_viewFault)return;
+  const faults=getData(K.faults); const f=faults.find(x=>x.id===_viewFault.id);
+  if(!f)return;
+  f.status=status; f.updatedAt=Date.now();
+  if(status==='Resolved') f.resolvedAt=Date.now();
+  f.logs.push({time:Date.now(),user:USER.name,action:'Status → '+status,note:''});
+  setData(K.faults,faults); _viewFault=f;
+  openFaultDetail(f.id); renderDashboard(); renderBadges();
+  if(document.getElementById('page-faults').classList.contains('on')) renderFaults();
+  toast('Status updated: '+status);
+}
+
+function reassign() {
+  const to=document.getElementById('fp-reassign').value;
+  if(!to||!_viewFault)return;
+  const faults=getData(K.faults); const f=faults.find(x=>x.id===_viewFault.id);
+  if(!f)return;
+  f.assignedTo=to; f.status='Assigned'; f.updatedAt=Date.now();
+  f.logs.push({time:Date.now(),user:USER.name,action:'Reassigned to '+to,note:''});
+  setData(K.faults,faults); _viewFault=f;
+  openFaultDetail(f.id); renderDashboard();
+  toast('Reassigned to '+to);
+}
+
+function addNote() {
+  const note=document.getElementById('fp-note').value.trim();
+  if(!note||!_viewFault)return;
+  const faults=getData(K.faults); const f=faults.find(x=>x.id===_viewFault.id);
+  if(!f)return;
+  f.logs.push({time:Date.now(),user:USER.name,action:'Note added',note}); f.updatedAt=Date.now();
+  setData(K.faults,faults); _viewFault=f;
+  openFaultDetail(f.id); toast('Note saved ✓');
+}
+
+function escalateToAOCC() {
+  if(!_viewFault)return;
+  const ref='AOCC-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Math.floor(1000+Math.random()*9000));
+  const faults=getData(K.faults); const f=faults.find(x=>x.id===_viewFault.id);
+  if(!f)return;
+  f.aoccRef=ref; f.priority='Critical'; f.updatedAt=Date.now();
+  f.logs.push({time:Date.now(),user:USER.name,action:'Escalated to AOCC',note:'AOCC ref: '+ref+'. Priority upgraded to Critical.'});
+  setData(K.faults,faults); _viewFault=f;
+  openFaultDetail(f.id); renderDashboard(); renderBadges();
+  toast('Escalated — AOCC ref: '+ref);
+  // Open AOCC in new tab so operator can log directly
+  setTimeout(()=>window.open('aocc.html','_blank'),500);
+}
+
+/* ── PPM ── */
+function ppmTab(filter, btn) {
+  _ppmFilter=filter;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderPPM();
+}
+
+function renderPPM() {
+  let ppm=getData(K.ppm);
+  if(_ppmFilter==='overdue')   ppm=ppm.filter(p=>p.status==='overdue');
+  if(_ppmFilter==='upcoming')  ppm=ppm.filter(p=>{ const d=new Date(p.nextDue); const w=new Date(); w.setDate(w.getDate()+7); return d<=w&&p.status!=='done'; });
+  if(_ppmFilter==='done')      ppm=ppm.filter(p=>p.status==='done');
+  const freqColor={Daily:'var(--low)',Weekly:'var(--med)',Monthly:'var(--plan)',Quarterly:'var(--high)',Annual:'var(--crit)'};
+  document.getElementById('ppm-list').innerHTML=ppm.length
+    ? ppm.map(p=>{
+        const isOverdue=new Date(p.nextDue)<new Date()&&p.status!=='done';
+        return `<div class="ppm-row" style="margin-bottom:8px;gap:14px">
+          <div style="min-width:28px;text-align:center;font-size:18px">${CAT_ICONS[p.cat]||'🔧'}</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600;margin-bottom:2px">${p.title}</div>
+            <div style="font-size:11px;color:var(--text3)">${p.loc} · Assigned: ${p.assign||'Any'}</div>
+          </div>
+          <span class="ppm-freq" style="background:${freqColor[p.freq]||'var(--plan)'}22;color:${freqColor[p.freq]||'var(--plan)'}">${p.freq}</span>
+          <div style="text-align:right;min-width:90px">
+            <div class="ppm-due ${isOverdue?'ppm-overdue':new Date(p.nextDue)<new Date(new Date().setDate(new Date().getDate()+3))?'ppm-soon':'ppm-ok'}" style="font-size:12px;font-weight:700">${fmtDate(p.nextDue)}</div>
+            <div style="font-size:10px;color:var(--text3)">Last: ${p.lastDone?fmtDate(p.lastDone):'Never'}</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            ${p.status!=='done'?`<button class="btn btn-sm btn-green" onclick="markPPMDone('${p.id}')">✓ Done</button>`:'<span style="font-size:11px;color:var(--low);font-weight:600">✓ Done</span>'}
+          </div>
+        </div>`;
+      }).join('')
+    : '<div style="text-align:center;padding:40px;color:var(--text3)">No PPM tasks in this view.</div>';
+}
+
+function markPPMDone(id) {
+  const ppm=getData(K.ppm); const p=ppm.find(x=>x.id===id);
+  if(!p)return;
+  const today=new Date().toISOString().slice(0,10);
+  p.lastDone=today; p.status='done';
+  // Compute next due based on frequency
+  const d=new Date();
+  const freqDays={Daily:1,Weekly:7,Monthly:30,Quarterly:91,Annual:365};
+  d.setDate(d.getDate()+(freqDays[p.freq]||30));
+  p.nextDue=d.toISOString().slice(0,10);
+  setData(K.ppm,ppm); renderPPM(); renderBadges();
+  toast('PPM task marked complete ✓');
+}
+
+function openAddPPM() {
+  document.getElementById('add-ppm-modal').classList.add('on');
+  document.getElementById('pp-due').value=new Date().toISOString().slice(0,10);
+}
+function savePPM() {
+  const title=document.getElementById('pp-title').value.trim();
+  if(!title){toast('Enter a task title','err');return;}
+  const ppm=getData(K.ppm);
+  ppm.push({ id:'PPM-'+String(ppm.length+1).padStart(3,'0'), title, cat:document.getElementById('pp-cat').value, freq:document.getElementById('pp-freq').value, loc:document.getElementById('pp-loc').value, assign:document.getElementById('pp-assign').value, nextDue:document.getElementById('pp-due').value, lastDone:'', status:'upcoming' });
+  setData(K.ppm,ppm); closeModal('add-ppm-modal');
+  document.getElementById('pp-title').value=''; document.getElementById('pp-loc').value='';
+  renderPPM(); renderBadges(); toast('PPM task added ✓');
+}
+
+/* ── ASSETS ── */
+function renderAssets() {
+  let assets=getData(K.assets);
+  const aCat=document.getElementById('a-cat')?.value||'';
+  const aLoc=document.getElementById('a-loc')?.value||'';
+  const aSrc=(document.getElementById('a-srch')?.value||'').toLowerCase();
+  assets=assets.filter(a=>(!aCat||a.cat===aCat)&&(!aLoc||a.loc.includes(aLoc.split(' — ')[0]))&&(!aSrc||a.name.toLowerCase().includes(aSrc)||a.id.toLowerCase().includes(aSrc)));
+  const stC={ok:'var(--low)',fault:'var(--crit)',maint:'var(--high)'};
+  const stL={ok:'Operational',fault:'Faulty',maint:'Under Maintenance'};
+  document.getElementById('assets-grid').innerHTML=assets.length
+    ? assets.map(a=>`<div class="asset-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:3px">${a.id}</div>
+            <div style="font-size:13px;font-weight:600">${a.name}</div>
+          </div>
+          <div class="asset-status as-${a.status}" style="margin-top:4px"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:6px">${a.cat} · ${a.loc}</div>
+        ${a.model?`<div style="font-size:11px;color:var(--text2);margin-bottom:4px">${a.model}</div>`:''}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+          <span style="font-size:11px;font-weight:700;color:${stC[a.status]}">${stL[a.status]}</span>
+          ${a.installed?`<span style="font-size:10px;color:var(--text3)">Installed: ${fmtDate(a.installed)}</span>`:''}
+        </div>
+        ${a.notes?`<div style="font-size:11px;color:var(--text3);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06)">${a.notes}</div>`:''}
+      </div>`)
+    .join('')
+    : '<div style="color:var(--text3);font-size:13px;padding:20px 0">No assets match.</div>';
+}
+
+function openAddAsset(){document.getElementById('add-asset-modal').classList.add('on');}
+function saveAsset() {
+  const id=document.getElementById('as-id').value.trim(); const name=document.getElementById('as-name').value.trim();
+  if(!id||!name){toast('Asset ID and name required','err');return;}
+  const assets=getData(K.assets);
+  assets.push({id,name,cat:document.getElementById('as-cat').value,loc:document.getElementById('as-loc').value,status:document.getElementById('as-status').value,model:document.getElementById('as-model').value,installed:document.getElementById('as-date').value,notes:document.getElementById('as-notes').value});
+  setData(K.assets,assets); closeModal('add-asset-modal');
+  ['as-id','as-name','as-loc','as-model','as-date','as-notes'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+  renderAssets(); toast('Asset added ✓');
+}
+
+/* ── REPORTS ── */
+function renderReports() {
+  const faults=getData(K.faults);
+  const priColor={Critical:'var(--crit)',High:'var(--high)',Medium:'var(--med)',Low:'var(--low)',Planned:'var(--plan)'};
+
+  // By category
+  const byCat={};
+  faults.forEach(f=>byCat[f.cat]=(byCat[f.cat]||0)+1);
+  const maxC=Math.max(...Object.values(byCat),1);
+  document.getElementById('rpt-cat').innerHTML=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`
+    <div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:var(--text2)">${CAT_ICONS[c]||''} ${c}</span><span style="font-weight:700;font-family:var(--mono)">${n}</span></div>
+      <div class="sla-bar"><div class="sla-fill" style="width:${Math.round(n/maxC*100)}%;background:var(--green)"></div></div>
+    </div>`).join('');
+
+  // By priority
+  const byPri={Critical:0,High:0,Medium:0,Low:0,Planned:0};
+  faults.forEach(f=>byPri[f.priority]=(byPri[f.priority]||0)+1);
+  const maxP=Math.max(...Object.values(byPri),1);
+  document.getElementById('rpt-pri').innerHTML=Object.entries(byPri).map(([p,n])=>`
+    <div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:${priColor[p]}">${p}</span><span style="font-weight:700;font-family:var(--mono);color:${priColor[p]}">${n}</span></div>
+      <div class="sla-bar"><div class="sla-fill" style="width:${Math.round(n/maxP*100)}%;background:${priColor[p]}"></div></div>
+    </div>`).join('');
+
+  // SLA performance
+  document.getElementById('rpt-sla').innerHTML=Object.keys(SLA_H).map(p=>{
+    const target=SLA_H[p];
+    const resolved=faults.filter(f=>f.priority===p&&f.status==='Resolved'&&f.resolvedAt);
+    const met=resolved.filter(f=>(f.resolvedAt-f.createdAt)/3600000<=target).length;
+    const pct=resolved.length?Math.round(met/resolved.length*100):null;
+    const avg=resolved.length?Math.round(resolved.reduce((s,f)=>s+(f.resolvedAt-f.createdAt)/3600000,0)/resolved.length):null;
+    return `<div style="margin-bottom:12px;padding:10px 12px;background:var(--bg2);border-radius:var(--r);border-left:3px solid ${priColor[p]}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <span style="font-size:12px;font-weight:700;color:${priColor[p]}">${p}</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text2)">Target: ${target}h</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3)">${resolved.length?`Avg: ${avg}h · SLA met: ${pct}% (${met}/${resolved.length})`:'No resolved faults yet'}</div>
+    </div>`;
+  }).join('');
+
+  // Avg resolution by category
+  document.getElementById('rpt-res').innerHTML=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([cat])=>{
+    const resolved=faults.filter(f=>f.cat===cat&&f.status==='Resolved'&&f.resolvedAt);
+    const avg=resolved.length?Math.round(resolved.reduce((s,f)=>s+(f.resolvedAt-f.createdAt)/3600000,0)/resolved.length):null;
+    return `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px">
+      <span style="color:var(--text2)">${CAT_ICONS[cat]||''} ${cat}</span>
+      <span style="font-family:var(--mono);font-weight:700;color:${avg===null?'var(--text3)':avg<=SLA_H.Medium?'var(--low)':'var(--high)'}">${avg===null?'—':avg+'h avg'}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ── ADMIN ── */
+function renderAdmin() {
+  const users=getData(K.users);
+  const rc={admin:'var(--gold)',supervisor:'var(--med)',technician:'var(--low)'};
+  document.getElementById('admin-users').innerHTML=users.map(u=>`<tr>
+    <td style="font-weight:500">${u.name}</td>
+    <td style="font-family:var(--mono);font-size:12px;color:var(--text2)">${u.username}</td>
+    <td><span style="font-size:11px;font-weight:700;color:${rc[u.role]}">${u.role}</span></td>
+    <td style="font-size:12px;color:var(--text2)">${u.spec}</td>
+    <td style="font-size:12px;color:var(--text2)">${u.loc}</td>
+    <td>${u.id!==USER.id?`<button class="btn btn-sm btn-red" onclick="deleteUser(${u.id})">Remove</button>`:'<span style="font-size:11px;color:var(--text3)">You</span>'}</td>
+  </tr>`).join('');
+}
+
+function openAddUser(){document.getElementById('add-user-modal').classList.add('on');}
+function saveUser() {
+  const name=document.getElementById('au-name').value.trim();
+  const user=document.getElementById('au-user').value.trim().toLowerCase();
+  const pass=document.getElementById('au-pass').value;
+  if(!name||!user||!pass){toast('Fill all fields','err');return;}
+  if(pass.length<6){toast('Password min 6 chars','err');return;}
+  const users=getData(K.users);
+  if(users.find(u=>u.username===user)){toast('Username taken','err');return;}
+  users.push({id:Date.now(),name,username:user,password:pass,role:document.getElementById('au-role').value,spec:document.getElementById('au-spec').value,loc:document.getElementById('au-loc').value,status:'available'});
+  setData(K.users,users); closeModal('add-user-modal');
+  ['au-name','au-user','au-pass'].forEach(id=>document.getElementById(id).value='');
+  renderAdmin(); populateSelects(); toast('User added ✓');
+}
+function deleteUser(id) {
+  if(!confirm('Remove this user?'))return;
+  setData(K.users,getData(K.users).filter(u=>u.id!==id)); renderAdmin(); toast('User removed');
+}
+function saveSLAs() {
+  SLA_H={Critical:+document.getElementById('sla-crit').value,High:+document.getElementById('sla-high').value,Medium:+document.getElementById('sla-med').value,Low:+document.getElementById('sla-low').value,Planned:168};
+  toast('SLA targets saved ✓');
+}
+
+/* ── HELPERS ── */
+function populateSelects() {
+  const users=getData(K.users);
+  const techs=users.filter(u=>u.role==='technician'||u.role==='supervisor');
+  ['nf-assign','pp-assign'].forEach(id=>{
+    const sel=document.getElementById(id); if(!sel)return;
+    sel.innerHTML='<option value="">— Unassigned —</option>';
+    techs.forEach(u=>{const o=document.createElement('option');o.value=u.name;o.textContent=u.name+' ('+u.spec+')';sel.appendChild(o);});
+  });
+}
+
+function updateMyStatus(val) {
+  const users=getData(K.users); const u=users.find(x=>x.id===USER.id);
+  if(u){u.status=val;setData(K.users,users);USER.status=val;}
+}
+
+function slaRemain(fault) {
+  if(['Resolved','Closed'].includes(fault.status)) return 999;
+  const elapsed=(Date.now()-fault.createdAt)/3600000;
+  return (SLA_H[fault.priority]||24)-elapsed;
+}
+
+function slaWidget(fault) {
+  if(['Resolved','Closed'].includes(fault.status)) return `<span style="font-size:11px;color:var(--text3)">—</span>`;
+  const rem=slaRemain(fault);
+  if(rem<0) return `<span style="font-size:11px;color:var(--crit);font-weight:700">BREACHED ${Math.abs(Math.round(rem))}h</span>`;
+  if(rem<2) return `<span style="font-size:11px;color:var(--high);font-weight:700">${Math.round(rem*60)}m left</span>`;
+  return `<span style="font-size:11px;color:var(--low)">${Math.round(rem)}h left</span>`;
+}
+
+function priBadge(p) {
+  const cls={Critical:'pri-crit',High:'pri-high',Medium:'pri-med',Low:'pri-low',Planned:'pri-plan'}[p]||'pri-low';
+  return `<span class="pri ${cls}"><span class="pri-dot"></span>${p}</span>`;
+}
+function staBadge(s) {
+  const cls={'New':'sta-new','Assigned':'sta-assigned','In Progress':'sta-prog','Pending Parts':'sta-parts','Resolved':'sta-resolved','Closed':'sta-closed'}[s]||'sta-new';
+  return `<span class="sta ${cls}">${s}</span>`;
+}
+function fmtDT(ms) { return new Date(ms).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(d) { return d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—'; }
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+
+function exportCSV() {
+  const faults=getData(K.faults);
+  let csv='ID,Title,Category,Priority,Airport,Terminal,Assigned To,Status,Created\n';
+  faults.forEach(f=>{ csv+=`"${f.id}","${f.title}","${f.cat}","${f.priority}","${f.airport}","${f.terminal}","${f.assignedTo}","${f.status}","${fmtDT(f.createdAt)}"\n`; });
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='FMCC_Faults_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  toast('CSV exported ✓');
+}
+
+let _tt;
+function toast(msg,type) {
+  const el=document.getElementById('toast'); if(!el)return;
+  document.getElementById('t-msg').textContent=msg;
+  document.getElementById('t-icon').textContent=type==='err'?'✕':'✓';
+  el.style.background=type==='err'?'rgba(239,68,68,0.9)':'var(--surface2)';
+  el.classList.add('on'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('on'),3500);
+}
+
+initStorage();
+</script>
+</body>
+</html>
