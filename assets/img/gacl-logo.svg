@@ -1,17 +1,40 @@
-<svg viewBox="0 0 380 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ghana Airports Company Limited">
+<svg viewBox="0 0 560 195" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ghana Airports Company Limited">
   <title>Ghana Airports Company Limited</title>
-  <g transform="translate(142,8)" fill="#1a3a6e">
-    <ellipse cx="0" cy="26" rx="6" ry="8"/>
-    <path d="M-5,22 C-14,14 -28,8 -44,5 C-34,12 -22,18 -12,24Z"/>
-    <path d="M-6,26 C-18,20 -34,16 -52,16 C-40,20 -26,24 -14,28Z"/>
-    <path d="M-5,30 C-16,28 -32,28 -48,30 C-36,32 -22,33 -12,32Z"/>
-    <path d="M5,22 C14,14 28,8 44,5 C34,12 22,18 12,24Z"/>
-    <path d="M6,26 C18,20 34,16 52,16 C40,20 26,24 14,28Z"/>
-    <path d="M5,30 C16,28 32,28 48,30 C36,32 22,33 12,32Z"/>
-    <path d="M-5,18 C-10,10 -20,4 -32,0 C-24,8 -16,14 -8,20Z"/>
-    <path d="M5,18 C10,10 20,4 32,0 C24,8 16,14 8,20Z"/>
-  </g>
-  <text x="30" y="82" font-size="44" font-weight="700" fill="#1a3a6e" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-1">ghana</text>
-  <text x="183" y="82" font-size="44" font-weight="700" fill="#8dc440" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-1">airports</text>
-  <text x="105" y="99" font-size="11" fill="#1a3a6e" font-family="Arial,sans-serif" letter-spacing="3.5">COMPANY LIMITED</text>
+
+  <!-- ── LEFT WING ─────────────────────────────────────────────────── -->
+  <!-- Outer feather (most outward/horizontal) -->
+  <path fill="#1a3a6e" d="M 265,82 C 240,78 200,76 160,78 C 140,80 120,86 102,96 C 120,82 148,74 176,72 C 155,72 128,76 108,86 C 126,72 154,66 182,66 C 160,64 132,66 112,74 C 132,60 160,58 186,60 C 165,56 138,56 118,62 C 140,48 168,50 192,54 C 174,48 150,46 132,50 C 156,36 184,40 206,48 C 190,40 170,36 154,38 C 180,24 208,30 228,42 C 215,32 200,26 186,26 C 214,12 240,22 256,38 C 248,26 238,18 230,16 C 252,6 270,18 274,36 C 270,22 264,14 262,12 C 268,4 278,12 278,30 L 278,84 Z"/>
+
+  <!-- White feather division lines on left wing -->
+  <line x1="276" y1="32" x2="262" y2="12" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="272" y1="38" x2="232" y2="16" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="264" y1="44" x2="192" y2="26" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="252" y1="50" x2="158" y2="38" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="238" y1="56" x2="126" y2="52" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="220" y1="62" x2="112" y2="74" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="198" y1="68" x2="108" y2="86" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+
+  <!-- ── RIGHT WING (mirror) ───────────────────────────────────────── -->
+  <path fill="#1a3a6e" d="M 295,82 C 320,78 360,76 400,78 C 420,80 440,86 458,96 C 440,82 412,74 384,72 C 405,72 432,76 452,86 C 434,72 406,66 378,66 C 400,64 428,66 448,74 C 428,60 400,58 374,60 C 395,56 422,56 442,62 C 420,48 392,50 368,54 C 386,48 410,46 428,50 C 404,36 376,40 354,48 C 370,40 390,36 406,38 C 380,24 352,30 332,42 C 345,32 360,26 374,26 C 346,12 320,22 304,38 C 312,26 322,18 330,16 C 308,6 290,18 286,36 C 290,22 296,14 298,12 C 292,4 282,12 282,30 L 282,84 Z"/>
+
+  <!-- White feather division lines on right wing -->
+  <line x1="284" y1="32" x2="298" y2="12" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="288" y1="38" x2="328" y2="16" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="296" y1="44" x2="368" y2="26" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="308" y1="50" x2="402" y2="38" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="322" y1="56" x2="434" y2="52" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="340" y1="62" x2="448" y2="74" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="362" y1="68" x2="452" y2="86" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+
+  <!-- ── CENTRE BODY ───────────────────────────────────────────────── -->
+  <ellipse cx="280" cy="60" rx="13" ry="20" fill="#1a3a6e"/>
+  <ellipse cx="280" cy="62" rx="7"  ry="12" fill="none" stroke="white" stroke-width="1.5"/>
+
+  <!-- ── TEXT ─────────────────────────────────────────────────────── -->
+  <text x="22"  y="157" font-size="70" font-weight="900" fill="#1a3a6e"
+        font-family="'Arial Black',Arial,sans-serif" letter-spacing="-1">ghana</text>
+  <text x="303" y="157" font-size="70" font-weight="900" fill="#8dc440"
+        font-family="'Arial Black',Arial,sans-serif" letter-spacing="-1">airports</text>
+  <text x="280" y="178" font-size="13" fill="#5b7db1"
+        font-family="Arial,sans-serif" text-anchor="middle" letter-spacing="5">COMPANY LIMITED</text>
 </svg>
