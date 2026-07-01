@@ -550,3 +550,170 @@ function renderOpsFormLog() {
 }
 
 document.addEventListener('DOMContentLoaded', renderOpsFormLog);
+
+// ── Excursion Bookings Manager ────────────────────────────────────────
+const EXC_KEY = 'gacl_ops_forms';
+
+const STATUS_COLORS = {
+  'Pending Confirmation': '#f59e0b',
+  'Awaiting Approval':    '#3b82f6',
+  'Confirmed':            '#10b981',
+  'Declined':             '#ef4444',
+  'Rescheduled':          '#8b5cf6'
+};
+
+function statusBadge(s) {
+  const c = STATUS_COLORS[s] || '#6b7280';
+  return '<span style="background:' + c + '22;color:' + c + ';border:1px solid ' + c + '44;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap">' + (s || '—') + '</span>';
+}
+
+function getExcursions() {
+  return JSON.parse(localStorage.getItem(EXC_KEY) || '[]').filter(function(r){ return r.type === 'excursion'; });
+}
+
+function saveExcursions(excRows) {
+  const others = JSON.parse(localStorage.getItem(EXC_KEY) || '[]').filter(function(r){ return r.type !== 'excursion'; });
+  localStorage.setItem(EXC_KEY, JSON.stringify(excRows.concat(others)));
+}
+
+var _excMgrRef = null;
+
+function renderExcMgr() {
+  var filter = (document.getElementById('excmgr-filter') || {}).value || '';
+  var allExc = getExcursions();
+  var rows = filter ? allExc.filter(function(r){ return r.status === filter; }) : allExc;
+
+  // Stats
+  var statsEl = document.getElementById('excmgr-stats');
+  if (statsEl) {
+    var confirmed = allExc.filter(function(r){ return r.status === 'Confirmed'; }).length;
+    var pending   = allExc.filter(function(r){ return r.status === 'Pending Confirmation' || r.status === 'Awaiting Approval'; }).length;
+    var declined  = allExc.filter(function(r){ return r.status === 'Declined'; }).length;
+    statsEl.innerHTML = [
+      ['Total Bookings', allExc.length, '#1a3a5c'],
+      ['Confirmed',      confirmed,     '#10b981'],
+      ['Pending / Awaiting', pending,   '#f59e0b'],
+      ['Declined',       declined,      '#ef4444']
+    ].map(function(item){
+      return '<div style="background:' + item[2] + '11;border:1px solid ' + item[2] + '33;border-radius:8px;padding:12px 14px">' +
+             '<div style="font-size:22px;font-weight:700;color:' + item[2] + '">' + item[1] + '</div>' +
+             '<div style="font-size:11px;color:var(--color-text-muted);margin-top:2px">' + item[0] + '</div>' +
+             '</div>';
+    }).join('');
+  }
+
+  var tbody = document.getElementById('excmgr-tbody');
+  if (!tbody) return;
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:32px;text-align:center;color:var(--color-text-muted)">' +
+      (filter ? 'No bookings match this filter.' : 'No bookings yet. Use the Excursion Booking tab to register a visit.') +
+      '</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(function(r){
+    return '<tr style="border-bottom:1px solid var(--color-border)">' +
+      '<td style="padding:10px;font-family:monospace;font-size:11px;color:var(--color-text-muted)">' + r.ref + '</td>' +
+      '<td style="padding:10px;font-weight:600">' + (r.org_name || '—') + '</td>' +
+      '<td style="padding:10px;font-size:12px;color:var(--color-text-secondary)">' + (r.group_type || '—') + '</td>' +
+      '<td style="padding:10px;font-size:12px"><div style="font-weight:500">' + (r.contact_name || '—') + '</div><div style="color:var(--color-text-muted)">' + (r.contact_phone || '') + '</div></td>' +
+      '<td style="padding:10px;text-align:center;font-weight:600">' + (r.visitor_count || '—') + '</td>' +
+      '<td style="padding:10px;font-size:12px;white-space:nowrap">' + (r.visit_date || '—') + '<br><span style="color:var(--color-text-muted)">' + (r.visit_time || '') + '</span></td>' +
+      '<td style="padding:10px">' + statusBadge(r.status) + '</td>' +
+      '<td style="padding:10px"><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:4px 10px" onclick="excMgrOpen(\'' + r.ref + '\')">View / Edit</button></td>' +
+      '</tr>';
+  }).join('');
+}
+
+function excMgrOpen(ref) {
+  var list = getExcursions();
+  var r = null;
+  for (var i = 0; i < list.length; i++) { if (list[i].ref === ref) { r = list[i]; break; } }
+  if (!r) return;
+  _excMgrRef = ref;
+
+  document.getElementById('excmgr-modal-title').textContent = (r.org_name || ref) + '  —  ' + ref;
+  document.getElementById('excmgr-modal-status').value = r.status || 'Pending Confirmation';
+
+  var intLabels = { int_terminal:'Terminal Operations', int_airside:'Airside / Apron', int_rffs:'Fire & Rescue (RFFS)',
+    int_security:'Aviation Security', int_checkin:'Check-in / Baggage', int_atc:'ATC', int_career:'Career Talk', int_general:'General Tour' };
+  var interests = Object.keys(intLabels).filter(function(k){ return r[k] === 'on'; }).map(function(k){ return intLabels[k]; }).join(', ') || 'None selected';
+
+  var fields = [
+    ['Reference',       r.ref],
+    ['Organisation',    r.org_name],
+    ['Group Type',      r.group_type],
+    ['Contact Person',  r.contact_name],
+    ['Role / Title',    r.contact_role],
+    ['Phone',           r.contact_phone],
+    ['Email',           r.contact_email],
+    ['Visit Date',      r.visit_date],
+    ['Arrival Time',    r.visit_time],
+    ['Duration',        r.duration],
+    ['Alt. Date',       r.alt_date],
+    ['No. of Visitors', r.visitor_count],
+    ['Age Group',       r.age_group],
+    ['Referral',        r.referral],
+    ['Processed By',    r.staff_name],
+    ['Submitted',       r.submitted]
+  ];
+
+  document.getElementById('excmgr-modal-body').innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13px">' +
+    fields.map(function(f){
+      return '<div><div style="font-size:11px;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">' + f[0] + '</div>' +
+             '<div style="color:var(--color-text)">' + (f[1] || '—') + '</div></div>';
+    }).join('') +
+    '<div style="grid-column:1/-1"><div style="font-size:11px;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Areas of Interest</div>' +
+    '<div>' + interests + '</div></div>' +
+    '<div style="grid-column:1/-1"><div style="font-size:11px;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Purpose / Objectives</div>' +
+    '<div style="white-space:pre-wrap">' + (r.purpose || '—') + '</div></div>' +
+    '<div style="grid-column:1/-1"><div style="font-size:11px;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Special Requirements</div>' +
+    '<div style="white-space:pre-wrap">' + (r.special_reqs || '—') + '</div></div>' +
+    '</div>';
+
+  var modal = document.getElementById('excmgr-modal');
+  modal.style.display = 'flex';
+}
+
+function excMgrUpdateStatus() {
+  var newStatus = document.getElementById('excmgr-modal-status').value;
+  var updated = getExcursions().map(function(r){ return r.ref === _excMgrRef ? Object.assign({}, r, {status: newStatus}) : r; });
+  saveExcursions(updated);
+  renderExcMgr();
+  renderOpsFormLog();
+  document.getElementById('excmgr-modal').style.display = 'none';
+  toast('Status updated to: ' + newStatus);
+}
+
+function excMgrDelete() {
+  if (!confirm('Delete this booking record? This cannot be undone.')) return;
+  saveExcursions(getExcursions().filter(function(r){ return r.ref !== _excMgrRef; }));
+  renderExcMgr();
+  renderOpsFormLog();
+  document.getElementById('excmgr-modal').style.display = 'none';
+  toast('Booking deleted');
+}
+
+function excMgrExport() {
+  var rows = getExcursions();
+  if (!rows.length) { alert('No bookings to export.'); return; }
+  var cols = ['ref','org_name','group_type','contact_name','contact_role','contact_phone','contact_email',
+              'visitor_count','age_group','visit_date','visit_time','duration','alt_date',
+              'purpose','special_reqs','referral','status','staff_name','submitted'];
+  var csv = [cols.join(',')].concat(rows.map(function(r){
+    return cols.map(function(c){ return '"' + ((r[c]||'').toString().replace(/"/g,'""')) + '"'; }).join(',');
+  })).join('\n');
+  var a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'excursion-bookings-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+// Wire manager render into tab switching
+var _opsShowTabOrig = opsShowTab;
+opsShowTab = function(tab, btn) {
+  _opsShowTabOrig(tab, btn);
+  if (tab === 'excursion-mgr') renderExcMgr();
+};

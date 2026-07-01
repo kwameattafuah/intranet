@@ -4227,7 +4227,8 @@
 
   <!-- Form category tabs -->
   <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="ops-form-tabs">
-    <button class="btn btn-sm" style="background:var(--color-primary);color:#fff" onclick="opsShowTab('excursion',this)">Excursion Request</button>
+    <button class="btn btn-sm" style="background:var(--color-primary);color:#fff" onclick="opsShowTab('excursion',this)">Excursion Booking</button>
+    <button class="btn btn-ghost btn-sm" onclick="opsShowTab('excursion-mgr',this)">📋 Manage Bookings</button>
     <button class="btn btn-ghost btn-sm" onclick="opsShowTab('lostandfound',this)">Lost &amp; Found</button>
     <button class="btn btn-ghost btn-sm" onclick="opsShowTab('specialassist',this)">Special Assistance</button>
     <button class="btn btn-ghost btn-sm" onclick="opsShowTab('complaint',this)">Passenger Complaint</button>
@@ -4398,6 +4399,79 @@
                 <button type="reset" class="btn btn-ghost" style="margin-left:auto;color:var(--color-text-secondary)">Clear</button>
               </div>
             </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXCURSION BOOKINGS MANAGER -->
+      <div class="ops-form-panel" id="ops-panel-excursion-mgr" style="display:none">
+        <div class="card">
+          <div class="card-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+              <div>
+                <h2 class="card-title" style="margin-bottom:2px">Excursion Bookings Manager</h2>
+                <p style="font-size:12px;color:var(--color-text-secondary)">All submitted visit requests — update status, view details, export.</p>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <select class="form-control" id="excmgr-filter" style="width:180px;height:34px;font-size:12px" onchange="renderExcMgr()">
+                  <option value="">All statuses</option>
+                  <option>Pending Confirmation</option>
+                  <option>Awaiting Approval</option>
+                  <option>Confirmed</option>
+                  <option>Declined</option>
+                  <option>Rescheduled</option>
+                </select>
+                <button class="btn btn-ghost btn-sm" onclick="excMgrExport()">Export CSV</button>
+                <button class="btn btn-ghost btn-sm" onclick="renderExcMgr()">↻ Refresh</button>
+              </div>
+            </div>
+
+            <!-- Stats row -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px" id="excmgr-stats"></div>
+
+            <!-- Table -->
+            <div style="overflow-x:auto">
+              <table style="width:100%;border-collapse:collapse;font-size:13px" id="excmgr-table">
+                <thead>
+                  <tr style="border-bottom:2px solid var(--color-border);text-align:left">
+                    <th style="padding:8px 10px;color:var(--color-text-muted);font-weight:600;font-size:11px;text-transform:uppercase">Ref</th>
+                    <th style="padding:8px 10px;color:var(--color-text-muted);font-weight:600;font-size:11px;text-transform:uppercase">School / Group</th>
+                    <th style="padding:8px 10px;color:var(--color-text-muted);font-weight:600;font-size:11px;text-transform:uppercase">Type</th>
+                    <th style="padding:8px 10px;color:var(--color-text-muted);font-weight:600;font-size:11px;text-transform:uppercase">Contact</th>
+                    <th style="padding:8px 10px;color:var(--color-text-muted);font-weight:600;font-size:11px;text-transform:uppercase">Visitors</th>
+                    <th style="padding:8px 10px;color:var(--color-text-muted);font-weight:600;font-size:11px;text-transform:uppercase">Visit Date</th>
+                    <th style="padding:8px 10px;color:var(--color-text-muted);font-weight:600;font-size:11px;text-transform:uppercase">Status</th>
+                    <th style="padding:8px 10px;color:var(--color-text-muted);font-weight:600;font-size:11px;text-transform:uppercase">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="excmgr-tbody">
+                  <tr><td colspan="8" style="padding:32px;text-align:center;color:var(--color-text-muted)">No bookings yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail / Edit modal -->
+        <div id="excmgr-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9000;align-items:center;justify-content:center">
+          <div style="background:var(--color-surface);border-radius:12px;width:min(680px,95vw);max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+            <div style="padding:20px 24px;border-bottom:1px solid var(--color-border);display:flex;justify-content:space-between;align-items:center">
+              <h3 style="margin:0;font-size:16px" id="excmgr-modal-title">Booking Detail</h3>
+              <button onclick="document.getElementById('excmgr-modal').style.display='none'" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--color-text-muted)">✕</button>
+            </div>
+            <div style="padding:24px" id="excmgr-modal-body"></div>
+            <div style="padding:16px 24px;border-top:1px solid var(--color-border);display:flex;gap:10px;align-items:center">
+              <label style="font-size:13px;font-weight:600">Update Status:</label>
+              <select class="form-control" id="excmgr-modal-status" style="width:220px;height:34px;font-size:13px">
+                <option>Pending Confirmation</option>
+                <option>Awaiting Approval</option>
+                <option>Confirmed</option>
+                <option>Declined</option>
+                <option>Rescheduled</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="excMgrUpdateStatus()">Save</button>
+              <button class="btn btn-ghost btn-sm" style="margin-left:auto;color:var(--color-danger)" onclick="excMgrDelete()">Delete Record</button>
+            </div>
           </div>
         </div>
       </div>
