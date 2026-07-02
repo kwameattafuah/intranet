@@ -717,3 +717,89 @@ opsShowTab = function(tab, btn) {
   _opsShowTabOrig(tab, btn);
   if (tab === 'excursion-mgr') renderExcMgr();
 };
+
+/* ══════════════════════════════════════════════
+   STAFF NOTICE BOARD
+   ══════════════════════════════════════════════ */
+var NB_KEY = 'gacl_noticeboard';
+var NB_CAT_COLORS = {
+  'General Notice':  {bg:'#e6f0fb',c:'#1a3a5c'},
+  'Lost & Found':    {bg:'#fff3cd',c:'#b45309'},
+  'For Sale':        {bg:'#e6f4ec',c:'#1e7e44'},
+  'Event':           {bg:'#f3e8ff',c:'#6d28d9'},
+  'Carpool':         {bg:'#fdecea',c:'#c0392b'},
+  'Accommodation':   {bg:'#d1ecf1',c:'#0c5460'},
+  'Job Alert':       {bg:'#fff3cd',c:'#92400e'}
+};
+
+function nbGet() {
+  try { return JSON.parse(localStorage.getItem(NB_KEY) || '[]'); } catch(e) { return []; }
+}
+function nbSave(notices) {
+  localStorage.setItem(NB_KEY, JSON.stringify(notices));
+}
+
+function nbPost() {
+  var cat   = document.getElementById('nb-cat').value;
+  var title = (document.getElementById('nb-title').value || '').trim();
+  var body  = (document.getElementById('nb-body').value || '').trim();
+  var contact = (document.getElementById('nb-contact').value || '').trim();
+  var phone = (document.getElementById('nb-phone').value || '').trim();
+  var expires = document.getElementById('nb-expires').value;
+  if (!title) { alert('Please enter a title for the notice.'); return; }
+  if (!body)  { alert('Please add some details.'); return; }
+  var notices = nbGet();
+  notices.unshift({
+    id: Date.now().toString(36).toUpperCase(),
+    cat: cat, title: title, body: body,
+    contact: contact, phone: phone,
+    expires: expires, posted: new Date().toISOString()
+  });
+  nbSave(notices);
+  ['nb-title','nb-body','nb-contact','nb-phone','nb-expires'].forEach(function(id){
+    document.getElementById(id).value = '';
+  });
+  nbRender();
+}
+
+function nbRender() {
+  var grid = document.getElementById('nb-grid');
+  if (!grid) return;
+  var filter = (document.getElementById('nb-filter') || {}).value || '';
+  var search = ((document.getElementById('nb-search') || {}).value || '').toLowerCase();
+  var today = new Date().toISOString().slice(0,10);
+  var notices = nbGet().filter(function(n) {
+    if (n.expires && n.expires < today) return false;
+    if (filter && n.cat !== filter) return false;
+    if (search && !(n.title.toLowerCase().includes(search) || n.body.toLowerCase().includes(search))) return false;
+    return true;
+  });
+  if (!notices.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px 16px;color:#64748b"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-size:15px;font-weight:600;margin-bottom:6px">No notices yet</div><div style="font-size:13px">Be the first to post — use the form above.</div></div>';
+    return;
+  }
+  grid.innerHTML = notices.map(function(n) {
+    var col = NB_CAT_COLORS[n.cat] || {bg:'#f1f5f9',c:'#334155'};
+    var postedDate = new Date(n.posted).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    return '<div class="nb-card">' +
+      '<div class="nb-card-top">' +
+        '<span class="nb-cat-badge" style="background:' + col.bg + ';color:' + col.c + '">' + n.cat + '</span>' +
+        '<button class="nb-del-btn" onclick="nbDelete(\'' + n.id + '\')" title="Remove notice">✕</button>' +
+      '</div>' +
+      '<div class="nb-card-title">' + n.title + '</div>' +
+      '<div class="nb-card-body">' + n.body.replace(/\n/g,'<br>') + '</div>' +
+      '<div class="nb-card-footer">' +
+        (n.contact ? '<span>👤 ' + n.contact + '</span>' : '') +
+        (n.phone   ? '<span>📞 ' + n.phone + '</span>' : '') +
+        '<span style="margin-left:auto;color:#94a3b8;font-size:11px">' + postedDate + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function nbDelete(id) {
+  if (!confirm('Remove this notice?')) return;
+  var notices = nbGet().filter(function(n) { return n.id !== id; });
+  nbSave(notices);
+  nbRender();
+}

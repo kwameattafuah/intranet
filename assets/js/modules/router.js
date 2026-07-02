@@ -8,7 +8,7 @@ const pageMap = ['dashboard','rooms','ldc','directory','news','discussions','med
   'announcements','orgchart','workspace','hr-forms','cleantrack','suggestions',
   'dept-md','dept-planning','dept-ops','dept-audit','dept-avsec','dept-bizdev','dept-commercial',
   'dept-comms','dept-facilities','dept-finance','dept-hcos','dept-ict','dept-legal','dept-procurement','dept-strategy',
-  'ops-forms'];
+  'ops-forms','noticeboard'];
 const navIds  = {
   dashboard:'nav-dashboard', directory:'nav-directory', orgchart:'nav-orgchart', workspace:'nav-workspace',
   announcements:'nav-announcements', news:'nav-news', discussions:'nav-discussions', media:'nav-media',
@@ -17,6 +17,7 @@ const navIds  = {
   'ldc-admin':'nav-ldc-admin', 'rooms-admin':'nav-rooms-admin', 'ict-admin':'nav-ict-admin', 'site-admin':'nav-site-admin', 'forms-admin':'nav-forms-admin', 'form-builder':'nav-form-builder',
   'cleantrack':null,
   'ops-forms':'nav-ops-forms',
+  'noticeboard':'nav-noticeboard',
   'dept-md':'nav-dept-md', 'dept-planning':'nav-dept-planning', 'dept-ops':'nav-dept-ops', 'dept-audit':'nav-dept-audit',
   'dept-avsec':'nav-dept-avsec', 'dept-bizdev':'nav-dept-bizdev', 'dept-commercial':'nav-dept-commercial',
   'dept-comms':'nav-dept-comms', 'dept-facilities':'nav-dept-facilities', 'dept-finance':'nav-dept-finance',
@@ -31,6 +32,7 @@ const titles  = {
   'ldc-admin':'L&D Administration', 'rooms-admin':'Room Booking Admin', 'ict-admin':'ICT Admin', 'site-admin':'Site Administration', 'forms-admin':'Forms Administration', 'form-builder':'Form Builder',
   'cleantrack':'CleanTrack — BPG', 'suggestions':'Staff Suggestion Box',
   'ops-forms':'Airport Management Forms',
+  'noticeboard':'Staff Notice Board',
   'dept-md':"MD's Directorate", 'dept-planning':'Airport Planning & Projects', 'dept-ops':'Airports Management',
   'dept-audit':'Audit, Compliance & Risk', 'dept-avsec':'Aviation Security', 'dept-bizdev':'Business Development',
   'dept-commercial':'Commercial Services', 'dept-comms':'Corporate Comms & PR', 'dept-facilities':'Facilities & Infrastructure',
@@ -80,6 +82,7 @@ function showPage(name) {
   if (name === 'hr-forms')      { if (typeof initHrForms    === 'function') initHrForms();
                                   if (typeof injectCustomForms === 'function') injectCustomForms(); }
   if (name === 'discussions') initDiscussions();
+  if (name === 'noticeboard') { if (typeof nbRender === 'function') nbRender(); }
   if (name === 'hr-forms') initHrForms();
 }
 

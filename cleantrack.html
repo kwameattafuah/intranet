@@ -444,6 +444,7 @@ table.rt tfoot td.ltd{background:var(--navy-mid);color:rgba(255,255,255,.8);font
       <button class="rpt-toggle-btn on" onclick="setRptView('all',this)">📊 Combined</button>
       <button class="rpt-toggle-btn" onclick="setRptView('eval',this)">📋 Evaluation</button>
       <button class="rpt-toggle-btn" onclick="setRptView('comp',this)">⚠ Compliance</button>
+      <button class="rpt-toggle-btn" onclick="setRptView('rag',this)">📉 RAG Audit Failures</button>
     </div>
     <div id="rpt-stats-wrap"><div class="sg" id="rpt-stats"><div class="sc"><div class="sv">—</div><div class="sl">Select a month</div></div></div></div>
     <div id="rpt-eval-section">
@@ -454,6 +455,23 @@ table.rt tfoot td.ltd{background:var(--navy-mid);color:rgba(255,255,255,.8);font
     </div>
     <div id="rpt-comp-section">
       <div class="card"><div class="ch"><div class="ct">Compliance &amp; Penalties — monthly summary</div></div><div class="cb" id="rpt-compliance"><p style="color:var(--text-light);font-size:13px">Select a month.</p></div></div>
+    </div>
+    <div id="rpt-rag-section" style="display:none">
+      <div class="card" style="border-top:4px solid var(--red)">
+        <div class="ch">
+          <div><div class="ct">RAG Audit Score — Period Compliance Failures</div><div class="cs">Months where a location's average score fell below the 90% pass mark. Pass mark failure triggers a contract penalty.</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <label style="font-size:12px;color:var(--text-mid)">Year</label>
+            <select id="rag-year" onchange="loadRAGFailures()" style="font-size:13px;padding:4px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface)"></select>
+            <button class="btn btn-sm btn-p" onclick="exportRAGFailures()">⬇ Export</button>
+          </div>
+        </div>
+        <div class="cb" id="rpt-rag-body"><p style="color:var(--text-light);font-size:13px">Switch to this tab to load RAG failure history.</p></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="ch"><div class="ct">Failure Summary</div><div class="cs">Locations with one or more period failures in the selected year</div></div>
+        <div class="cb" id="rpt-rag-summary"><p style="color:var(--text-light);font-size:13px">—</p></div>
+      </div>
     </div>
   </div>
 
@@ -1244,9 +1262,119 @@ function loadReports(){
 function setRptView(view,btn){
   currentRptView=view;
   document.querySelectorAll('.rpt-toggle-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
-  document.getElementById('rpt-eval-section').style.display=view==='comp'?'none':'block';
-  document.getElementById('rpt-comp-section').style.display=view==='eval'?'none':'block';
-  document.getElementById('rpt-stats-wrap').style.display=view==='comp'?'none':'block';
+  const isRag=view==='rag';
+  document.getElementById('rpt-eval-section').style.display=(view==='comp'||isRag)?'none':'block';
+  document.getElementById('rpt-comp-section').style.display=(view==='eval'||isRag)?'none':'block';
+  document.getElementById('rpt-stats-wrap').style.display=(view==='comp'||isRag)?'none':'block';
+  document.getElementById('rpt-rag-section').style.display=isRag?'block':'none';
+  if(isRag) loadRAGFailures();
+}
+
+function loadRAGFailures(){
+  // Populate year selector from all months in DB
+  const months=dbQuery('SELECT DISTINCT month FROM ct_daily_evaluations ORDER BY month');
+  const years=[...new Set(months.map(r=>r.month.substring(0,4)))];
+  const yrSel=document.getElementById('rag-year');
+  const curYr=yrSel.value;
+  if(years.length===0){
+    document.getElementById('rpt-rag-body').innerHTML='<p style="color:var(--text-light);font-size:13px">No evaluation data in database yet.</p>';
+    document.getElementById('rpt-rag-summary').innerHTML='<p style="color:var(--text-light);font-size:13px">—</p>';
+    return;
+  }
+  yrSel.innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join('');
+  if(years.includes(curYr)) yrSel.value=curYr;
+  const selYear=yrSel.value;
+  // Get all months in selected year that have data
+  const yearMonths=months.map(r=>r.month).filter(m=>m.startsWith(selYear)).sort();
+  if(yearMonths.length===0){
+    document.getElementById('rpt-rag-body').innerHTML='<p style="color:var(--text-light);font-size:13px">No data for '+selYear+'.</p>';
+    return;
+  }
+  // Build location × month matrix
+  const locs=LOCATIONS.slice().sort((a,b)=>a.name.localeCompare(b.name));
+  // For each location+month compute avg pct
+  const matrix={};
+  locs.forEach(loc=>{
+    matrix[loc.id]={};
+    yearMonths.forEach(mv=>{
+      const evals=dbQuery('SELECT total_score,filled_cells FROM ct_daily_evaluations WHERE month=? AND location_id=?',[mv,loc.id]);
+      if(evals.length===0){matrix[loc.id][mv]=null;return;}
+      const pcts=evals.map(s=>s.filled_cells>0?Math.round(s.total_score/(s.filled_cells*EVAL_MAX)*100):0);
+      matrix[loc.id][mv]=Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length);
+    });
+  });
+  // Render matrix table
+  const MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const mLabel=mv=>MONTHS_SHORT[parseInt(mv.split('-')[1])-1];
+  let html=`<div style="overflow-x:auto"><table class="rt"><thead>
+    <tr><th class="lth">Location</th>${yearMonths.map(mv=>`<th style="min-width:52px">${mLabel(mv)}</th>`).join('')}<th>Failures</th></tr>
+  </thead><tbody>`;
+  const summaryRows=[];
+  locs.forEach(loc=>{
+    const row=matrix[loc.id];
+    const hasAny=yearMonths.some(mv=>row[mv]!==null);
+    if(!hasAny)return;
+    let failCount=0;
+    let cells=yearMonths.map(mv=>{
+      const v=row[mv];
+      if(v===null)return`<td style="color:var(--text-light);font-size:11px">—</td>`;
+      const rag=calcRAGPenalty(v);
+      const isFail=v<90;
+      if(isFail)failCount++;
+      const bg=isFail?'var(--red-bg)':'transparent';
+      const clr=v>=90?'var(--green)':v>=80?'var(--amber)':'var(--red)';
+      return`<td style="background:${bg};color:${clr};font-weight:${isFail?700:400};font-size:12px" title="${rag.label} — ${rag.pct>0?rag.pct+'% penalty':'No penalty'}">${v}%</td>`;
+    }).join('');
+    const fcClr=failCount>0?'var(--red)':'var(--green)';
+    html+=`<tr><td class="ltd" style="font-size:12px">${loc.name}</td>${cells}<td style="color:${fcClr};font-weight:700;text-align:center">${failCount>0?failCount+' ✗':'✓'}</td></tr>`;
+    if(failCount>0){
+      const failMonths=yearMonths.filter(mv=>row[mv]!==null&&row[mv]<90).map(mv=>{
+        const v=row[mv];const rag=calcRAGPenalty(v);
+        return{month:mv,score:v,penalty:rag.pct,label:rag.label};
+      });
+      summaryRows.push({loc:loc.name,failCount,failMonths});
+    }
+  });
+  html+=`</tbody></table></div>`;
+  html+=`<div style="margin-top:8px;font-size:11px;color:var(--text-light);display:flex;gap:16px;flex-wrap:wrap">
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--red-bg);border-radius:2px;margin-right:4px"></span>Below 90% pass mark</span>
+    <span style="color:var(--green)">≥90% Pass (0%)</span>
+    <span style="color:var(--amber)">80–89% → 2% penalty</span>
+    <span style="color:var(--red)">70–79% → 4% penalty</span>
+    <span style="color:var(--red);font-weight:700">&lt;70% → 6% penalty</span>
+  </div>`;
+  document.getElementById('rpt-rag-body').innerHTML=html;
+  // Summary
+  if(summaryRows.length===0){
+    document.getElementById('rpt-rag-summary').innerHTML='<div style="color:var(--green);font-size:14px;font-weight:600;padding:8px 0">✓ All locations achieved the 90% RAG pass mark for every period in '+selYear+'.</div>';
+    return;
+  }
+  let sumHtml='<div style="overflow-x:auto"><table class="rt"><thead><tr><th class="lth">Location</th><th>Failed periods</th><th>Months in breach</th><th>Avg score (fails)</th><th>Max penalty</th></tr></thead><tbody>';
+  summaryRows.forEach(({loc,failCount,failMonths})=>{
+    const avgFail=Math.round(failMonths.reduce((a,b)=>a+b.score,0)/failMonths.length);
+    const maxPen=Math.max(...failMonths.map(f=>f.penalty));
+    const rag=calcRAGPenalty(avgFail);
+    sumHtml+=`<tr>
+      <td class="ltd" style="font-size:12px">${loc}</td>
+      <td style="color:var(--red);font-weight:700">${failCount}</td>
+      <td style="font-size:11px;color:var(--text-mid)">${failMonths.map(f=>mLabel(f.month)+' ('+f.score+'%)').join(', ')}</td>
+      <td style="color:${rag.color};font-weight:600">${avgFail}%</td>
+      <td style="color:var(--red);font-weight:700">${maxPen}% of contract sum</td>
+    </tr>`;
+  });
+  sumHtml+='</tbody></table></div>';
+  document.getElementById('rpt-rag-summary').innerHTML=sumHtml;
+}
+
+function exportRAGFailures(){
+  const sel=document.getElementById('rag-year');
+  if(!sel||!sel.value){toast('No year selected','err');return;}
+  const tbl=document.querySelector('#rpt-rag-body table');
+  if(!tbl){toast('No data to export','err');return;}
+  const rows=[...tbl.querySelectorAll('tr')].map(tr=>[...tr.querySelectorAll('th,td')].map(td=>td.textContent.trim()).join(','));
+  const csv='RAG Audit Failures — '+sel.value+'\n'+rows.join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='RAG_Failures_'+sel.value+'.csv';a.click();
+  toast('Downloaded RAG_Failures_'+sel.value+'.csv');
 }
 
 /* ══════════════════════════════════════════════

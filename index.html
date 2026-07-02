@@ -200,6 +200,10 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Suggestion Box
         </a></li>
+        <li class="nav-item" id="nav-noticeboard"><a href="#" class="nav-link" onclick="showPage('noticeboard');return false">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+          Notice Board
+        </a></li>
         <li class="nav-item" id="nav-hr-forms"><a href="#" class="nav-link" onclick="showPage('hr-forms');return false">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
           HCOS Forms &amp; Services
@@ -465,32 +469,127 @@
       <!-- Rendered by JS for 3D tilt support -->
     </div>
 
-    <!-- ── Quick services ── -->
+    <!-- ── Staff Services Hub ── -->
     <p class="hp-section-label" style="margin-top:28px">Staff Services</p>
-    <div class="hp-services-row">
-      <button class="hp-svc-pill urgent hp-pulse" onclick="showPage('workspace')" aria-label="My Workspace">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>My Workspace
-      </button>
-      <button class="hp-svc-pill" onclick="showPage('hr-forms')" aria-label="HCOS Forms">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>HCOS Forms
-      </button>
-      <button class="hp-svc-pill" onclick="showPage('ldc')" aria-label="L&amp;D Centre">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg>L&amp;D Centre
-      </button>
-      <button class="hp-svc-pill" onclick="showPage('rooms')" aria-label="Room Booking">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Room Booking
-      </button>
-      <button class="hp-svc-pill" onclick="showPage('helpdesk')" aria-label="ICT Help Desk">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>ICT Help Desk
-      </button>
-      <button class="hp-svc-pill" onclick="showPage('documents')" aria-label="Documents">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Documents
-      </button>
-      <button class="hp-svc-pill" onclick="showPage('orgchart')" aria-label="Org Chart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="4" rx="1"/><rect x="2" y="16" width="6" height="4" rx="1"/><rect x="9" y="16" width="6" height="4" rx="1"/><rect x="16" y="16" width="6" height="4" rx="1"/><line x1="12" y1="6" x2="12" y2="16"/></svg>Org Chart
-      </button>
-      <button class="hp-svc-pill" onclick="showPage('applications')" aria-label="Applications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="6" height="6" rx="1"/><rect x="9" y="3" width="6" height="6" rx="1"/><rect x="16" y="3" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="9" y="10" width="6" height="6" rx="1"/><rect x="16" y="10" width="6" height="6" rx="1"/></svg>Applications
+    <div class="hp-svc-hub">
+
+      <!-- HR & Welfare -->
+      <div class="hp-svc-group">
+        <div class="hp-svc-glabel">HR &amp; Welfare</div>
+        <div class="hp-svc-cards">
+          <button class="hp-svc-card hp-svc-featured" onclick="showPage('workspace')">
+            <div class="hp-svc-icon" style="background:#1a3a5c;color:#f0a500"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
+            <div class="hp-svc-name">My Workspace</div>
+            <div class="hp-svc-desc">Tasks &amp; submissions</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('hr-forms')">
+            <div class="hp-svc-icon" style="background:#e6f0fb;color:#1a3a5c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div>
+            <div class="hp-svc-name">HCOS Forms</div>
+            <div class="hp-svc-desc">HR requests &amp; services</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('ldc')">
+            <div class="hp-svc-icon" style="background:#e6f4ec;color:#1e7e44"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg></div>
+            <div class="hp-svc-name">L&amp;D Centre</div>
+            <div class="hp-svc-desc">Training &amp; development</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('suggestions')">
+            <div class="hp-svc-icon" style="background:#fff3cd;color:#b45309"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="hp-svc-name">Suggestions</div>
+            <div class="hp-svc-desc">Share your ideas</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Operations & Facilities -->
+      <div class="hp-svc-group">
+        <div class="hp-svc-glabel">Operations &amp; Facilities</div>
+        <div class="hp-svc-cards">
+          <button class="hp-svc-card" onclick="showPage('rooms')">
+            <div class="hp-svc-icon" style="background:#e6f0fb;color:#1a3a5c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            <div class="hp-svc-name">Room Booking</div>
+            <div class="hp-svc-desc">Reserve meeting rooms</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('ops-forms')">
+            <div class="hp-svc-icon" style="background:#fdecea;color:#c0392b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
+            <div class="hp-svc-name">Airport Forms</div>
+            <div class="hp-svc-desc">Excursion, lost &amp; found…</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('noticeboard')">
+            <div class="hp-svc-icon" style="background:#f0f9ff;color:#0c5460"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></div>
+            <div class="hp-svc-name">Notice Board</div>
+            <div class="hp-svc-desc">Staff classifieds &amp; notices</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('helpdesk')">
+            <div class="hp-svc-icon" style="background:#e6f4ec;color:#1e7e44"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="hp-svc-name">ICT Help Desk</div>
+            <div class="hp-svc-desc">Tech support &amp; tickets</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Information & Knowledge -->
+      <div class="hp-svc-group">
+        <div class="hp-svc-glabel">Information &amp; Knowledge</div>
+        <div class="hp-svc-cards">
+          <button class="hp-svc-card" onclick="showPage('documents')">
+            <div class="hp-svc-icon" style="background:#fff3cd;color:#b45309"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div class="hp-svc-name">Documents</div>
+            <div class="hp-svc-desc">Policies &amp; procedures</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('news')">
+            <div class="hp-svc-icon" style="background:#e6f0fb;color:#1a3a5c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+            <div class="hp-svc-name">News</div>
+            <div class="hp-svc-desc">GACL updates &amp; stories</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('discussions')">
+            <div class="hp-svc-icon" style="background:#fdecea;color:#c0392b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="hp-svc-name">Discussions</div>
+            <div class="hp-svc-desc">Staff conversations</div>
+          </button>
+          <button class="hp-svc-card" onclick="showPage('directory')">
+            <div class="hp-svc-icon" style="background:#e6f4ec;color:#1e7e44"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="hp-svc-name">Staff Directory</div>
+            <div class="hp-svc-desc">Find anyone at GACL</div>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /hp-svc-hub -->
+
+    <!-- ── Operational Systems ── -->
+    <p class="hp-section-label" style="margin-top:28px">Operational Systems</p>
+    <div class="hp-ops-row">
+      <a href="cleantrack.html" target="_blank" class="hp-ops-card" style="--ops-accent:#1e7e44">
+        <div class="hp-ops-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div>
+          <div class="hp-ops-name">CleanTrack</div>
+          <div class="hp-ops-sub">BPG Cleaning Audit System</div>
+        </div>
+        <svg class="hp-ops-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="aocc.html" target="_blank" class="hp-ops-card" style="--ops-accent:#1a3a5c">
+        <div class="hp-ops-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div>
+          <div class="hp-ops-name">AOCC</div>
+          <div class="hp-ops-sub">Airport Ops Control Centre</div>
+        </div>
+        <svg class="hp-ops-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="fmcc.html" target="_blank" class="hp-ops-card" style="--ops-accent:#b45309">
+        <div class="hp-ops-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <div>
+          <div class="hp-ops-name">FMCC</div>
+          <div class="hp-ops-sub">Facilities Mgt Control Centre</div>
+        </div>
+        <svg class="hp-ops-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <button class="hp-ops-card" onclick="showPage('applications')" style="--ops-accent:#c0392b">
+        <div class="hp-ops-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="6" height="6" rx="1"/><rect x="9" y="3" width="6" height="6" rx="1"/><rect x="16" y="3" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="9" y="10" width="6" height="6" rx="1"/><rect x="16" y="10" width="6" height="6" rx="1"/></svg></div>
+        <div>
+          <div class="hp-ops-name">Applications</div>
+          <div class="hp-ops-sub">All GACL staff apps</div>
+        </div>
+        <svg class="hp-ops-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
     </div>
 
@@ -504,21 +603,33 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="2"/></svg>
             Latest from GACL
           </div>
-          <a href="https://www.gacl.com.gh/news" target="_blank" rel="noopener noreferrer" class="hp-panel-link">gacl.com.gh →</a>
+          <a href="#" onclick="showPage('news');return false" class="hp-panel-link">View all →</a>
         </div>
         <div class="hp-news-body" id="news-feed" aria-live="polite">
-          <!-- Skeleton while RSS loads -->
           <div class="hp-news-item">
-            <div class="hp-skel hp-skel-title" style="height:13px;width:80%;margin-bottom:8px"></div>
-            <div class="hp-skel hp-skel-line" style="height:11px;width:55%"></div>
+            <span class="hp-news-cat" style="background:#e6f0fb;color:#1a3a5c">Corporate</span>
+            <div class="hp-news-title">GACL achieves 3.2 million passengers milestone in 2024</div>
+            <div class="hp-news-meta">25 June 2026 · Communications &amp; PR</div>
           </div>
           <div class="hp-news-item">
-            <div class="hp-skel hp-skel-title" style="height:13px;width:70%;margin-bottom:8px"></div>
-            <div class="hp-skel hp-skel-line" style="height:11px;width:45%"></div>
+            <span class="hp-news-cat" style="background:#e6f4ec;color:#1e7e44">Operations</span>
+            <div class="hp-news-title">New security screening lanes commissioned at Terminal 3</div>
+            <div class="hp-news-meta">20 June 2026 · Aviation Security</div>
           </div>
           <div class="hp-news-item">
-            <div class="hp-skel hp-skel-title" style="height:13px;width:75%;margin-bottom:8px"></div>
-            <div class="hp-skel hp-skel-line" style="height:11px;width:50%"></div>
+            <span class="hp-news-cat" style="background:#fff3cd;color:#b45309">HR</span>
+            <div class="hp-news-title">Hollard Health medical scheme takes effect 1 July — enrol now</div>
+            <div class="hp-news-meta">18 June 2026 · HCOS</div>
+          </div>
+          <div class="hp-news-item">
+            <span class="hp-news-cat" style="background:#fdecea;color:#c0392b">Training</span>
+            <div class="hp-news-title">Q3 training calendar published — 14 courses available</div>
+            <div class="hp-news-meta">15 June 2026 · L&amp;D Centre</div>
+          </div>
+          <div class="hp-news-item">
+            <span class="hp-news-cat" style="background:#e6f0fb;color:#1a3a5c">ICT</span>
+            <div class="hp-news-title">Staff intranet launched — your one-stop GACL portal</div>
+            <div class="hp-news-meta">1 June 2026 · ICT Department</div>
           </div>
         </div>
       </div>
@@ -3708,6 +3819,49 @@
     @media (max-width: 1100px) { .oc-depts { grid-template-columns: repeat(4,1fr); } }
     @media (max-width: 800px)  { .oc-depts { grid-template-columns: repeat(3,1fr); } }
     @media (max-width: 540px)  { .oc-depts { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── Staff Services Hub ── */
+    .hp-svc-hub{display:flex;flex-direction:column;gap:20px}
+    .hp-svc-group{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+    .hp-svc-glabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:12px}
+    .hp-svc-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .hp-svc-card{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;cursor:pointer;font-family:inherit;text-align:center;transition:box-shadow .15s,transform .15s,border-color .15s}
+    .hp-svc-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.10);transform:translateY(-2px);border-color:#c7d7eb}
+    .hp-svc-card.hp-svc-featured{border-color:#1a3a5c;background:#f8faff}
+    .hp-svc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .hp-svc-icon svg{width:18px;height:18px}
+    .hp-svc-name{font-size:12px;font-weight:700;color:#1e293b;line-height:1.2}
+    .hp-svc-desc{font-size:11px;color:#64748b;line-height:1.3}
+    @media(max-width:800px){.hp-svc-cards{grid-template-columns:repeat(2,1fr)}}
+
+    /* ── Operational Systems row ── */
+    .hp-ops-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .hp-ops-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;cursor:pointer;font-family:inherit;text-align:left;text-decoration:none;color:inherit;box-shadow:0 1px 4px rgba(0,0,0,.04);transition:box-shadow .15s,transform .15s,border-color .15s;border-left:3px solid var(--ops-accent,#1a3a5c)}
+    .hp-ops-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.10);transform:translateY(-2px)}
+    .hp-ops-icon{width:36px;height:36px;border-radius:8px;background:rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ops-accent,#1a3a5c)}
+    .hp-ops-icon svg{width:18px;height:18px}
+    .hp-ops-name{font-size:13px;font-weight:700;color:#1e293b}
+    .hp-ops-sub{font-size:11px;color:#64748b}
+    .hp-ops-arrow{width:14px;height:14px;margin-left:auto;flex-shrink:0;color:#94a3b8}
+    @media(max-width:900px){.hp-ops-row{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:540px){.hp-ops-row{grid-template-columns:1fr}}
+
+    /* ── News feed items ── */
+    .hp-news-cat{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+    .hp-news-title{font-size:13px;font-weight:600;color:#1e293b;line-height:1.4;margin-bottom:3px}
+    .hp-news-meta{font-size:11px;color:#94a3b8}
+
+    /* ── Notice Board ── */
+    .nb-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:10px;transition:box-shadow .15s}
+    .nb-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.10)}
+    .nb-card-top{display:flex;align-items:center;justify-content:space-between}
+    .nb-cat-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+    .nb-del-btn{background:none;border:none;cursor:pointer;color:#94a3b8;font-size:12px;padding:2px 6px;border-radius:4px;line-height:1;font-family:inherit}
+    .nb-del-btn:hover{background:#fdecea;color:#c0392b}
+    .nb-card-title{font-size:14px;font-weight:700;color:#1e293b;line-height:1.4}
+    .nb-card-body{font-size:13px;color:#475569;line-height:1.6;flex:1}
+    .nb-card-footer{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:#64748b;border-top:1px solid #f1f5f9;padding-top:10px;align-items:center}
+
   </style>
 
   <!-- Search -->
@@ -4210,6 +4364,79 @@
       <div class="contact-item" style="padding:10px 0"><div class="contact-avatar" style="background:#e0f2fe;color:#0369a1">PM</div><div class="contact-info"><div class="contact-name">Projects Manager</div><a href="tel:2355" class="contact-detail">Ext. 2355</a></div></div>
     </div></div>
   </div>
+</div>
+
+<!-- STAFF NOTICE BOARD ────────────────────────────────────────────── -->
+<div id="page-noticeboard" class="page" role="main">
+  <div class="page-header">
+    <h1>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+      Staff Notice Board
+    </h1>
+    <span class="page-header-meta">Post notices, classifieds &amp; events for your colleagues</span>
+  </div>
+
+  <!-- Post notice form -->
+  <div class="panel" style="margin-bottom:24px;border-top:3px solid var(--color-accent)">
+    <h2 class="panel-title">Post a Notice</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Category</label>
+        <select class="form-control" id="nb-cat">
+          <option value="General">General Notice</option>
+          <option value="Lost &amp; Found">Lost &amp; Found</option>
+          <option value="For Sale">Items for Sale</option>
+          <option value="Event">Event / Gathering</option>
+          <option value="Carpool">Carpool / Transport</option>
+          <option value="Accommodation">Accommodation</option>
+          <option value="Job Alert">Internal Job Alert</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0;grid-column:span 2">
+        <label class="form-label">Title / Headline</label>
+        <input class="form-control" type="text" id="nb-title" placeholder="e.g. Lost: Black Wallet near Gate 5 · For Sale: Toyota Corolla 2018">
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label class="form-label">Details</label>
+      <textarea class="form-control" id="nb-body" rows="3" placeholder="Provide full details — condition, price, contact method, date/time for events…"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Contact name</label>
+        <input class="form-control" type="text" id="nb-contact" placeholder="Your name">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Extension / Phone</label>
+        <input class="form-control" type="text" id="nb-phone" placeholder="e.g. Ext 2045 or 0244…">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Expires</label>
+        <input class="form-control" type="date" id="nb-expires">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="nbPost()">Post Notice</button>
+  </div>
+
+  <!-- Filter bar -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
+    <select class="form-control" id="nb-filter" onchange="nbRender()" style="width:auto;min-width:160px">
+      <option value="">All Categories</option>
+      <option>General Notice</option>
+      <option>Lost &amp; Found</option>
+      <option>For Sale</option>
+      <option>Event</option>
+      <option>Carpool</option>
+      <option>Accommodation</option>
+      <option>Job Alert</option>
+    </select>
+    <input class="form-control" type="search" id="nb-search" placeholder="Search notices…" oninput="nbRender()" style="flex:1;min-width:180px">
+    <button class="btn btn-sm" onclick="nbRender()">↻ Refresh</button>
+  </div>
+
+  <!-- Notices grid -->
+  <div id="nb-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px"></div>
+
 </div>
 
 <!-- AIRPORT MANAGEMENT FORMS ────────────────────────────────────── -->
