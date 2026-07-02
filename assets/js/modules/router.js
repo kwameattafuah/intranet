@@ -83,6 +83,8 @@ function showPage(name) {
                                   if (typeof injectCustomForms === 'function') injectCustomForms(); }
   if (name === 'discussions') initDiscussions();
   if (name === 'noticeboard') { if (typeof nbRender === 'function') nbRender(); }
+  if (name === 'helpdesk')  { if (typeof hdInit === 'function') hdInit(); }
+  if (name === 'ict-admin') { if (typeof ictAdminRender === 'function') ictAdminRender(); }
   if (name === 'hr-forms') initHrForms();
 }
 

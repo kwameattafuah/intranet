@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -3331,58 +3331,83 @@
 <div id="page-helpdesk" class="page" role="main">
   <div class="page-header">
     <h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.54 3.17 2 2 0 0 1 3.52 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.74a16 16 0 0 0 6.35 6.35l1.31-1.31a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>ICT Help Desk</h1>
-    <button class="btn btn-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Log a Ticket</button>
+    <span class="page-header-meta">Support for all GACL stations — Accra · Kumasi · Tamale</span>
   </div>
   <div class="grid-main-aside">
     <div>
       <div class="card" style="margin-bottom:16px"><div class="card-body">
-        <h2 class="section-heading">My Open Tickets</h2>
-        <div class="table-wrap">
-          <table aria-label="Open support tickets">
-            <thead><tr><th>Ticket #</th><th>Issue</th><th>Category</th><th>Submitted</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td class="fids-flight" style="color:var(--color-primary)">#ICT-2026-0187</td><td>Email not syncing on mobile</td><td><span class="badge badge-info">Email</span></td><td>20 Jun 2026</td><td><span class="badge badge-warning">In Progress</span></td></tr>
-              <tr><td class="fids-flight" style="color:var(--color-primary)">#ICT-2026-0183</td><td>Printer offline — Block B</td><td><span class="badge badge-neutral">Hardware</span></td><td>18 Jun 2026</td><td><span class="badge badge-success">Resolved</span></td></tr>
-            </tbody>
-          </table>
-        </div>
+        <h2 class="section-heading">My Tickets</h2>
+        <div id="hd-my-tickets"></div>
       </div></div>
       <div class="card"><div class="card-body">
         <h2 class="section-heading">Log New Ticket</h2>
-        <form style="display:flex;flex-direction:column;gap:16px">
-          <div class="form-group" style="margin:0"><label class="form-label" for="t-title">Issue Summary</label><input class="form-control" id="t-title" type="text" placeholder="Briefly describe the problem"></div>
-          <div class="form-row form-row-2"><div class="form-group" style="margin:0"><label class="form-label" for="t-cat">Category</label><select class="form-control" id="t-cat"><option value="" disabled selected>Select category</option><option>Hardware</option><option>Software</option><option>Network</option><option>Email</option><option>Access / Permissions</option><option>Other</option></select></div><div class="form-group" style="margin:0"><label class="form-label" for="t-priority">Priority</label><select class="form-control" id="t-priority"><option>Normal</option><option>High</option><option>Critical</option></select></div></div>
-          <div class="form-group" style="margin:0"><label class="form-label" for="t-desc">Details</label><textarea class="form-control" id="t-desc" rows="3" style="height:auto;padding:10px 14px;resize:vertical" placeholder="Provide more detail about the issue…"></textarea></div>
-
-          <!-- Optional file attachment (not compulsory) -->
-          <div style="margin-top:16px;padding:12px 14px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px">
+        <div id="hd-submit-ok" style="display:none;background:var(--color-success-light);color:var(--color-success);font-size:13px;padding:12px 16px;border-radius:8px;margin-bottom:16px"></div>
+        <form style="display:flex;flex-direction:column;gap:16px" onsubmit="hdSubmit(event)">
+          <div class="form-row form-row-2">
+            <div class="form-group" style="margin:0"><label class="form-label" for="hd-name">Your Name</label><input class="form-control" id="hd-name" type="text" placeholder="e.g. Kwame Attafuah" required></div>
+            <div class="form-group" style="margin:0"><label class="form-label" for="hd-contact">Extension / Phone</label><input class="form-control" id="hd-contact" type="text" placeholder="e.g. Ext. 1042"></div>
+          </div>
+          <div class="form-row form-row-2">
+            <div class="form-group" style="margin:0"><label class="form-label" for="hd-location">Location</label>
+              <select class="form-control" id="hd-location" required></select>
+            </div>
+            <div class="form-group" style="margin:0"><label class="form-label" for="hd-dept">Department</label>
+              <select class="form-control" id="hd-dept" required>
+                <option value="" disabled selected>Select department</option>
+                <option>Airport Planning &amp; Projects</option><option>Airports Management</option><option>Audit, Compliance &amp; Risk</option>
+                <option>Aviation Security</option><option>Business Development</option><option>Commercial Services</option>
+                <option>Corporate Comms &amp; PR</option><option>Facilities &amp; Infrastructure</option><option>Finance</option>
+                <option>Human Capital &amp; OS</option><option>ICT</option><option>L&amp;D Centre</option><option>Legal Services</option>
+                <option>MD's Directorate</option><option>Procurement</option><option>Strategy &amp; Corporate Performance</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin:0"><label class="form-label" for="hd-title">Issue Summary</label><input class="form-control" id="hd-title" type="text" placeholder="Briefly describe the problem" required></div>
+          <div class="form-row form-row-2">
+            <div class="form-group" style="margin:0"><label class="form-label" for="hd-cat">Category</label><select class="form-control" id="hd-cat" required><option value="" disabled selected>Select category</option></select></div>
+            <div class="form-group" style="margin:0"><label class="form-label" for="hd-priority">Priority</label>
+              <select class="form-control" id="hd-priority"><option>Low</option><option selected>Normal</option><option>High</option><option>Critical</option></select>
+            </div>
+          </div>
+          <div class="form-group" style="margin:0"><label class="form-label" for="hd-desc">Details</label><textarea class="form-control" id="hd-desc" rows="3" style="height:auto;padding:10px 14px;resize:vertical" placeholder="Provide more detail about the issue — what happened, when it started, error messages…"></textarea></div>
+          <div style="padding:12px 14px;background:var(--color-surface);border:1px dashed var(--color-border);border-radius:8px">
             <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--color-text-secondary);margin-bottom:6px">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-              Attach supporting documents &nbsp;<span style="font-weight:400;color:var(--color-text-muted)">(optional — PDF, Word, Excel, images)</span>
+              Attach supporting documents <span style="font-weight:400;color:var(--color-text-muted)">(optional — PDF, Word, Excel, images)</span>
             </label>
             <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif" style="font-size:12px;color:var(--color-text-secondary);width:100%">
-          </div>
-
-          <!-- Optional file attachment (not compulsory) -->
-          <div style="margin-top:16px;padding:12px 14px;background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:8px">
-            <label style="font-size:12px;font-weight:600;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:8px">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-              Attach supporting documents
-              <span style="font-weight:400;color:var(--color-text-muted)">(optional)</span>
-            </label>
-            <input type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif" style="font-size:12px;width:100%;padding:4px 0">
-            <p style="font-size:10px;color:var(--color-text-muted);margin-top:4px">Accepted: PDF, Word, Excel, images. Attach files to the email when submitting.</p>
           </div>
           <button type="submit" class="btn btn-primary" style="align-self:flex-start">Submit Ticket</button>
         </form>
       </div></div>
     </div>
-    <div class="card"><div class="card-body">
-      <h2 class="section-heading">ICT Contacts</h2>
-      <div class="contact-item" style="padding:14px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">HD</div><div class="contact-info"><div class="contact-name">Help Desk</div><div class="contact-role">General IT support</div><a href="tel:1090" class="contact-detail">Ext. 1090</a></div></div>
-      <div class="contact-item" style="padding:14px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">NW</div><div class="contact-info"><div class="contact-name">Network Team</div><div class="contact-role">Network &amp; connectivity</div><a href="tel:1091" class="contact-detail">Ext. 1091</a></div></div>
-      <div class="contact-item" style="padding:14px 0"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">KA</div><div class="contact-info"><div class="contact-name">Kwame Attafuah</div><div class="contact-role">Systems Administrator</div><a href="tel:1042" class="contact-detail">Ext. 1042</a></div></div>
-    </div></div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card"><div class="card-body">
+        <h2 class="section-heading">ICT Contacts — Accra (KIA &amp; HQ)</h2>
+        <div class="contact-item" style="padding:14px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">HD</div><div class="contact-info"><div class="contact-name">Help Desk</div><div class="contact-role">General IT support</div><a href="tel:1090" class="contact-detail">Ext. 1090</a></div></div>
+        <div class="contact-item" style="padding:14px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">NW</div><div class="contact-info"><div class="contact-name">Network Team</div><div class="contact-role">Network &amp; connectivity</div><a href="tel:1091" class="contact-detail">Ext. 1091</a></div></div>
+        <div class="contact-item" style="padding:14px 0"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">KA</div><div class="contact-info"><div class="contact-name">Kwame Attafuah</div><div class="contact-role">Systems Administrator</div><a href="tel:1042" class="contact-detail">Ext. 1042</a></div></div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <h2 class="section-heading">Kumasi — Prempeh I Int'l</h2>
+        <div class="contact-item" style="padding:14px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">KD</div><div class="contact-info"><div class="contact-name">Kumasi ICT Desk</div><div class="contact-role">Station support · covers Sunyani</div><a href="tel:3090" class="contact-detail">Ext. 3090</a></div></div>
+        <div class="contact-item" style="padding:14px 0"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">YO</div><div class="contact-info"><div class="contact-name">Y. Osei</div><div class="contact-role">ICT Officer, Kumasi</div><a href="tel:3092" class="contact-detail">Ext. 3092</a></div></div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <h2 class="section-heading">Tamale Int'l</h2>
+        <div class="contact-item" style="padding:14px 0;border-bottom:1px solid var(--color-border)"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">TD</div><div class="contact-info"><div class="contact-name">Tamale ICT Desk</div><div class="contact-role">Station support · covers Wa</div><a href="tel:4090" class="contact-detail">Ext. 4090</a></div></div>
+        <div class="contact-item" style="padding:14px 0"><div class="contact-avatar" style="background:#e8eef5;color:var(--color-primary)">IA</div><div class="contact-info"><div class="contact-name">I. Abdulai</div><div class="contact-role">ICT Officer, Tamale</div><a href="tel:4092" class="contact-detail">Ext. 4092</a></div></div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <h2 class="section-heading">Response Targets</h2>
+        <div style="font-size:12px;line-height:2.1">
+          <div style="display:flex;justify-content:space-between"><span class="badge badge-danger">Critical</span><span>2 hours</span></div>
+          <div style="display:flex;justify-content:space-between"><span class="badge badge-warning">High</span><span>4 hours</span></div>
+          <div style="display:flex;justify-content:space-between"><span class="badge badge-primary">Normal</span><span>1 business day</span></div>
+          <div style="display:flex;justify-content:space-between"><span class="badge badge-neutral">Low</span><span>3 business days</span></div>
+        </div>
+      </div></div>
+    </div>
   </div>
 </div>
 
@@ -3394,7 +3419,7 @@
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
       ICT Admin
     </h1>
-    <span class="badge badge-danger" style="font-size:12px;padding:6px 12px;align-self:center">2 Critical Open</span>
+    <span class="badge badge-danger" id="ict-hdr-badge" style="font-size:12px;padding:6px 12px;align-self:center">—</span>
   </div>
 
   <!-- Tab bar -->
@@ -3412,214 +3437,48 @@
 
   <!-- ── ALL TICKETS ── -->
   <div id="ict-admin-tickets" class="lms-panel">
-    <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
-      <input class="form-control" type="search" placeholder="Search tickets…" style="width:220px" aria-label="Search tickets">
-      <select class="form-control" style="width:auto" aria-label="Filter by status" onchange="ictFilterStatus(this.value)">
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+      <input class="form-control" id="ictf-q" type="search" placeholder="Search tickets…" style="width:200px" aria-label="Search tickets" oninput="ictRenderTable()">
+      <select class="form-control" id="ictf-status" style="width:auto" aria-label="Filter by status" onchange="ictRenderTable()">
         <option value="">All Statuses</option>
-        <option>Open</option><option>In Progress</option><option>Critical</option><option>Resolved</option><option>Closed</option>
+        <option>Open</option><option>In Progress</option><option>On Hold</option><option>Resolved</option><option>Closed</option>
       </select>
-      <select class="form-control" style="width:auto" aria-label="Filter by category">
+      <select class="form-control" id="ictf-prio" style="width:auto" aria-label="Filter by priority" onchange="ictRenderTable()">
+        <option value="">All Priorities</option>
+        <option>Critical</option><option>High</option><option>Normal</option><option>Low</option>
+      </select>
+      <select class="form-control" id="ictf-station" style="width:auto" aria-label="Filter by station" onchange="ictRenderTable()">
+        <option value="">All Stations</option>
+        <option value="Accra">Accra — KIA &amp; HQ</option>
+        <option value="Kumasi">Kumasi — Prempeh I</option>
+        <option value="Tamale">Tamale Int'l</option>
+      </select>
+      <select class="form-control" id="ictf-cat" style="width:auto" aria-label="Filter by category" onchange="ictRenderTable()">
         <option value="">All Categories</option>
-        <option>Hardware</option><option>Software</option><option>Network</option><option>Email</option><option>Access / Permissions</option>
+        <option>Hardware</option><option>Software</option><option>Network</option><option>Email / M365</option>
+        <option>Access / Permissions</option><option>Telephony</option><option>FIDS / AODB</option>
+        <option>CUTE / Check-in Systems</option><option>CCTV &amp; Security Systems</option><option>Printing</option><option>Other</option>
       </select>
-      <button class="btn btn-ghost btn-sm" onclick="lmsDownload(this)">Export CSV</button>
+      <span id="ictf-count" style="font-size:12px;color:var(--color-text-muted);margin-left:auto"></span>
+      <button class="btn btn-ghost btn-sm" onclick="ictExportCSV()">Export CSV</button>
     </div>
 
     <div class="card"><div class="table-wrap">
       <table aria-label="All ICT tickets" id="ict-tickets-table">
-        <thead><tr><th>Ticket #</th><th>Raised By</th><th>Issue</th><th>Category</th><th>Dept.</th><th>Date</th><th>Assigned To</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>
-          <tr data-status="Critical">
-            <td style="font-weight:700;color:var(--color-primary);white-space:nowrap">#ICT-2026-0185</td>
-            <td>Abena Mensah</td>
-            <td>Cannot access payroll module</td>
-            <td><span class="badge badge-neutral">Software</span></td>
-            <td>HR</td>
-            <td style="white-space:nowrap">18 Jun</td>
-            <td><select class="form-control" style="height:34px;font-size:12px;width:130px" onchange="ictAssign(this)"><option>Unassigned</option><option>K. Attafuah</option><option>Network Team</option><option>Help Desk</option></select></td>
-            <td><span class="badge badge-danger">Critical</span></td>
-            <td><div style="display:flex;gap:4px">
-              <button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px" onclick="ictResolve(this)">Resolve</button>
-              <button class="btn btn-sm btn-ghost" style="height:34px" onclick="ictEscalate(this)">Escalate</button>
-            </div></td>
-          </tr>
-          <tr data-status="Critical">
-            <td style="font-weight:700;color:var(--color-primary);white-space:nowrap">#ICT-2026-0184</td>
-            <td>Emmanuel Owusu</td>
-            <td>Badge reader offline — Gate 4</td>
-            <td><span class="badge badge-neutral">Hardware</span></td>
-            <td>Operations</td>
-            <td style="white-space:nowrap">18 Jun</td>
-            <td><select class="form-control" style="height:34px;font-size:12px;width:130px" onchange="ictAssign(this)"><option>Unassigned</option><option selected>K. Attafuah</option><option>Network Team</option><option>Help Desk</option></select></td>
-            <td><span class="badge badge-danger">Critical</span></td>
-            <td><div style="display:flex;gap:4px">
-              <button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px" onclick="ictResolve(this)">Resolve</button>
-              <button class="btn btn-sm btn-ghost" style="height:34px" onclick="ictEscalate(this)">Escalate</button>
-            </div></td>
-          </tr>
-          <tr data-status="In Progress">
-            <td style="font-weight:700;color:var(--color-primary);white-space:nowrap">#ICT-2026-0187</td>
-            <td>K. Attafuah</td>
-            <td>Email not syncing on mobile</td>
-            <td><span class="badge badge-neutral">Email</span></td>
-            <td>ICT</td>
-            <td style="white-space:nowrap">20 Jun</td>
-            <td><select class="form-control" style="height:34px;font-size:12px;width:130px" onchange="ictAssign(this)"><option>Unassigned</option><option>K. Attafuah</option><option selected>Network Team</option><option>Help Desk</option></select></td>
-            <td><span class="badge badge-warning">In Progress</span></td>
-            <td><div style="display:flex;gap:4px">
-              <button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px" onclick="ictResolve(this)">Resolve</button>
-              <button class="btn btn-sm btn-ghost" style="height:34px" onclick="ictEscalate(this)">Escalate</button>
-            </div></td>
-          </tr>
-          <tr data-status="In Progress">
-            <td style="font-weight:700;color:var(--color-primary);white-space:nowrap">#ICT-2026-0186</td>
-            <td>Ama Boateng</td>
-            <td>Projector not working — Training Room A</td>
-            <td><span class="badge badge-neutral">Hardware</span></td>
-            <td>L&amp;D Centre</td>
-            <td style="white-space:nowrap">19 Jun</td>
-            <td><select class="form-control" style="height:34px;font-size:12px;width:130px" onchange="ictAssign(this)"><option>Unassigned</option><option>K. Attafuah</option><option>Network Team</option><option selected>Help Desk</option></select></td>
-            <td><span class="badge badge-warning">In Progress</span></td>
-            <td><div style="display:flex;gap:4px">
-              <button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px" onclick="ictResolve(this)">Resolve</button>
-              <button class="btn btn-sm btn-ghost" style="height:34px" onclick="ictEscalate(this)">Escalate</button>
-            </div></td>
-          </tr>
-          <tr data-status="Open">
-            <td style="font-weight:700;color:var(--color-primary);white-space:nowrap">#ICT-2026-0188</td>
-            <td>Kofi Asante</td>
-            <td>VPN access request — new laptop</td>
-            <td><span class="badge badge-neutral">Access / Permissions</span></td>
-            <td>Finance</td>
-            <td style="white-space:nowrap">22 Jun</td>
-            <td><select class="form-control" style="height:34px;font-size:12px;width:130px" onchange="ictAssign(this)"><option selected>Unassigned</option><option>K. Attafuah</option><option>Network Team</option><option>Help Desk</option></select></td>
-            <td><span class="badge badge-primary">Open</span></td>
-            <td><div style="display:flex;gap:4px">
-              <button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px" onclick="ictResolve(this)">Resolve</button>
-              <button class="btn btn-sm btn-ghost" style="height:34px" onclick="ictEscalate(this)">Escalate</button>
-            </div></td>
-          </tr>
-          <tr data-status="Resolved">
-            <td style="font-weight:700;color:var(--color-primary);white-space:nowrap">#ICT-2026-0183</td>
-            <td>K. Attafuah</td>
-            <td>Printer offline — Block B</td>
-            <td><span class="badge badge-neutral">Hardware</span></td>
-            <td>ICT</td>
-            <td style="white-space:nowrap">18 Jun</td>
-            <td style="font-size:12px;color:var(--color-text-muted)">Help Desk</td>
-            <td><span class="badge badge-success">Resolved</span></td>
-            <td><button class="btn btn-sm btn-ghost" style="height:34px" onclick="ictClose(this)">Close</button></td>
-          </tr>
-        </tbody>
+        <thead><tr><th>Ticket #</th><th>Issue / Raised By</th><th>Location</th><th>Category</th><th>Priority</th><th>Created</th><th>Assigned To</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="ict-tickets-tbody"></tbody>
       </table>
     </div></div>
   </div>
 
   <!-- ── DASHBOARD ── -->
   <div id="ict-admin-dashboard" class="lms-panel" hidden>
-    <div class="stats-grid" style="margin-bottom:24px">
-      <div class="stat-card" style="border-top-color:var(--color-danger)">
-        <div class="stat-icon" style="background:var(--color-danger-light)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-        <div><div class="stat-value">2</div><div class="stat-label">Critical</div></div>
-      </div>
-      <div class="stat-card" style="border-top-color:var(--color-warning)">
-        <div class="stat-icon" style="background:var(--color-warning-light)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-warning)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <div><div class="stat-value">2</div><div class="stat-label">In Progress</div></div>
-      </div>
-      <div class="stat-card" style="border-top-color:var(--color-primary)">
-        <div class="stat-icon" style="background:#e8eef5"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <div><div class="stat-value">1</div><div class="stat-label">Open</div></div>
-      </div>
-      <div class="stat-card" style="border-top-color:var(--color-success)">
-        <div class="stat-icon" style="background:var(--color-success-light)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div><div class="stat-value">97</div><div class="stat-label">Resolved (Jun)</div></div>
-      </div>
-      <div class="stat-card" style="border-top-color:var(--color-accent)">
-        <div class="stat-icon" style="background:var(--color-accent-light)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-warning)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <div><div class="stat-value">4h</div><div class="stat-label">Avg. Response</div></div>
-      </div>
-      <div class="stat-card" style="border-top-color:var(--color-success)">
-        <div class="stat-icon" style="background:var(--color-success-light)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-        <div><div class="stat-value">94%</div><div class="stat-label">Resolution Rate</div></div>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <!-- Tickets by category -->
-      <div class="card"><div class="card-body">
-        <h2 class="section-heading">Tickets by Category (Jun 2026)</h2>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
-          <div class="dept-bar-row"><span class="dept-bar-label">Hardware</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:38%;background:var(--color-primary)"></div></div><span class="dept-bar-pct">38</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">Software</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:24%;background:var(--color-primary)"></div></div><span class="dept-bar-pct">24</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">Network</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:18%;background:var(--color-primary)"></div></div><span class="dept-bar-pct">18</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">Email</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:12%;background:var(--color-primary)"></div></div><span class="dept-bar-pct">12</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">Access</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:8%;background:var(--color-primary)"></div></div><span class="dept-bar-pct">8</span></div>
-        </div>
-      </div></div>
-
-      <!-- Tickets by department -->
-      <div class="card"><div class="card-body">
-        <h2 class="section-heading">Tickets by Department (Jun 2026)</h2>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
-          <div class="dept-bar-row"><span class="dept-bar-label">Operations</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:28%;background:var(--color-accent)"></div></div><span class="dept-bar-pct">28</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">ICT</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:22%;background:var(--color-accent)"></div></div><span class="dept-bar-pct">22</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">Finance</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:18%;background:var(--color-accent)"></div></div><span class="dept-bar-pct">18</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">HR</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:16%;background:var(--color-accent)"></div></div><span class="dept-bar-pct">16</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">AVSEC</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:10%;background:var(--color-accent)"></div></div><span class="dept-bar-pct">10</span></div>
-          <div class="dept-bar-row"><span class="dept-bar-label">L&amp;D Centre</span><div class="dept-bar-track"><div class="dept-bar-fill" style="width:6%;background:var(--color-accent)"></div></div><span class="dept-bar-pct">6</span></div>
-        </div>
-      </div></div>
-    </div>
+    <div id="ict-dash-body"></div>
   </div>
 
   <!-- ── TEAM & WORKLOAD ── -->
   <div id="ict-admin-team" class="lms-panel" hidden>
-    <div class="card"><div class="card-body">
-      <h2 class="section-heading">Team Workload</h2>
-      <div class="table-wrap">
-        <table aria-label="ICT team workload">
-          <thead><tr><th>Team Member</th><th>Role</th><th>Extension</th><th>Open</th><th>In Progress</th><th>Resolved (Jun)</th><th>Availability</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><strong>Kwame Attafuah</strong></td>
-              <td>Systems Administrator</td>
-              <td>1042</td>
-              <td><span class="badge badge-primary">1</span></td>
-              <td><span class="badge badge-warning">2</span></td>
-              <td><span class="badge badge-success">34</span></td>
-              <td><span class="badge badge-warning">Busy</span></td>
-            </tr>
-            <tr>
-              <td><strong>Network Team</strong></td>
-              <td>Network &amp; Connectivity</td>
-              <td>1091</td>
-              <td><span class="badge badge-primary">0</span></td>
-              <td><span class="badge badge-warning">1</span></td>
-              <td><span class="badge badge-success">41</span></td>
-              <td><span class="badge badge-success">Available</span></td>
-            </tr>
-            <tr>
-              <td><strong>Help Desk</strong></td>
-              <td>General IT Support</td>
-              <td>1090</td>
-              <td><span class="badge badge-primary">0</span></td>
-              <td><span class="badge badge-warning">1</span></td>
-              <td><span class="badge badge-success">22</span></td>
-              <td><span class="badge badge-success">Available</span></td>
-            </tr>
-            <tr>
-              <td><strong>Director, ICT</strong></td>
-              <td>ICT Director</td>
-              <td>2263</td>
-              <td><span class="badge badge-primary">0</span></td>
-              <td><span class="badge badge-warning">0</span></td>
-              <td><span class="badge badge-success">0</span></td>
-              <td><span class="badge badge-neutral">Escalations only</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div></div>
+    <div id="ict-team-body"></div>
   </div>
 
 </div>
@@ -5990,6 +5849,7 @@
 <!-- 6. Admin panels (reads HR_SUBMISSIONS; must follow hr-forms) -->
 <script src="assets/js/modules/admin-ldc.js"></script>
 <script src="assets/js/modules/admin-ict.js"></script>
+<script src="assets/js/modules/tickets.js"></script>
 <script src="assets/js/modules/admin-rooms.js"></script>
 <script src="assets/js/modules/admin-forms.js"></script>
 <!-- 6. Router LAST — showPage() calls functions from every module above -->
