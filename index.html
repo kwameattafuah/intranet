@@ -5387,6 +5387,9 @@
     <button class="lms-tab" role="tab" onclick="siteAdminTab('navigation',this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>Navigation
     </button>
+    <button class="lms-tab" role="tab" onclick="siteAdminTab('content',this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Content
+    </button>
     <button class="lms-tab" role="tab" onclick="siteAdminTab('settings',this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M12 2v2M4.93 4.93l1.41 1.41M2 12h2M4.93 19.07l1.41-1.41M12 22v-2M19.07 19.07l-1.41-1.41M22 12h-2"/></svg>Settings
     </button>
@@ -5520,16 +5523,66 @@
             <tr><td><strong>Home</strong></td><td>Main</td><td>dashboard</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
             <tr><td><strong>Organisation Chart</strong></td><td>Main</td><td>orgchart</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
             <tr><td><strong>Internal Directory</strong></td><td>Main</td><td>directory</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>My Workspace</strong></td><td>Main</td><td>workspace</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
             <tr><td><strong>Announcements</strong></td><td>Communication</td><td>announcements</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
             <tr><td><strong>News &amp; Information</strong></td><td>Communication</td><td>news</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>General Discussions</strong></td><td>Communication</td><td>discussions</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Media Room</strong></td><td>Communication</td><td>media</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
             <tr><td><strong>L&amp;D Centre</strong></td><td>Services</td><td>ldc</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
             <tr><td><strong>Room Booking</strong></td><td>Services</td><td>rooms</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
             <tr><td><strong>ICT Help Desk</strong></td><td>Services</td><td>helpdesk</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>HCOS Forms &amp; Services</strong></td><td>Resources</td><td>hr-forms</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Staff Notice Board</strong></td><td>Resources</td><td>noticeboard</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Suggestion Box</strong></td><td>Resources</td><td>suggestions</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Documents &amp; Policies</strong></td><td>Resources</td><td>documents</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Corporate Profile</strong></td><td>Resources</td><td>corporate</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Applications</strong></td><td>Resources</td><td>applications</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Airport Management Forms</strong></td><td>Operations</td><td>ops-forms</td><td>—</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
             <tr><td><strong>Site Admin</strong></td><td>Administration</td><td>site-admin</td><td>✓</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>L&amp;D Admin</strong></td><td>Administration</td><td>ldc-admin</td><td>✓</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Room Booking Admin</strong></td><td>Administration</td><td>rooms-admin</td><td>✓</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>ICT Admin</strong></td><td>Administration</td><td>ict-admin</td><td>✓</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Forms Admin</strong></td><td>Administration</td><td>forms-admin</td><td>✓</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
+            <tr><td><strong>Form Builder</strong></td><td>Administration</td><td>form-builder</td><td>✓</td><td><button class="btn btn-sm" style="background:var(--color-success);color:#fff;height:34px">Visible</button></td></tr>
           </tbody>
         </table>
       </div>
     </div></div>
+  </div>
+
+  <!-- Content -->
+  <div id="site-admin-content" class="lms-panel" hidden>
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
+      <div class="card"><div class="card-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 class="section-heading" style="margin:0;border:none;padding:0">Staff Notice Board Posts</h2>
+          <button class="btn btn-sm btn-ghost" onclick="saLoadNoticeBoard()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-3.83"/></svg>
+            Refresh
+          </button>
+        </div>
+        <div id="sa-nb-table-wrap">
+          <p style="font-size:13px;color:var(--color-text-muted);padding:24px 0;text-align:center">Click Refresh to load current Notice Board posts.</p>
+        </div>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <h3 class="card-title" style="margin-bottom:12px">Content Moderation</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+          <div style="padding:12px;background:var(--color-surface);border-radius:8px;border:1px solid var(--color-border)">
+            <p style="font-weight:600;margin-bottom:4px">Notice Board</p>
+            <p style="color:var(--color-text-muted);font-size:12px;line-height:1.5">Posts are stored in the browser. As admin you can delete any post. Posts expire automatically on their set expiry date.</p>
+          </div>
+          <div style="padding:12px;background:var(--color-surface);border-radius:8px;border:1px solid var(--color-border)">
+            <p style="font-weight:600;margin-bottom:4px">Suggestions</p>
+            <p style="color:var(--color-text-muted);font-size:12px;line-height:1.5">Staff suggestions are session-only. Future integration: email to HCOS on submit.</p>
+          </div>
+          <div style="padding:12px;background:var(--color-surface);border-radius:8px;border:1px solid var(--color-border)">
+            <p style="font-weight:600;margin-bottom:4px">Discussions</p>
+            <p style="color:var(--color-text-muted);font-size:12px;line-height:1.5">Discussion threads are stored in localStorage per device. No central moderation yet.</p>
+          </div>
+        </div>
+      </div></div>
+    </div>
   </div>
 
   <!-- Settings -->
@@ -5555,12 +5608,12 @@
           <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--color-border)"><div><p style="font-size:var(--font-size-sm);font-weight:600">Admin Mode</p><p style="font-size:11px;color:var(--color-text-muted)">Currently: <span id="sa-admin-status">checking…</span></p></div><button class="btn btn-ghost btn-sm" onclick="toggleAdmin();document.getElementById('sa-admin-status').textContent=isAdmin()?'ON':'OFF'">Toggle</button></div>
           <!-- Emergency Broadcast -->
           <div style="padding:14px 0;border-bottom:1px solid var(--color-border)">
-            <p style="font-size:var(--font-size-sm);font-weight:700;color:#c0392b;margin-bottom:10px">⚠️ Emergency Broadcast</p>
+            <p style="font-size:var(--font-size-sm);font-weight:700;color:#c0392b;margin-bottom:10px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Emergency Broadcast</p>
             <div style="display:flex;gap:8px;margin-bottom:8px">
               <select id="bc-type" style="padding:7px 10px;border:1px solid var(--color-border);border-radius:6px;font-family:inherit;font-size:12px;background:var(--color-surface)">
-                <option value="emergency">🔴 Emergency</option>
-                <option value="warning">🟡 Warning</option>
-                <option value="info">🔵 Information</option>
+                <option value="emergency">Emergency</option>
+                <option value="warning">Warning</option>
+                <option value="info">Information</option>
               </select>
             </div>
             <textarea id="bc-msg" placeholder="Type broadcast message for all staff…" style="width:100%;padding:9px 12px;border:1px solid var(--color-border);border-radius:6px;font-family:inherit;font-size:13px;resize:vertical;min-height:60px;margin-bottom:8px;background:var(--color-surface);color:var(--color-text);outline:none"></textarea>
@@ -5630,7 +5683,7 @@
     <div style="display:flex;flex-direction:column;gap:14px">
       <div class="card">
         <div class="card-body">
-          <p style="font-weight:700;font-size:13px;margin-bottom:10px">📋 How it works</p>
+          <p style="font-weight:700;font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>How it works</p>
           <ol style="font-size:12px;color:var(--color-text-secondary);line-height:1.8;padding-left:18px">
             <li>Fill out and submit the form</li>
             <li>Your suggestion goes to HCOS &amp; relevant management</li>

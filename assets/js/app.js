@@ -243,6 +243,34 @@ function siteAdminTab(id, btn) {
   btn.classList.add('active'); btn.setAttribute('aria-selected','true');
   document.getElementById('site-admin-' + id).hidden = false;
   if (id === 'settings') document.getElementById('sa-admin-status').textContent = isAdmin() ? 'ON' : 'OFF';
+  if (id === 'content') saLoadNoticeBoard();
+}
+
+function saLoadNoticeBoard() {
+  var wrap = document.getElementById('sa-nb-table-wrap');
+  if (!wrap) return;
+  var posts = JSON.parse(localStorage.getItem('gacl_noticeboard') || '[]');
+  if (!posts.length) {
+    wrap.innerHTML = '<p style="font-size:13px;color:var(--color-text-muted);padding:24px 0;text-align:center">No Notice Board posts found.</p>';
+    return;
+  }
+  var rows = posts.map(function(p) {
+    return '<tr>'
+      + '<td><strong>' + (p.title||'').replace(/</g,'&lt;') + '</strong></td>'
+      + '<td><span class="badge badge-neutral" style="font-size:10px">' + (p.cat||'') + '</span></td>'
+      + '<td style="font-size:12px;color:var(--color-text-muted)">' + (p.contact||'—') + '</td>'
+      + '<td style="font-size:12px">' + (p.expires ? new Date(p.expires).toLocaleDateString('en-GB') : 'No expiry') + '</td>'
+      + '<td><button class="btn btn-sm" style="background:var(--color-danger-light);color:var(--color-danger);height:30px" onclick="saDeleteNBPost(\'' + p.id + '\')">Delete</button></td>'
+      + '</tr>';
+  }).join('');
+  wrap.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Title</th><th>Category</th><th>Contact</th><th>Expires</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
+function saDeleteNBPost(id) {
+  var posts = JSON.parse(localStorage.getItem('gacl_noticeboard') || '[]');
+  localStorage.setItem('gacl_noticeboard', JSON.stringify(posts.filter(function(p){ return p.id !== id; })));
+  saLoadNoticeBoard();
+  if (typeof nbRender === 'function') nbRender();
 }
 
 /**
