@@ -803,3 +803,158 @@ function nbDelete(id) {
   nbSave(notices);
   nbRender();
 }
+
+/* ══════════════════════════════════════════════
+   SPOTLIGHT SEARCH  (Ctrl/Cmd + K)
+   ══════════════════════════════════════════════ */
+var SPOTLIGHT_DATA = [
+  {t:'Dashboard',p:'dashboard',k:'home main portal',c:'Main'},
+  {t:'My Workspace',p:'workspace',k:'tasks requests my',c:'Main'},
+  {t:'Staff Directory',p:'directory',k:'phone contacts staff find',c:'Main'},
+  {t:'Organisation Chart',p:'orgchart',k:'org hierarchy departments',c:'Main'},
+  {t:'Announcements',p:'announcements',k:'notice urgent alert bulletin',c:'Communication'},
+  {t:'News & Information',p:'news',k:'gacl updates stories press',c:'Communication'},
+  {t:'General Discussions',p:'discussions',k:'chat talk forum thread',c:'Communication'},
+  {t:'Media Room',p:'media',k:'photos videos gallery images',c:'Communication'},
+  {t:'HCOS Forms & Services',p:'hr-forms',k:'leave medical bank claim HR forms',c:'Services'},
+  {t:'L&D Centre',p:'ldc',k:'training learning courses development',c:'Services'},
+  {t:'Room Booking',p:'rooms',k:'meeting room conference board book',c:'Services'},
+  {t:'ICT Help Desk',p:'helpdesk',k:'IT support ticket computer network printer',c:'Services'},
+  {t:'Staff Notice Board',p:'noticeboard',k:'lost found sale carpool event classifieds',c:'Services'},
+  {t:'Suggestion Box',p:'suggestions',k:'ideas feedback improve suggestions',c:'Services'},
+  {t:'Airport Management Forms',p:'ops-forms',k:'excursion lost found complaint special assistance VIP',c:'Operations'},
+  {t:'Documents & Policies',p:'documents',k:'policy procedure HR manual documents',c:'Resources'},
+  {t:'Corporate Profile',p:'corporate',k:'about GACL mission vision history',c:'Resources'},
+  {t:'Applications',p:'applications',k:'apps software tools systems external',c:'Resources'},
+  {t:"MD's Directorate",p:'dept-md',k:'managing director CEO office executive',c:'Departments'},
+  {t:'Airport Planning & Projects',p:'dept-planning',k:'projects infrastructure capital development planning',c:'Departments'},
+  {t:'Airports Management',p:'dept-ops',k:'operations terminal airside ops management',c:'Departments'},
+  {t:'Audit, Compliance & Risk',p:'dept-audit',k:'audit compliance risk internal control',c:'Departments'},
+  {t:'Aviation Security',p:'dept-avsec',k:'AVSEC security screening passengers ICAO',c:'Departments'},
+  {t:'Business Development',p:'dept-bizdev',k:'business development revenue growth partnerships',c:'Departments'},
+  {t:'Commercial Services',p:'dept-commercial',k:'commercial retail concessions shops duty-free',c:'Departments'},
+  {t:'Corporate Comms & PR',p:'dept-comms',k:'communications PR media press public relations',c:'Departments'},
+  {t:'Facilities & Infrastructure',p:'dept-facilities',k:'facilities buildings maintenance engineering FM',c:'Departments'},
+  {t:'Finance',p:'dept-finance',k:'finance accounts payroll budget expenditure',c:'Departments'},
+  {t:'Human Capital & OS',p:'dept-hcos',k:'HR human resources HCOS staff welfare payroll leave',c:'Departments'},
+  {t:'ICT Department',p:'dept-ict',k:'ICT IT technology computer systems network',c:'Departments'},
+  {t:'Legal Services',p:'dept-legal',k:'legal contracts company secretariat governance',c:'Departments'},
+  {t:'Procurement',p:'dept-procurement',k:'procurement purchasing tenders supply chain',c:'Departments'},
+  {t:'Strategy & Corporate Performance',p:'dept-strategy',k:'strategy KPI performance scorecard corporate',c:'Departments'},
+  {t:'CleanTrack — BPG',u:'cleantrack.html',k:'cleaning audit BPG contractor violations RAG',c:'Systems'},
+  {t:'AOCC — Airport Ops Control',u:'aocc.html',k:'AOCC operations control centre airport',c:'Systems'},
+  {t:'FMCC — Facilities Control',u:'fmcc.html',k:'FMCC facilities management control centre',c:'Systems'}
+];
+
+var _spotIdx = -1;
+
+function openSpotlight() {
+  var ov = document.getElementById('spotlight-overlay');
+  if (!ov) return;
+  ov.style.display = 'block';
+  var inp = document.getElementById('spotlight-input');
+  inp.value = '';
+  _spotIdx = -1;
+  spotlightSearch('');
+  setTimeout(function(){ inp.focus(); }, 60);
+}
+
+function closeSpotlight() {
+  var ov = document.getElementById('spotlight-overlay');
+  if (ov) ov.style.display = 'none';
+}
+
+function closeSpotlightBg(e) {
+  if (e.target === document.getElementById('spotlight-overlay')) closeSpotlight();
+}
+
+function spotlightSearch(q) {
+  var res = document.getElementById('spotlight-results');
+  if (!res) return;
+  q = (q || '').toLowerCase().trim();
+  var hits = q ? SPOTLIGHT_DATA.filter(function(d){
+    return d.t.toLowerCase().includes(q) || (d.k||'').toLowerCase().includes(q) || d.c.toLowerCase().includes(q);
+  }) : SPOTLIGHT_DATA.slice(0, 14);
+  _spotIdx = -1;
+  if (!hits.length) {
+    res.innerHTML = '<div style="padding:32px;text-align:center;color:#94a3b8;font-size:13px">No results for "' + q + '"</div>';
+    return;
+  }
+  var prev = '';
+  res.innerHTML = hits.map(function(d, i){
+    var group = (d.c !== prev) ? '<div style="padding:8px 18px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8">' + d.c + '</div>' : '';
+    prev = d.c;
+    var icon = d.u
+      ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
+      : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+    return group + '<div class="sl-item" data-idx="' + i + '" onclick="spotlightGo(' + i + ',this)" style="display:flex;align-items:center;gap:12px;padding:10px 18px;cursor:pointer;transition:background .1s">'
+      + '<div style="width:30px;height:30px;border-radius:7px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#475569">' + icon + '</div>'
+      + '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:#1e293b">' + d.t + '</div><div style="font-size:11px;color:#94a3b8">' + d.c + '</div></div>'
+      + '</div>';
+  }).join('');
+}
+
+function spotlightGo(i, el) {
+  var q = ((document.getElementById('spotlight-input')||{}).value||'').toLowerCase().trim();
+  var data = q ? SPOTLIGHT_DATA.filter(function(d){
+    return d.t.toLowerCase().includes(q)||(d.k||'').toLowerCase().includes(q)||d.c.toLowerCase().includes(q);
+  }) : SPOTLIGHT_DATA.slice(0,14);
+  var item = data[i];
+  if (!item) return;
+  closeSpotlight();
+  if (item.u) { window.open(item.u, '_blank'); }
+  else if (item.p) { showPage(item.p); }
+}
+
+function spotlightKey(e) {
+  var items = document.querySelectorAll('.sl-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); _spotIdx = Math.min(_spotIdx+1, items.length-1); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); _spotIdx = Math.max(_spotIdx-1, 0); }
+  else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (_spotIdx >= 0) spotlightGo(parseInt(items[_spotIdx].dataset.idx));
+    else if (items.length) spotlightGo(parseInt(items[0].dataset.idx));
+    return;
+  } else if (e.key === 'Escape') { closeSpotlight(); return; }
+  items.forEach(function(el,j){ el.style.background = j===_spotIdx ? '#f0f4ff' : ''; });
+  if (_spotIdx >= 0) items[_spotIdx].scrollIntoView({block:'nearest'});
+}
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey||e.metaKey) && e.key==='k') {
+    e.preventDefault();
+    var ov = document.getElementById('spotlight-overlay');
+    if (ov && ov.style.display !== 'none') closeSpotlight(); else openSpotlight();
+  }
+  if (e.key==='Escape') closeSpotlight();
+});
+
+/* ── Announcement filter ── */
+function filterAnn(cls, btn) {
+  document.querySelectorAll('.ann-filter-btn').forEach(function(b){ b.classList.remove('active-filter'); });
+  if (btn) btn.classList.add('active-filter');
+  document.querySelectorAll('.ann-card').forEach(function(card) {
+    if (!cls) { card.style.display = ''; return; }
+    var isUrgent  = card.classList.contains('ann-urgent');
+    var isSuccess = card.classList.contains('ann-success');
+    var isInfo    = card.classList.contains('ann-info');
+    var hasSafety = !!card.querySelector('.badge-primary');
+    var match = cls==='urgent'  ? isUrgent
+              : cls==='success' ? isSuccess
+              : cls==='info'    ? isInfo
+              : cls==='safety'  ? (hasSafety && !isUrgent && !isSuccess && !isInfo)
+              : cls==='notice'  ? (!isUrgent && !isSuccess && !isInfo && !hasSafety)
+              : true;
+    card.style.display = match ? '' : 'none';
+  });
+}
+
+/* ── Today strip date ── */
+(function() {
+  var el = document.getElementById('today-date-strip');
+  if (el) {
+    el.textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  }
+})();
+

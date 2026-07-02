@@ -306,6 +306,11 @@
 
     <span class="topbar-title" id="page-title">Staff Portal</span>
     <div class="topbar-actions" style="position:relative">
+      <button class="topbar-btn topbar-search-btn" onclick="openSpotlight()" aria-label="Quick search" title="Quick search  Ctrl+K">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="topbar-search-hint">Search&hellip;</span>
+        <kbd class="topbar-kbd">Ctrl K</kbd>
+      </button>
       <button class="topbar-btn topbar-user" aria-label="User menu for K. Attafuah" aria-haspopup="true" aria-expanded="false" onclick="toggleUserMenu(event)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         K. Attafuah
@@ -461,6 +466,34 @@
           <div class="hp-ticker-item"><div class="hp-ticker-dot" aria-hidden="true"></div>Annual Fire Drill — Block A, Friday 26 June 2026 at 10:00 AM. Assembly point: Main Gate car park.</div>
         </div>
       </div>
+    </div>
+
+    <!-- ── Today at a Glance ── -->
+    <div class="hp-today-strip" id="hp-today-strip">
+      <div class="hp-today-cell">
+        <div class="hp-today-val" id="today-date-strip">—</div>
+        <div class="hp-today-lbl">Today</div>
+      </div>
+      <div class="hp-today-sep"></div>
+      <div class="hp-today-cell" onclick="showPage('announcements')" style="cursor:pointer">
+        <div class="hp-today-val"><span class="hp-today-badge">3</span> announcements</div>
+        <div class="hp-today-lbl">1 urgent — tap to view</div>
+      </div>
+      <div class="hp-today-sep"></div>
+      <div class="hp-today-cell" onclick="showPage('rooms')" style="cursor:pointer">
+        <div class="hp-today-val">3 rooms free</div>
+        <div class="hp-today-lbl">Room booking</div>
+      </div>
+      <div class="hp-today-sep"></div>
+      <div class="hp-today-cell">
+        <div class="hp-today-val">Mid-Year Appraisals</div>
+        <div class="hp-today-lbl">Deadline: 31 July 2026</div>
+      </div>
+      <button class="hp-today-search" onclick="openSpotlight()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Quick Search
+        <kbd style="font-size:10px;background:rgba(0,0,0,.08);padding:1px 5px;border-radius:4px;font-family:monospace">Ctrl K</kbd>
+      </button>
     </div>
 
     <!-- ── Departments ── -->
@@ -3625,31 +3658,31 @@
         <div class="ann-header"><span class="badge badge-danger">Urgent</span><span class="badge badge-neutral">HCOS Administration</span></div>
         <h2 class="ann-title">Staff ID Card Renewal — Deadline 30 June 2026</h2>
         <p class="ann-body">All staff are required to renew their GACL ID cards at the HCOS office before the end of June 2026. Please bring two recent passport photographs and your old ID card. Failure to renew by the deadline will result in access restrictions to secured areas.</p>
-        <div class="ann-meta"><span>📅 Posted: 20 Jun 2026</span><span>👤 HCOS Administration</span><span>📌 Expires: 30 Jun 2026</span></div>
+        <div class="ann-meta"><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 20 Jun 2026</span><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> HCOS Administration</span><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Expires: 30 Jun 2026</span></div>
       </div>
       <div class="ann-card">
         <div class="ann-header"><span class="badge badge-primary">Notice</span><span class="badge badge-neutral">Finance</span></div>
         <h2 class="ann-title">2026 Annual Leave Schedule — Q3 &amp; Q4 Submissions Now Open</h2>
         <p class="ann-body">Staff are invited to submit their leave preferences for Q3–Q4 2026 via the Leave Management portal. Submissions close on 15 July 2026. Line managers are reminded to ensure adequate coverage before approving leave requests.</p>
-        <div class="ann-meta"><span>📅 Posted: 18 Jun 2026</span><span>👤 Leave &amp; Welfare Unit</span></div>
+        <div class="ann-meta"><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 18 Jun 2026</span><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Leave &amp; Welfare Unit</span></div>
       </div>
       <div class="ann-card ann-success">
         <div class="ann-header"><span class="badge badge-success">Update</span><span class="badge badge-neutral">Staff Welfare</span></div>
         <h2 class="ann-title">New Medical Scheme Provider — Hollard Health (Effective 1 July 2026)</h2>
         <p class="ann-body">GACL's staff medical scheme transitions to Hollard Health effective 1 July 2026. New insurance cards will be distributed at all HCOS offices from 25 June. Please contact the Staff Welfare Unit (Ext. 2015) for queries about coverage and benefits under the new scheme.</p>
-        <div class="ann-meta"><span>📅 Posted: 12 Jun 2026</span><span>👤 Staff Welfare</span></div>
+        <div class="ann-meta"><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 12 Jun 2026</span><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Staff Welfare</span></div>
       </div>
       <div class="ann-card ann-info">
         <div class="ann-header"><span class="badge badge-warning">Reminder</span><span class="badge badge-neutral">HCOS</span></div>
         <h2 class="ann-title">Mid-Year Performance Appraisals — July 1–31 2026</h2>
         <p class="ann-body">Line managers are reminded to complete mid-year appraisal forms for all direct reports before 31 July 2026. Self-appraisal forms are available on the shared documents portal. Contact Performance Management (Ext. 2293) for assistance.</p>
-        <div class="ann-meta"><span>📅 Posted: 10 Jun 2026</span><span>👤 Performance Management</span></div>
+        <div class="ann-meta"><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 10 Jun 2026</span><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Performance Management</span></div>
       </div>
       <div class="ann-card">
         <div class="ann-header"><span class="badge badge-primary">Safety</span><span class="badge badge-neutral">Health &amp; Safety</span></div>
         <h2 class="ann-title">Annual Fire Drill — Block A, 26 June 2026 at 10:00</h2>
         <p class="ann-body">The Health &amp; Safety Unit will conduct the annual fire drill for Block A on Friday 26 June 2026 at 10:00 AM. All staff in Block A must participate. Assembly point is the car park adjacent to the main gate. Duration: approximately 30 minutes.</p>
-        <div class="ann-meta"><span>📅 Posted: 8 Jun 2026</span><span>👤 Health &amp; Safety Unit</span></div>
+        <div class="ann-meta"><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 8 Jun 2026</span><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Health &amp; Safety Unit</span></div>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px">
@@ -3657,12 +3690,12 @@
         <h3 class="card-title" style="margin-bottom:12px">Filter By</h3>
         <div class="divider"></div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-          <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">All Announcements</button>
-          <button class="btn btn-sm btn-full" style="justify-content:flex-start;background:var(--color-danger-light);color:var(--color-danger)">🔴 Urgent</button>
-          <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">🔵 Notices</button>
-          <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">🟡 Reminders</button>
-          <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">🟢 Updates</button>
-          <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">⚠️ Safety</button>
+          <button class="btn btn-ghost btn-sm btn-full ann-filter-btn active-filter" style="justify-content:flex-start" onclick="filterAnn('',this)"><span class="ann-dot" style="background:#94a3b8"></span>All Announcements</button>
+          <button class="btn btn-ghost btn-sm btn-full ann-filter-btn" style="justify-content:flex-start" onclick="filterAnn('urgent',this)"><span class="ann-dot" style="background:#c0392b"></span>Urgent</button>
+          <button class="btn btn-ghost btn-sm btn-full ann-filter-btn" style="justify-content:flex-start" onclick="filterAnn('notice',this)"><span class="ann-dot" style="background:#1a3a5c"></span>Notices</button>
+          <button class="btn btn-ghost btn-sm btn-full ann-filter-btn" style="justify-content:flex-start" onclick="filterAnn('info',this)"><span class="ann-dot" style="background:#f0a500"></span>Reminders</button>
+          <button class="btn btn-ghost btn-sm btn-full ann-filter-btn" style="justify-content:flex-start" onclick="filterAnn('success',this)"><span class="ann-dot" style="background:#1e7e44"></span>Updates</button>
+          <button class="btn btn-ghost btn-sm btn-full ann-filter-btn" style="justify-content:flex-start" onclick="filterAnn('safety',this)"><span class="ann-dot" style="background:#b45309"></span>Safety</button>
         </div>
       </div></div>
       <div class="card"><div class="card-body">
@@ -3819,6 +3852,32 @@
     @media (max-width: 1100px) { .oc-depts { grid-template-columns: repeat(4,1fr); } }
     @media (max-width: 800px)  { .oc-depts { grid-template-columns: repeat(3,1fr); } }
     @media (max-width: 540px)  { .oc-depts { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── Topbar search button ── */
+    .topbar-search-btn{display:flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid rgba(255,255,255,.18);border-radius:8px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-size:13px;font-family:inherit;cursor:pointer;transition:background .15s,border-color .15s;height:36px}
+    .topbar-search-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff}
+    .topbar-search-hint{font-size:13px}
+    .topbar-kbd{font-size:10px;background:rgba(255,255,255,.12);padding:2px 6px;border-radius:5px;font-family:monospace;letter-spacing:.02em;border:1px solid rgba(255,255,255,.15)}
+    @media(max-width:600px){.topbar-search-hint,.topbar-kbd{display:none}}
+
+    /* ── Today at a Glance strip ── */
+    .hp-today-strip{display:flex;align-items:center;gap:0;background:#fff;border-radius:12px;border:1px solid #e2e8f0;box-shadow:0 1px 6px rgba(0,0,0,.06);padding:0 8px;margin-bottom:0;overflow:hidden}
+    .hp-today-cell{padding:12px 18px;flex-shrink:0}
+    .hp-today-val{font-size:13px;font-weight:700;color:#1e293b;line-height:1.3;white-space:nowrap}
+    .hp-today-lbl{font-size:11px;color:#94a3b8;margin-top:2px;white-space:nowrap}
+    .hp-today-sep{width:1px;height:36px;background:#e2e8f0;flex-shrink:0}
+    .hp-today-badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#c0392b;color:#fff;border-radius:50%;font-size:11px;font-weight:700;line-height:1}
+    .hp-today-search{display:flex;align-items:center;gap:8px;margin-left:auto;padding:8px 16px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;color:#64748b;font-size:13px;font-family:inherit;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s,border-color .15s}
+    .hp-today-search:hover{background:#f0f4ff;border-color:#c7d7eb;color:#1a3a5c}
+    @media(max-width:700px){.hp-today-cell:nth-child(n+4){display:none}.hp-today-sep:nth-child(n+5){display:none}}
+
+    /* ── Announcement meta SVG ── */
+    .ann-meta svg{vertical-align:middle;margin-right:3px;opacity:.7}
+
+    /* ── Announcement filter dots ── */
+    .ann-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;flex-shrink:0}
+    .ann-filter-btn{display:flex;align-items:center}
+    .active-filter{background:var(--color-primary)!important;color:#fff!important;font-weight:600}
 
     /* ── Staff Services Hub ── */
     .hp-svc-hub{display:flex;flex-direction:column;gap:20px}
@@ -5215,12 +5274,12 @@
     </div></div></div>
     <div class="card"><div class="card-body"><h3 class="card-title" style="margin-bottom:12px">HCOS Services</h3><div class="divider"></div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-        <button class="btn btn-primary btn-sm btn-full" onclick="showPage('hr-forms')">📋 HCOS Forms &amp; Services</button>
-        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('hr-forms')">📅 Apply for Leave</button>
-        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('hr-forms')">🏥 Medical Claim</button>
-        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('hr-forms')">🏦 Change Bank Account</button>
-        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('ldc')">🎓 L&amp;D Centre</button>
-        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">📊 My Appraisal</button>
+        <button class="btn btn-primary btn-sm btn-full" onclick="showPage('hr-forms')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg> HCOS Forms &amp; Services</button>
+        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('hr-forms')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Apply for Leave</button>
+        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('hr-forms')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Medical Claim</button>
+        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('hr-forms')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Change Bank Account</button>
+        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('ldc')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg> L&amp;D Centre</button>
+        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('workspace')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> My Appraisal</button>
       </div>
     </div></div>
   </div>
@@ -5239,10 +5298,10 @@
     </div></div></div>
     <div class="card"><div class="card-body"><h3 class="card-title" style="margin-bottom:12px">ICT Services</h3><div class="divider"></div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-        <button class="btn btn-primary btn-sm btn-full" onclick="showPage('helpdesk')">🖥️ Log IT Ticket</button>
-        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">🔑 Request Access</button>
-        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">📡 Report Network Issue</button>
-        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start">💻 Hardware Request</button>
+        <button class="btn btn-primary btn-sm btn-full" onclick="showPage('helpdesk')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Log IT Ticket</button>
+        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('helpdesk')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Request Access</button>
+        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('helpdesk')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6l5 5-5 5"/><path d="M23 6l-5 5 5 5"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Report Network Issue</button>
+        <button class="btn btn-ghost btn-sm btn-full" style="justify-content:flex-start" onclick="showPage('helpdesk')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Hardware Request</button>
       </div>
     </div></div>
   </div>
@@ -5902,5 +5961,27 @@
 <script src="assets/js/modules/admin-forms.js"></script>
 <!-- 6. Router LAST — showPage() calls functions from every module above -->
 <script src="assets/js/modules/router.js"></script>
+
+<!-- ── SPOTLIGHT SEARCH ───────────────────────────────────────────── -->
+<div id="spotlight-overlay" role="dialog" aria-modal="true" aria-label="Quick search" style="display:none;position:fixed;inset:0;z-index:9500;background:rgba(15,39,68,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:72px 16px 16px;box-sizing:border-box" onclick="closeSpotlightBg(event)">
+  <div id="spotlight-box" style="max-width:580px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 32px 80px rgba(0,0,0,.35);overflow:hidden">
+    <!-- Input row -->
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #e2e8f0">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="spotlight-input" type="text" placeholder="Search pages, services, departments…" autocomplete="off"
+        oninput="spotlightSearch(this.value)" onkeydown="spotlightKey(event)"
+        style="flex:1;border:none;outline:none;font-size:16px;font-family:inherit;color:#1e293b;background:transparent">
+      <kbd onclick="closeSpotlight()" style="font-size:11px;background:#f1f5f9;padding:3px 8px;border-radius:6px;cursor:pointer;color:#64748b;font-family:inherit;border:1px solid #e2e8f0">Esc</kbd>
+    </div>
+    <!-- Results -->
+    <div id="spotlight-results" style="max-height:380px;overflow-y:auto"></div>
+    <!-- Footer hints -->
+    <div style="display:flex;gap:18px;padding:9px 18px;border-top:1px solid #f1f5f9;font-size:11px;color:#94a3b8">
+      <span><kbd style="background:#f1f5f9;padding:1px 6px;border-radius:4px;font-family:monospace;border:1px solid #e2e8f0">↑↓</kbd> navigate</span>
+      <span><kbd style="background:#f1f5f9;padding:1px 6px;border-radius:4px;font-family:monospace;border:1px solid #e2e8f0">↵</kbd> open</span>
+      <span><kbd style="background:#f1f5f9;padding:1px 6px;border-radius:4px;font-family:monospace;border:1px solid #e2e8f0">Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
 </body>
 </html>
