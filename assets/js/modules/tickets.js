@@ -1,6 +1,6 @@
 // ICT Ticketing System — all GACL stations
 // Staff helpdesk (submit + track) and ICT Admin (queue, dashboard, team)
-// Stations: Accra (KIA & Head Office), Kumasi (Prempeh I Int'l), Tamale Int'l
+// Stations: Accra (AIA & Head Office), Kumasi (Prempeh I Int'l), Tamale Int'l
 // Storage: localStorage 'gacl_ict_tickets' (all tickets), 'gacl_ict_my' (ids raised in this browser)
 
 var TK_KEY  = 'gacl_ict_tickets';
@@ -8,7 +8,7 @@ var TK_MY   = 'gacl_ict_my';
 var TK_SEQ  = 'gacl_ict_seq';
 
 var ICT_STATIONS = {
-  Accra:  { label: "Accra — KIA & Head Office",   covers: ["Kotoka Int'l — Terminal 1", "Kotoka Int'l — Terminal 2", "Kotoka Int'l — Terminal 3", "GACL Head Office", "Ho Airport"] },
+  Accra:  { label: "Accra — AIA & Head Office",   covers: ["AIA — Terminal 1", "AIA — Terminal 2", "AIA — Terminal 3", "GACL Head Office", "Ho Airport"] },
   Kumasi: { label: "Kumasi — Prempeh I Int'l",    covers: ["Prempeh I Int'l Airport (Kumasi)", "Sunyani Airport"] },
   Tamale: { label: "Tamale Int'l",                covers: ["Tamale Int'l Airport", "Wa Airport"] }
 };
@@ -60,7 +60,7 @@ function tkSeed() {
   if (tkAll().length) return;
   var d = function (daysAgo, h) { var x = new Date(); x.setDate(x.getDate() - daysAgo); x.setHours(h || 9, 15, 0, 0); return x.toISOString(); };
   tkSave([
-    { id: 'ICT-2026-0184', title: 'Badge reader offline — Gate 4', desc: 'Access control badge reader at Gate 4 not powering on. Guards using manual log.', cat: 'CCTV & Security Systems', priority: 'Critical', status: 'In Progress', location: "Kotoka Int'l — Terminal 3", station: 'Accra', dept: 'Airports Management', requester: 'Emmanuel Owusu', contact: 'Ext. 2210', assignee: 'K. Attafuah', created: d(14, 8), updated: d(13),
+    { id: 'ICT-2026-0184', title: 'Badge reader offline — Gate 4', desc: 'Access control badge reader at Gate 4 not powering on. Guards using manual log.', cat: 'CCTV & Security Systems', priority: 'Critical', status: 'In Progress', location: "AIA — Terminal 3", station: 'Accra', dept: 'Airports Management', requester: 'Emmanuel Owusu', contact: 'Ext. 2210', assignee: 'K. Attafuah', created: d(14, 8), updated: d(13),
       history: [{ ts: d(14, 8), note: 'Ticket created' }, { ts: d(13), note: 'Assigned to K. Attafuah — replacement reader ordered' }] },
     { id: 'ICT-2026-0185', title: 'Cannot access payroll module', desc: 'Payroll module rejects login since Monday. Error: account locked.', cat: 'Access / Permissions', priority: 'Critical', status: 'Open', location: 'GACL Head Office', station: 'Accra', dept: 'Human Capital & OS', requester: 'Abena Mensah', contact: 'Ext. 2015', assignee: '', created: d(13, 10), updated: d(13, 10),
       history: [{ ts: d(13, 10), note: 'Ticket created' }] },
