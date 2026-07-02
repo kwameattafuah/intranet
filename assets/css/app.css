@@ -1075,6 +1075,15 @@ table tbody tr:hover td { background: #f0f4ff; }
 
 .lms-tabs { display: flex; gap: 4px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 6px; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
 .lms-tabs::-webkit-scrollbar { display: none; }
+
+/* Admin Centre sub-navigation strip */
+.admin-subnav { display: flex; align-items: center; gap: 4px; background: var(--color-primary); border-radius: var(--radius-lg); padding: 6px 8px; margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+.admin-subnav::-webkit-scrollbar { display: none; }
+.admin-subnav-label { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.65); padding: 0 12px 0 6px; white-space: nowrap; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,.15); margin-right: 6px; }
+.admin-subnav-btn { display: flex; align-items: center; gap: 6px; padding: 7px 13px; border: none; background: transparent; border-radius: var(--radius-md); font-size: 12.5px; font-weight: 600; font-family: inherit; color: rgba(255,255,255,.75); cursor: pointer; white-space: nowrap; transition: background var(--transition), color var(--transition); }
+.admin-subnav-btn:hover { background: rgba(255,255,255,.12); color: #fff; }
+.admin-subnav-btn.active { background: #fff; color: var(--color-primary); }
+.admin-subnav-btn svg { flex-shrink: 0; }
 .lms-tab { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border: none; background: transparent; border-radius: var(--radius-md); font-size: var(--font-size-sm); font-weight: 600; font-family: inherit; color: var(--color-text-muted); cursor: pointer; transition: background var(--transition), color var(--transition); white-space: nowrap; }
 .lms-tab:hover { background: var(--color-surface-2); color: var(--color-text-primary); }
 .lms-tab.active { background: var(--color-primary); color: #fff; }

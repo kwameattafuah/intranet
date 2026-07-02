@@ -14,7 +14,7 @@ const navIds  = {
   announcements:'nav-announcements', news:'nav-news', discussions:'nav-discussions', media:'nav-media',
   documents:'nav-documents', corporate:'nav-corporate', applications:'nav-applications', 'hr-forms':'nav-hr-forms', 'suggestions':'nav-suggestions',
   ldc:'nav-ldc', rooms:'nav-rooms', helpdesk:'nav-helpdesk',
-  'ldc-admin':'nav-ldc-admin', 'rooms-admin':'nav-rooms-admin', 'ict-admin':'nav-ict-admin', 'site-admin':'nav-site-admin', 'forms-admin':'nav-forms-admin', 'form-builder':'nav-form-builder',
+  'ldc-admin':'nav-site-admin', 'rooms-admin':'nav-site-admin', 'ict-admin':'nav-site-admin', 'site-admin':'nav-site-admin', 'forms-admin':'nav-site-admin', 'form-builder':'nav-site-admin',
   'cleantrack':null,
   'ops-forms':'nav-ops-forms',
   'noticeboard':'nav-noticeboard',
